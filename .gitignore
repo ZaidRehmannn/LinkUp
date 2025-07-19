@@ -1,4 +1,11 @@
-# .gitignore
+# Ignore node_modules in both sub-projects
 backend/node_modules
 web_frontend/node_modules
+
+# Ignore env files
 backend/.env
+web_frontend/.env
+
+# Optional: editor/system files
+.vscode/
+.DS_Store
