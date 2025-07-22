@@ -1,4 +1,4 @@
-import userModel from "../models/userModel";
+import userModel from "../models/userModel.js";
 
 // follow or unfollow a user
 const followUnfollowUser = async (req, res) => {
@@ -27,7 +27,7 @@ const followUnfollowUser = async (req, res) => {
 
 // get followers of own or any other user
 const getFollowers = async (req, res) => {
-    const userId = req.params.id || req.userId;
+    const userId = req.query.id || req.userId;
 
     try {
         const user = await userModel.findById(userId).populate("followers", "username profilePic");
@@ -45,7 +45,7 @@ const getFollowers = async (req, res) => {
 
 // get following of own or any other user
 const getFollowing = async (req, res) => {
-    const userId = req.params.id || req.userId;
+    const userId = req.query.id || req.userId;
 
     try {
         const user = await userModel.findById(userId).populate("following", "username profilePic");

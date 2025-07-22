@@ -1,0 +1,46 @@
+.wrapper {
+    position: fixed;
+    inset: 0;
+    backdrop-filter: blur(20px);
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    overflow: hidden;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 6px solid #2563EB;
+    border-top-color: transparent;
+    animation: spinShrink 2s ease-in-out forwards;
+    margin-bottom: 20px;
+}
+
+@keyframes spinShrink {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(720deg) scale(0.5);
+        opacity: 0.2;
+    }
+}
+
+.text {
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #2563EB;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.letter {
+    margin: 0 2px;
+}
