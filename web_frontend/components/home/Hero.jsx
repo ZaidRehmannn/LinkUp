@@ -23,7 +23,7 @@ const Hero = () => {
     return (
         <section>
             <motion.h1
-                className="text-4xl md:text-5xl font-bold text-green-600 mb-3 flex"
+                className="text-4xl md:text-5xl font-bold text-blue-600 mb-3 flex"
                 variants={container}
                 initial="hidden"
                 animate="visible"

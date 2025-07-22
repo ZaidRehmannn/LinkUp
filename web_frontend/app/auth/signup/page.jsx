@@ -8,7 +8,10 @@ import Link from 'next/link'
 
 const page = () => {
     const [form, setform] = useState({
-        loginIdentifier: "",
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
         password: ""
     });
 
@@ -27,10 +30,13 @@ const page = () => {
         seterror("");
 
         try {
-            const { data } = await axios.post("/api/user/login", form);
+            const { data } = await axios.post("/api/user/register", form);
             setsuccess(data.message);
             setform({
-                loginIdentifier: "",
+                firstName: "",
+                lastName: "",
+                username: "",
+                email: "",
                 password: ""
             })
         } catch (error) {
@@ -43,7 +49,7 @@ const page = () => {
     return (
         <main className="flex items-center justify-center px-4 py-8">
             <form onSubmit={handleSubmit} className="w-full max-w-md space-y-5 shadow-xl rounded-2xl p-8 border">
-                <h2 className="text-2xl font-semibold text-blue-700">Welcome Back!</h2>
+                <h2 className="text-2xl font-semibold text-blue-700">Create Account</h2>
 
                 <div className="flex gap-4">
                     <div className="flex-1">
