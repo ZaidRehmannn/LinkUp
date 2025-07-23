@@ -1,0 +1,28 @@
+'use client'
+
+import Link from "next/link";
+import Image from "next/image";
+import React from "react";
+import HomePageLinks from "./HomePageLinks";
+
+const Navbar = () => {
+  return (
+    <div className="flex justify-between items-center px-6 py-3 border-b bg-gray-100">
+      {/* Left Side - Logo */}
+      <Link href="/" className="flex items-center relative h-10 w-[120px]">
+        <Image
+          src="/logo.png"
+          alt="LinkUp Logo"
+          fill
+          className="object-contain"
+          priority
+        />
+      </Link>
+
+      {/* Right Side (Home Page) - Links */}
+      <HomePageLinks />
+    </div>
+  );
+};
+
+export default Navbar;

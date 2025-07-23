@@ -11,12 +11,9 @@ const Loader = ({ title, path }) => {
 
     useEffect(() => {
         const timeout = setTimeout(() => {
+            router.push(path);
             setIsComplete(true);
-
-            setTimeout(() => {
-                router.push(path);
-            }, 600);
-        }, 3000);
+        }, 1500);
 
         return () => clearTimeout(timeout);
     }, []);

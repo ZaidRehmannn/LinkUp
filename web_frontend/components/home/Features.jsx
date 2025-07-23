@@ -34,10 +34,10 @@ const Features = () => {
                     animate="visible"
                     variants={cardVariants}
                 >
-                    <Card className="w-[160px] hover:bg-blue-100">
-                        <CardContent className="flex flex-col items-center p-4">
+                    <Card className="xl:w-[160px] w-[130px] hover:bg-blue-100">
+                        <CardContent className="flex flex-col items-center xl:p-4 p-3">
                             <feature.icon className="text-blue-600 mb-2" size={28} />
-                            <p className="text-sm font-semibold text-gray-700">{feature.label}</p>
+                            <p className="xl:text-sm text-xs font-semibold text-gray-700">{feature.label}</p>
                         </CardContent>
                     </Card>
                 </motion.div>

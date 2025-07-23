@@ -2,6 +2,28 @@ import userModel from "../models/userModel.js";
 import bcrypt from 'bcrypt';
 import cloudinary from "../config/cloudinary.js";
 
+// get user info (for zustand on page reloads)
+const userInfo = async (req, res) => {
+    const userId = req.userId;
+    try {
+        const user = await userModel.findById(userId);
+
+        res.status(200).json({ success: true,
+            message: "UserInfo Fetched Successfully!",
+            user: {
+                _id: user._id,
+                username: user.username,
+                bio: user.bio,
+                profilePic: user.profilePic,
+                email: user.email,
+            },
+        });
+    } catch (error) {
+        console.error("UserInfo Fetching error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+};
+
 // Update user info (username, bio, profile picture)
 const updateUser = async (req, res) => {
     const userId = req.userId;
@@ -109,4 +131,4 @@ const changePassword = async (req, res) => {
     }
 };
 
-export { updateUser, removeProfilePic, changePassword };
+export { updateUser, removeProfilePic, changePassword, userInfo };

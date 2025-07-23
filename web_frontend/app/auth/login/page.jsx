@@ -7,6 +7,7 @@ import axios from '@/lib/axios.js'
 import Link from 'next/link'
 import { EyeOff, Eye } from 'lucide-react'
 import Loader from '@/components/loader/Loader'
+import useUserStore from '@/app/stores/userStore'
 
 const page = () => {
     const [form, setform] = useState({
@@ -18,6 +19,8 @@ const page = () => {
     const [success, setsuccess] = useState(false);
     const [error, seterror] = useState("");
     const [passwordVisibility, setpasswordVisibility] = useState(false);
+    const setToken = useUserStore(state => state.setToken)
+    const setUser = useUserStore(state => state.setUser)
 
     const togglePasswordVisibility = () => {
         setpasswordVisibility(!passwordVisibility);
@@ -30,11 +33,13 @@ const page = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setloading(true);
-        setsuccess("");
+        setsuccess(false);
         seterror("");
 
         try {
-            await axios.post("/api/user/login", form);
+            const { data } = await axios.post("/api/user/login", form);
+            setToken(data.token);
+            setUser(data.user);
             setform({
                 loginIdentifier: "",
                 password: ""

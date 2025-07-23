@@ -57,7 +57,7 @@ const page = () => {
       <section>
         <h3 className="text-2xl font-semibold text-blue-700 mb-2">Want to be part of the journey?</h3>
         <p className="text-gray-600">
-          <Link href='/signup' className='text-blue-800 font-semibold'>Join us today</Link> and help shape the future of social connection.
+          <Link href='/auth/signup' className='text-blue-800 font-semibold'>Join us today</Link> and help shape the future of social connection.
         </p>
       </section>
     </main>
