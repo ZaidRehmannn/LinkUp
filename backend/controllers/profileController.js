@@ -8,10 +8,13 @@ const userInfo = async (req, res) => {
     try {
         const user = await userModel.findById(userId);
 
-        res.status(200).json({ success: true,
+        res.status(200).json({
+            success: true,
             message: "UserInfo Fetched Successfully!",
             user: {
                 _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 username: user.username,
                 bio: user.bio,
                 profilePic: user.profilePic,
