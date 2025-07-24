@@ -7,6 +7,7 @@ import axios from '@/lib/axios'
 const InitAuth = () => {
     const setToken = useUserStore(state => state.setToken)
     const setUser = useUserStore(state => state.setUser)
+    const setLoading = useUserStore(state => state.setLoading)
 
     useEffect(() => {
         const init = async () => {
@@ -16,16 +17,21 @@ const InitAuth = () => {
 
                 try {
                     const response = await axios.get('/api/profile/userInfo', {
-                        headers: { token }
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
                     })
 
                     if (response.data.success) {
                         setUser(response.data.user)
+                        console.log("User details", response.data.user);
+
                     }
                 } catch (err) {
                     console.error('Auth restore failed:', err)
                 }
             }
+            setLoading(false)
         }
 
         init()
