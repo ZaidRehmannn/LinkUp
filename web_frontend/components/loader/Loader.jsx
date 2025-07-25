@@ -4,13 +4,19 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import './Loader.css';
 import { useRouter } from 'next/navigation';
+import useUserStore from '@/app/stores/userStore';
 
-const Loader = ({ title, path }) => {
+const Loader = ({ title, path, logoutSuccess = false }) => {
     const [isComplete, setIsComplete] = useState(false);
     const router = useRouter();
+    const logout = useUserStore(state => state.logout);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
+            if (logoutSuccess) {
+                logout();
+            }
+
             router.push(path);
             setIsComplete(true);
         }, 1500);

@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "../components/navbar/Navbar";
 import AuthWrapper from "@/components/AuthWrapper";
 import Menu from "@/components/navbar/Menu";
+import { ThemeProvider } from 'next-themes'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,16 +22,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <AuthWrapper>
-          <Navbar />
-          <Menu />
-          <main className="flex-grow">{children}</main>
-        </AuthWrapper>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AuthWrapper>
+            <Navbar />
+            <Menu />
+            <main className="flex-grow">{children}</main>
+          </AuthWrapper>
+        </ThemeProvider>
       </body>
-    </html>
+    </html >
   );
 }

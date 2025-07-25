@@ -15,7 +15,7 @@ const HomePageLinks = () => {
             {(isAbout || isHelp) && (
                 <Link
                     href="/"
-                    className="font-semibold text-blue-700 hover:text-blue-800 hover:underline hover:underline-offset-4 transition"
+                    className="font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-500  hover:underline hover:underline-offset-4 transition"
                 >
                     <span className="hidden lg:flex items-center gap-1">
                         <ArrowLeftIcon className="h-4 w-4" />
@@ -27,7 +27,7 @@ const HomePageLinks = () => {
 
             <Link
                 href="/about"
-                className={`font-semibold text-blue-700 transition ${isAbout ? "underline underline-offset-4 decoration-2" : "hover:underline hover:underline-offset-4 hover:text-blue-800"}`}
+                className={`font-semibold text-blue-700 dark:text-blue-400 transition ${isAbout ? "underline underline-offset-4 decoration-2" : "hover:underline hover:underline-offset-4 hover:text-blue-800 dark:hover:text-blue-500"}`}
             >
                 <span className="hidden lg:block">About Us</span>
                 <Info className="lg:hidden" />
@@ -35,7 +35,7 @@ const HomePageLinks = () => {
 
             <Link
                 href="/help"
-                className={`font-semibold text-blue-700 transition ${isHelp ? "underline underline-offset-4 decoration-2" : "hover:underline hover:underline-offset-4 hover:text-blue-800"}`}
+                className={`font-semibold text-blue-700 dark:text-blue-400 transition ${isHelp ? "underline underline-offset-4 decoration-2" : "hover:underline hover:underline-offset-4 hover:text-blue-800 dark:hover:text-blue-500"}`}
             >
                 <span className="hidden lg:block">Help & Support</span>
                 <CircleQuestionMark className="lg:hidden" />

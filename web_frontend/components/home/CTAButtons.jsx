@@ -23,7 +23,7 @@ const CTAButtons = () => {
                 </Button>
             </Link>
             <Link href="/auth/login">
-                <Button variant="outline" className="text-blue-700 border-blue-600 hover:bg-blue-100 px-7 py-4 rounded-xl cursor-pointer">
+                <Button variant="outline" className="text-blue-700 dark:text-blue-500 border-blue-600 bg-gray-100 dark:bg-gray-900 hover:bg-blue-100 dark:hover:bg-gray-800 px-7 py-4 rounded-xl cursor-pointer">
                     Login
                 </Button>
             </Link>

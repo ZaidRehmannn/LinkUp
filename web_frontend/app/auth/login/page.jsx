@@ -54,22 +54,22 @@ const page = () => {
 
     return (
         <main className="flex items-center justify-center px-4 py-20">
-            <form onSubmit={handleSubmit} className="w-full max-w-md space-y-5 shadow-xl rounded-2xl p-8 border">
-                <h2 className="text-2xl font-semibold text-blue-700">Welcome Back!</h2>
+            <form onSubmit={handleSubmit} className="dark:bg-gray-900 w-full max-w-md space-y-5 shadow-xl rounded-2xl p-8 border">
+                <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-500">Welcome Back!</h2>
 
-                <div className='bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500'>
+                <div className='bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500'>
                     <Input
                         id="loginIdentifier"
                         name="loginIdentifier"
                         placeholder="Email or username"
                         value={form.loginIdentifier}
                         onChange={handleChange}
-                        className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                 </div>
 
-                <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
+                <div className="flex items-center bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
                     <Input
                         id="password"
                         name="password"
@@ -77,7 +77,7 @@ const page = () => {
                         placeholder="Password"
                         value={form.password}
                         onChange={handleChange}
-                        className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                     {passwordVisibility ? (
@@ -87,19 +87,19 @@ const page = () => {
                     )}
                 </div>
 
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer" disabled={loading}>
+                <Button type="submit" className="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white cursor-pointer" disabled={loading}>
                     {loading ? "Logging In..." : "Login"}
                 </Button>
 
                 {error && (
-                    <p className="text-red-600 text-sm text-center font-semibold">{error}</p>
+                    <p className="text-red-600 dark:text-red-500 text-sm text-center font-semibold">{error}</p>
                 )}
                 {success && (
                     <Loader title="Logging In..." path="/feed" />
                 )}
 
-                <p className='text-xs text-gray-700'>
-                    Don't have an account? <Link href="/auth/signup" className='text-blue-600 font-semibold cursor-pointer'>Click here to SignUp</Link>
+                <p className='text-xs text-gray-700 dark:text-gray-300'>
+                    Don't have an account? <Link href="/auth/signup" className='text-blue-600 dark:text-blue-500 font-semibold cursor-pointer'>Click here to SignUp</Link>
                 </p>
             </form>
         </main>

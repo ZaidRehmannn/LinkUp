@@ -36,7 +36,7 @@ const Hero = () => {
             </motion.h1>
 
             <motion.p
-                className="text-gray-600 xl:max-w-xl lg:max-w-md w-full mb-8 text-base xl:text-lg"
+                className="text-gray-600 dark:text-gray-300 xl:max-w-xl lg:max-w-md w-full mb-8 text-base xl:text-lg"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.25 }}

@@ -72,47 +72,47 @@ const page = () => {
 
     return (
         <main className="flex items-center justify-center px-4 py-8">
-            <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 shadow-xl rounded-2xl p-6 border">
-                <h2 className="text-2xl font-semibold text-blue-700">Create Account</h2>
+            <form onSubmit={handleSubmit} className="dark:bg-gray-900 w-full max-w-md space-y-4 shadow-xl rounded-2xl p-6 border">
+                <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-500">Create Account</h2>
 
                 <div className="flex gap-4">
-                    <div className="flex-1 bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
+                    <div className="flex-1 bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
                         <Input
                             id="firstName"
                             name="firstName"
                             placeholder="First Name"
                             value={form.firstName}
                             onChange={handleChange}
-                            className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                             required
                         />
                     </div>
-                    <div className="flex-1 bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
+                    <div className="flex-1 bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
                         <Input
                             id="lastName"
                             name="lastName"
                             placeholder="Last Name"
                             value={form.lastName}
                             onChange={handleChange}
-                            className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                             required
                         />
                     </div>
                 </div>
 
-                <div className='bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500'>
+                <div className='bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500'>
                     <Input
                         id="username"
                         name="username"
                         placeholder="Username"
                         value={form.username}
                         onChange={handleChange}
-                        className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                 </div>
 
-                <div className='bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500'>
+                <div className='bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500'>
                     <Input
                         id="email"
                         name="email"
@@ -120,12 +120,12 @@ const page = () => {
                         placeholder="Email"
                         value={form.email}
                         onChange={handleChange}
-                        className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                 </div>
 
-                <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
+                <div className="flex items-center bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
                     <Input
                         id="password"
                         name="password"
@@ -133,7 +133,7 @@ const page = () => {
                         placeholder="Password"
                         value={form.password}
                         onChange={handleChange}
-                        className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                     {passwordVisibility.password ? (
@@ -143,7 +143,7 @@ const page = () => {
                     )}
                 </div>
 
-                <div className="flex items-center bg-gray-100 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
+                <div className="flex items-center bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
                     <Input
                         id="confirmPassword"
                         name="confirmPassword"
@@ -151,32 +151,32 @@ const page = () => {
                         placeholder="Confirm Password"
                         value={form.confirmPassword}
                         onChange={handleChange}
-                        className="bg-gray-100 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                     {passwordVisibility.confirmPassword ? (
-                        <Eye className='text-blue-600 cursor-pointer mr-2.5' onClick={() => togglePasswordVisibility("confirmPassword")} />
+                        <Eye className='text-blue-600 dark:text-blue-500 cursor-pointer mr-2.5' onClick={() => togglePasswordVisibility("confirmPassword")} />
                     ) : (
-                        <EyeOff className="text-blue-600 cursor-pointer mr-2.5" onClick={() => togglePasswordVisibility("confirmPassword")} />
+                        <EyeOff className="text-blue-600 dark:text-blue-500 cursor-pointer mr-2.5" onClick={() => togglePasswordVisibility("confirmPassword")} />
                     )}
                 </div>
 
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer" disabled={loading}>
+                <Button type="submit" className="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white cursor-pointer" disabled={loading}>
                     {loading ? "Creating..." : "Sign Up"}
                 </Button>
 
                 {error && (
-                    <p className="text-red-600 text-sm text-center font-semibold">{error}</p>
+                    <p className="text-red-600 dark:text-red-500 text-sm text-center font-semibold">{error}</p>
                 )}
                 {success && (
                     <>
-                        <p className="text-green-600 text-sm text-center font-semibold">{success}</p>
+                        <p className="text-green-600 dark:text-green-500 text-sm text-center font-semibold">{success}</p>
                         <Loader title="Redirecting to Login..." path="/auth/login" />
                     </>
                 )}
 
-                <p className='text-xs text-gray-700'>
-                    Already have an account? <Link href="/auth/login" className='text-blue-600 font-semibold cursor-pointer'>Click here to Login</Link>
+                <p className='text-xs text-gray-700 dark:text-gray-300'>
+                    Already have an account? <Link href="/auth/login" className='text-blue-600 dark:text-blue-500 font-semibold cursor-pointer'>Click here to Login</Link>
                 </p>
             </form>
         </main>
