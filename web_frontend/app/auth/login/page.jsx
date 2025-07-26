@@ -19,8 +19,8 @@ const page = () => {
     const [success, setsuccess] = useState(false);
     const [error, seterror] = useState("");
     const [passwordVisibility, setpasswordVisibility] = useState(false);
-    const setToken = useUserStore(state => state.setToken)
-    const setUser = useUserStore(state => state.setUser)
+    const setToken = useUserStore(state => state.setToken);
+    const setUser = useUserStore(state => state.setUser);
 
     const togglePasswordVisibility = () => {
         setpasswordVisibility(!passwordVisibility);
@@ -64,7 +64,7 @@ const page = () => {
                         placeholder="Email or username"
                         value={form.loginIdentifier}
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none text-black focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                 </div>
@@ -77,7 +77,7 @@ const page = () => {
                         placeholder="Password"
                         value={form.password}
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none text-black focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                     {passwordVisibility ? (

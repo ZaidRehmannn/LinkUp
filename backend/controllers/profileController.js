@@ -19,6 +19,7 @@ const userInfo = async (req, res) => {
                 bio: user.bio,
                 profilePic: user.profilePic,
                 email: user.email,
+                createdAt: user.createdAt.toISOString(),
             },
         });
     } catch (error) {
@@ -30,7 +31,7 @@ const userInfo = async (req, res) => {
 // Update user info (username, bio, profile picture)
 const updateUser = async (req, res) => {
     const userId = req.userId;
-    const { username, bio } = req.body;
+    const { firstName, lastName, username, email, bio } = req.body;
     let profilePic;
 
     try {
@@ -40,6 +41,13 @@ const updateUser = async (req, res) => {
             const existingUser = await userModel.findOne({ username });
             if (existingUser && existingUser._id.toString() !== userId) {
                 return res.status(409).json({ success: false, message: "Username already taken!" });
+            }
+        }
+
+        if (email && email !== user.email) {
+            const existingUser = await userModel.findOne({ email });
+            if (existingUser && existingUser._id.toString() !== userId) {
+                return res.status(409).json({ success: false, message: "Email already in use!" });
             }
         }
 
@@ -54,7 +62,10 @@ const updateUser = async (req, res) => {
         const updatedUser = await userModel.findByIdAndUpdate(
             userId,
             {
+                ...(firstName && { firstName }),
+                ...(lastName && { lastName }),
                 ...(username && { username }),
+                ...(email && { email }),
                 ...(bio && { bio }),
                 ...(profilePic && { profilePic }),
             },
@@ -66,7 +77,10 @@ const updateUser = async (req, res) => {
             message: "Profile updated successfully!",
             user: {
                 _id: updatedUser._id,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
                 username: updatedUser.username,
+                email: updatedUser.email,
                 bio: updatedUser.bio,
                 profilePic: updatedUser.profilePic,
                 email: updatedUser.email,

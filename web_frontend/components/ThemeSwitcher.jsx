@@ -1,9 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Switch } from './ui/switch'
 import { useTheme } from 'next-themes'
 
 const ThemeSwitcher = () => {
     const { theme, setTheme } = useTheme()
+    const [mounted, setmounted] = useState(false)
+
+    useEffect(() => {
+        setmounted(true)
+    }, [])
+
+    if (!mounted) {
+        return null
+    }
 
     return (
         <Switch

@@ -11,19 +11,12 @@ const ProfileIcon = () => {
 
   if (!user) return null
 
-  const capitalize = (name) => {
-    return name ? name.charAt(0).toUpperCase() + name.slice(1).toLowerCase() : ''
-  }
-
-  const firstName = capitalize(user.firstName)
-  const lastName = capitalize(user.lastName)
-
   if (loading) {
     return <div>Loading user info...</div>
   }
 
   return (
-    <div className="flex items-center gap-3 hover:bg-gray-200 px-3 py-1 rounded-full cursor-pointer transition">
+    <div className="flex items-center gap-3 hover:bg-gray-200 dark:hover:bg-gray-800 px-3 py-1 rounded-full cursor-pointer transition">
       {/* Profile Image or Icon */}
       {user.profilePic ? (
         <Image
@@ -34,15 +27,15 @@ const ProfileIcon = () => {
           className="rounded-full object-cover"
         />
       ) : (
-        <UserCircle className="w-9 h-9 text-gray-500" />
+        <UserCircle className="w-9 h-9 text-gray-500 dark:text-gray-300" />
       )}
 
       {/* User Info */}
       <div className="flex flex-col leading-tight">
-        <span className="text-sm font-medium text-gray-800">
-          {firstName} {lastName}
+        <span className="text-sm font-medium text-gray-800 dark:text-gray-300 ">
+          {user.firstName} {user.lastName}
         </span>
-        <span className="text-xs text-gray-500">@{user.username}</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400">@{user.username}</span>
       </div>
     </div>
   )

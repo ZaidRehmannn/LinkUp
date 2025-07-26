@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <div className="h-16 flex justify-between items-center px-6 py-3 border-b bg-gray-100 dark:bg-gray-900">
       {/* Left Side - Logo */}
-      <Link href="/" className="flex items-center relative h-10 w-[120px]">
+      <Link href={token ? "/feed" : "/"} className="flex items-center relative h-10 w-[120px]">
         <Image
           src="/logo.png"
           alt="LinkUp Logo"
@@ -33,7 +33,7 @@ const Navbar = () => {
           <FeedSearchBar />
           <div className="flex gap-2 items-center">
             <ProfileIcon />
-            <Menu className="text-gray-500 cursor-pointer" onClick={toggleMenu} />
+            <Menu className="text-gray-500 dark:text-gray-300 cursor-pointer" onClick={toggleMenu} />
           </div>
         </>
       ) : (

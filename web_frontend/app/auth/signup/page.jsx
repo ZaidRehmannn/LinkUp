@@ -83,7 +83,7 @@ const page = () => {
                             placeholder="First Name"
                             value={form.firstName}
                             onChange={handleChange}
-                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                             required
                         />
                     </div>
@@ -94,7 +94,7 @@ const page = () => {
                             placeholder="Last Name"
                             value={form.lastName}
                             onChange={handleChange}
-                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                             required
                         />
                     </div>
@@ -107,7 +107,7 @@ const page = () => {
                         placeholder="Username"
                         value={form.username}
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                 </div>
@@ -120,7 +120,7 @@ const page = () => {
                         placeholder="Email"
                         value={form.email}
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                 </div>
@@ -133,7 +133,7 @@ const page = () => {
                         placeholder="Password"
                         value={form.password}
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                     {passwordVisibility.password ? (
@@ -151,7 +151,7 @@ const page = () => {
                         placeholder="Confirm Password"
                         value={form.confirmPassword}
                         onChange={handleChange}
-                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
                         required
                     />
                     {passwordVisibility.confirmPassword ? (
