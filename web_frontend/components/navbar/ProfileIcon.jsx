@@ -16,7 +16,7 @@ const ProfileIcon = () => {
   }
 
   return (
-    <div className="flex items-center gap-3 hover:bg-gray-200 dark:hover:bg-gray-800 px-3 py-1 rounded-full cursor-pointer transition">
+    <div className="flex items-center gap-3 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1 rounded-full cursor-pointer transition">
       {/* Profile Image or Icon */}
       {user.profilePic ? (
         <Image
@@ -24,7 +24,7 @@ const ProfileIcon = () => {
           alt="User profile"
           width={36}
           height={36}
-          className="rounded-full object-cover"
+          className="w-10 h-10 rounded-full object-cover"
         />
       ) : (
         <UserCircle className="w-9 h-9 text-gray-500 dark:text-gray-300" />

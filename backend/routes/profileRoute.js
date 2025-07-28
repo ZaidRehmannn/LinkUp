@@ -3,7 +3,7 @@ import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from '../config/cloudinary.js';
 import authMiddleware from '../middleware/auth.js';
-import { changePassword, removeProfilePic, updateUser, userInfo } from '../controllers/profileController.js';
+import { changePassword, removeProfilePic, updateUser, uploadPicture, userInfo } from '../controllers/profileController.js';
 
 const profileRouter = express.Router();
 
@@ -17,7 +17,8 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-profileRouter.put('/update-profile', authMiddleware, upload.single("image"), updateUser);
+profileRouter.put('/update-profile-details', authMiddleware, updateUser);
+profileRouter.put('/upload-profile-pic', authMiddleware, upload.single("image"), uploadPicture);
 profileRouter.put('/remove-profile-pic', authMiddleware, removeProfilePic);
 profileRouter.put('/change-password', authMiddleware, changePassword);
 profileRouter.get('/userInfo', authMiddleware, userInfo);

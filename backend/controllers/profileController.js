@@ -28,11 +28,10 @@ const userInfo = async (req, res) => {
     }
 };
 
-// Update user info (username, bio, profile picture)
+// Update user info (firstname, lastname, username, bio)
 const updateUser = async (req, res) => {
     const userId = req.userId;
     const { firstName, lastName, username, email, bio } = req.body;
-    let profilePic;
 
     try {
         const user = await userModel.findById(userId);
@@ -51,14 +50,6 @@ const updateUser = async (req, res) => {
             }
         }
 
-        if (req.file && req.file.path) {
-            if (user.profilePic) {
-                const publicId = user.profilePic.split('/').pop().split('.')[0];
-                await cloudinary.uploader.destroy(`LinkUp-ProfilePics/${publicId}`);
-            }
-            profilePic = req.file.path;
-        }
-
         const updatedUser = await userModel.findByIdAndUpdate(
             userId,
             {
@@ -66,8 +57,7 @@ const updateUser = async (req, res) => {
                 ...(lastName && { lastName }),
                 ...(username && { username }),
                 ...(email && { email }),
-                ...(bio && { bio }),
-                ...(profilePic && { profilePic }),
+                ...(bio && { bio })
             },
             { new: true }
         );
@@ -88,6 +78,28 @@ const updateUser = async (req, res) => {
         });
     } catch (error) {
         console.error("Profile update error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+};
+
+// upload or change profile picture of user
+const uploadPicture = async (req, res) => {
+    const userId = req.userId;
+    let profilePic;
+
+    try {
+        const user = await userModel.findById(userId);
+        if (user.profilePic) {
+            const publicId = user.profilePic.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(`LinkUp-ProfilePics/${publicId}`);
+        }
+        profilePic = req.file.path;
+        user.profilePic = profilePic;
+
+        await user.save();
+        res.status(200).json({ success: true, message: "Profile Picture Updated!" });
+    } catch (error) {
+        console.error("Upload profile picture error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };
@@ -148,4 +160,4 @@ const changePassword = async (req, res) => {
     }
 };
 
-export { updateUser, removeProfilePic, changePassword, userInfo };
+export { updateUser, removeProfilePic, changePassword, userInfo, uploadPicture };
