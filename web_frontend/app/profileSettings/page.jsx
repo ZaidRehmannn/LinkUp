@@ -13,6 +13,7 @@ import { EyeOff, Eye } from 'lucide-react'
 const Page = () => {
     const user = useUserStore(state => state.user);
     const token = useUserStore(state => state.token);
+    const setUser = useUserStore(state => state.setUser);
 
     const [isUserReady, setisUserReady] = useState(false);
     const [isEditing, setisEditing] = useState(false);
@@ -51,8 +52,9 @@ const Page = () => {
         username: "",
         email: "",
         bio: "",
-        image: ""
+        image: null
     });
+    const [accountDate, setaccountDate] = useState(null);
 
     const togglePasswordVisibility = (field) => {
         setpasswordVisibility((prev) => ({
@@ -78,6 +80,9 @@ const Page = () => {
     };
 
     const submitProfileDetails = async () => {
+        setsuccessMessage({ ...successMessage, details: "" });
+        seterrorMessage({ ...errorMessage, details: "" });
+
         if (!form.firstName || !form.lastName || !form.username || !form.email) {
             seterrorMessage({ ...errorMessage, details: "All fields are required except bio!" });
             return
@@ -100,6 +105,16 @@ const Page = () => {
             );
 
             if (response.data.success) {
+                const updatedUser = response.data.user;
+                setUser(updatedUser);
+                setForm({
+                    firstName: updatedUser.firstName,
+                    lastName: updatedUser.lastName,
+                    username: updatedUser.username,
+                    email: updatedUser.email,
+                    bio: updatedUser.bio,
+                });
+
                 setsuccessMessage({ ...successMessage, details: response.data.message });
                 setisEditing(false);
             } else {
@@ -111,6 +126,9 @@ const Page = () => {
     };
 
     const submitProfilePicture = async () => {
+        setsuccessMessage({ ...successMessage, picture: "" });
+        seterrorMessage({ ...errorMessage, picture: "" });
+
         if (form.image) {
             const formData = new FormData();
             formData.append("image", form.image);
@@ -124,8 +142,12 @@ const Page = () => {
                 });
 
                 if (response.data.success) {
-                    setsuccessMessage({ ...successMessage, picture: response.data.message });
+                    const updatedUser = response.data.user;
+                    setUser(updatedUser);
+                    setForm(prev => ({ ...prev, image: updatedUser.profilePic }));
+
                     setpicturePreview(null);
+                    setsuccessMessage({ ...successMessage, picture: response.data.message });
                 } else {
                     seterrorMessage({ ...errorMessage, picture: response.data.message });
                 }
@@ -136,6 +158,9 @@ const Page = () => {
     };
 
     const handlePictureRemove = async () => {
+        setsuccessMessage({ ...successMessage, picture: "" });
+        seterrorMessage({ ...errorMessage, picture: "" });
+
         try {
             const response = await axios.put('/api/profile/remove-profile-pic', {}, {
                 headers: {
@@ -144,6 +169,10 @@ const Page = () => {
             });
 
             if (response.data.success) {
+                const updatedUser = response.data.user;
+                setUser(updatedUser);
+                setForm(prev => ({ ...prev, image: null }));
+
                 setsuccessMessage({ ...successMessage, picture: response.data.message });
             } else {
                 seterrorMessage({ ...errorMessage, picture: response.data.message });
@@ -154,6 +183,9 @@ const Page = () => {
     };
 
     const submitNewPassword = async () => {
+        setsuccessMessage({ ...successMessage, password: "" });
+        seterrorMessage({ ...errorMessage, password: "" });
+
         if (!passwords.oldPassword || !passwords.newPassword) {
             seterrorMessage({ ...errorMessage, password: "All fields are required!" });
             return
@@ -179,27 +211,34 @@ const Page = () => {
                     oldPassword: "",
                     newPassword: ""
                 })
-            } else {
-                seterrorMessage({ ...errorMessage, password: response.data.message });
             }
         } catch (error) {
             console.error("Change Password Error: ", error);
+
+            if (error.response && error.response.data && error.response.data.message) {
+                seterrorMessage({ ...errorMessage, password: error.response.data.message });
+            } else {
+                seterrorMessage({ ...errorMessage, password: "Something went wrong." });
+            }
         }
     };
 
     useEffect(() => {
-        if (user) {
-            setForm({
-                firstName: user.firstName,
-                lastName: user.lastName,
-                username: user.username,
-                email: user.email,
-                bio: user.bio || "",
-                image: user.image || "",
-            });
-            setisUserReady(true);
-        }
-    }, [user])
+        if(!user) return;
+
+        setForm({
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+            username: user?.username || "",
+            email: user?.email || "",
+            bio: user?.bio ?? "",
+            image: user?.profilePic ?? null,
+        });
+
+        setaccountDate(user?.createdAt || null);
+        setisUserReady(true);
+
+    }, [user]);
 
     if (!isUserReady) {
         return (
@@ -213,14 +252,14 @@ const Page = () => {
         <main className="px-6 md:px-20 py-10 max-w-8xl mx-auto">
             <h1 className="text-4xl font-bold text-blue-600 mb-6">Profile Settings</h1>
 
-            <div className="flex flex-col md:flex-row gap-14">
+            <div className="flex flex-col lg:flex-row gap-14">
                 {/* Profile Picture Section */}
                 <section className="flex flex-col items-center gap-6">
                     <div className="w-44 h-44 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                        {picturePreview ? (
+                        {picturePreview && typeof picturePreview === 'string' ? (
                             <Image src={picturePreview} alt="Profile" width={176} height={176} />
-                        ) : user.profilePic ? (
-                            <Image src={user.profilePic} alt="Profile" width={176} height={176} />
+                        ) : form.image && typeof form.image === 'string' ? (
+                            <Image src={form.image} alt="Profile" width={176} height={176} />
                         ) : (
                             <UserCircle className="text-gray-500 w-40 h-40" />
                         )}
@@ -243,7 +282,7 @@ const Page = () => {
                                 Cancel
                             </Button>
                         </div>
-                    ) : user.profilePic ? (
+                    ) : user?.profilePic ? (
                         <div className="flex flex-col gap-2">
                             <label htmlFor="change-profile-picture" className='bg-blue-600 hover:bg-blue-700 cursor-pointer text-white px-5 py-2 rounded-lg'>
                                 Change Picture
@@ -348,7 +387,7 @@ const Page = () => {
                     <div className="flex flex-col gap-1 w-full">
                         <span className='font-semibold'>Bio: </span>
                         {!isEditing ? (
-                            <span>{form.bio ? form.bio : "No Bio Added"}</span>
+                            <span>{form.bio?.trim() ? form.bio : "No Bio Added"}</span>
                         ) : (
                             <Textarea
                                 name="bio"
@@ -387,73 +426,73 @@ const Page = () => {
                             Change Password
                         </Button>
                     ) : (
-                        <>
-                            <div className="flex items-center gap-5 w-full">
-                                <div className="flex items-center gap-2">
-                                    <span className='font-semibold text-nowrap'>Old Password: </span>
-                                    <div className="flex items-center bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
-                                        <Input
-                                            type={passwordVisibility.oldPassword ? "text" : "password"}
-                                            name="oldPassword"
-                                            value={passwords.oldPassword}
-                                            onChange={handlePasswordChange}
-                                            placeholder="Old Password"
-                                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
-                                            required
-                                        />
-                                        {passwordVisibility.oldPassword ? (
-                                            <Eye className='text-blue-600 cursor-pointer mr-2.5' onClick={() => togglePasswordVisibility("oldPassword")} />
-                                        ) : (
-                                            <EyeOff className="text-blue-600 cursor-pointer mr-2.5" onClick={() => togglePasswordVisibility("oldPassword")} />
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <span className='font-semibold text-nowrap'>New Password: </span>
-                                    <div className="flex items-center bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
-                                        <Input
-                                            type={passwordVisibility.newPassword ? "text" : "password"}
-                                            id="newPassword"
-                                            name="newPassword"
-                                            value={passwords.newPassword}
-                                            onChange={handlePasswordChange}
-                                            placeholder="New Password"
-                                            className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
-                                            required
-                                        />
-                                        {passwordVisibility.newPassword ? (
-                                            <Eye className='text-blue-600 cursor-pointer mr-2.5' onClick={() => togglePasswordVisibility("newPassword")} />
-                                        ) : (
-                                            <EyeOff className="text-blue-600 cursor-pointer mr-2.5" onClick={() => togglePasswordVisibility("newPassword")} />
-                                        )}
-                                    </div>
+                        <div className="flex flex-col lg:flex-row lg:items-center gap-5 w-full">
+                            <div className="flex items-center gap-2">
+                                <span className='font-semibold text-nowrap'>Old Password: </span>
+                                <div className="flex items-center bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
+                                    <Input
+                                        type={passwordVisibility.oldPassword ? "text" : "password"}
+                                        name="oldPassword"
+                                        value={passwords.oldPassword}
+                                        onChange={handlePasswordChange}
+                                        placeholder="Old Password"
+                                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                                        required
+                                    />
+                                    {passwordVisibility.oldPassword ? (
+                                        <Eye className='text-blue-600 cursor-pointer mr-2.5' onClick={() => togglePasswordVisibility("oldPassword")} />
+                                    ) : (
+                                        <EyeOff className="text-blue-600 cursor-pointer mr-2.5" onClick={() => togglePasswordVisibility("oldPassword")} />
+                                    )}
                                 </div>
                             </div>
 
-                            {successMessage.password && (
-                                <p className='text-green-600 font-semibold'>{successMessage.password}</p>
-                            )}
-                            {errorMessage.password && (
-                                <p className='text-red-600 font-semibold'>{errorMessage.password}</p>
-                            )}
-
-                            <div className='flex items-center gap-4'>
-                                <Button className="block bg-green-600 hover:bg-green-700 text-white cursor-pointer" onClick={submitNewPassword}>
-                                    Save New Password
-                                </Button>
-
-                                <Button className="bg-red-600 hover:bg-red-700 text-white cursor-pointer" onClick={() => setshowPasswordFields(false)}>
-                                    Cancel
-                                </Button>
+                            <div className="flex items-center gap-2">
+                                <span className='font-semibold text-nowrap'>New Password: </span>
+                                <div className="flex items-center bg-gray-100 dark:bg-gray-300 border border-gray-300 dark:border-gray-500 rounded-md focus-within:ring-2 focus-within:ring-blue-500">
+                                    <Input
+                                        type={passwordVisibility.newPassword ? "text" : "password"}
+                                        id="newPassword"
+                                        name="newPassword"
+                                        value={passwords.newPassword}
+                                        onChange={handlePasswordChange}
+                                        placeholder="New Password"
+                                        className="bg-gray-100 dark:bg-gray-300 dark:placeholder:text-gray-500 text-black border-none focus:ring-0 focus:outline-none focus-visible:ring-0"
+                                        required
+                                    />
+                                    {passwordVisibility.newPassword ? (
+                                        <Eye className='text-blue-600 cursor-pointer mr-2.5' onClick={() => togglePasswordVisibility("newPassword")} />
+                                    ) : (
+                                        <EyeOff className="text-blue-600 cursor-pointer mr-2.5" onClick={() => togglePasswordVisibility("newPassword")} />
+                                    )}
+                                </div>
                             </div>
-                        </>
+                        </div>
+                    )}
+
+                    {successMessage.password && (
+                        <p className='text-green-600 font-semibold'>{successMessage.password}</p>
+                    )}
+                    {errorMessage.password && (
+                        <p className='text-red-600 font-semibold'>{errorMessage.password}</p>
+                    )}
+
+                    {showPasswordFields && (
+                        <div className='flex items-center gap-4'>
+                            <Button className="block bg-green-600 hover:bg-green-700 text-white cursor-pointer" onClick={submitNewPassword}>
+                                Save New Password
+                            </Button>
+
+                            <Button className="bg-red-600 hover:bg-red-700 text-white cursor-pointer" onClick={() => setshowPasswordFields(false)}>
+                                Cancel
+                            </Button>
+                        </div>
                     )}
 
                     <div className="flex gap-10 mt-4 font-semibold">
-                        <span>Followers: {user.followers?.length ? user.followers?.length : 0}</span>
-                        <span>Following: {user.following?.length ? user.following?.length : 0}</span>
-                        <span>Account Created: {new Date(user.createdAt).toLocaleDateString()}</span>
+                        <span>Followers: {user?.followers?.length ? user?.followers?.length : 0}</span>
+                        <span>Following: {user?.following?.length ? user?.following?.length : 0}</span>
+                        <span>Account Created: {accountDate ? new Date(accountDate).toLocaleDateString() : "Unknown"}</span>
                     </div>
                 </section>
             </div >

@@ -7,17 +7,18 @@ import HomePageLinks from "./HomePageLinks"
 import useUserStore from "@/app/stores/userStore"
 import FeedSearchBar from "./FeedSearchBar"
 import ProfileIcon from "./ProfileIcon"
-import { Menu, Moon } from "lucide-react"
+import { House, Menu, Moon } from "lucide-react"
 import ThemeSwitcher from "../ThemeSwitcher"
 
 const Navbar = () => {
   const token = useUserStore(state => state.token);
+  const user = useUserStore(state => state.user);
   const toggleMenu = useUserStore(state => state.toggleMenu);
 
   return (
-    <div className="h-16 flex justify-between items-center px-6 py-3 border-b bg-gray-100 dark:bg-gray-900">
-      {/* Left Side - Logo */}
-      <Link href={token ? "/feed" : "/"} className="flex items-center relative h-10 w-[120px]">
+    <div className="h-16 flex justify-end lg:justify-between items-center gap-4 md:gap-0 px-6 py-3 border-b bg-gray-100 dark:bg-gray-900">
+      {/* Left Side - Logo (Desktop View) */}
+      <Link href={token ? "/feed" : "/"} className="hidden lg:flex items-center relative h-10 w-[120px]">
         <Image
           src="/logo.png"
           alt="LinkUp Logo"
@@ -27,12 +28,19 @@ const Navbar = () => {
         />
       </Link>
 
+      {/* Left Side - Home Icon (Tablet and Mobile View) */}
+      {token && (
+        <Link href="/feed" className="lg:hidden">
+          <House />
+        </Link>
+      )}
+
       {/* Right Side */}
       {token ? (
         <>
           <FeedSearchBar />
           <div className="flex gap-2 items-center">
-            <ProfileIcon />
+            <Link href={`/profile/${user?.username}`} className="hidden lg:block"><ProfileIcon /></Link>
             <Menu className="text-gray-500 dark:text-gray-300 cursor-pointer" onClick={toggleMenu} />
           </div>
         </>

@@ -9,10 +9,12 @@ const HomePageLinks = () => {
     const pathname = usePathname();
     const isAbout = pathname === "/about";
     const isHelp = pathname === "/help";
+    const isLogin = pathname === "/auth/login";
+    const isSignup = pathname === "/auth/signup";
 
     return (
         <div className="flex items-center lg:gap-8 gap-4 lg:mr-5 mr-2">
-            {(isAbout || isHelp) && (
+            {(isAbout || isHelp || isLogin || isSignup) && (
                 <Link
                     href="/"
                     className="font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-500  hover:underline hover:underline-offset-4 transition"

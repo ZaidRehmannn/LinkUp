@@ -7,6 +7,7 @@ import { Settings, Moon, LogOut } from 'lucide-react'
 import Loader from '../loader/Loader'
 import ThemeSwitcher from '../ThemeSwitcher'
 import Link from 'next/link'
+import ProfileIcon from './ProfileIcon'
 
 const Menu = () => {
     const openMenu = useUserStore(state => state.openMenu);
@@ -27,6 +28,11 @@ const Menu = () => {
                     >
                         <div className="p-4">
                             <ul className="space-y-4">
+                                {/* Only for Mobile and Tablets */}
+                                <li className='mb-7 lg:hidden lg:mb-0'>
+                                    <ProfileIcon />
+                                </li>
+
                                 <li className="dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-500 cursor-pointer w-fit" onClick={toggleMenu}>
                                     <Link href='/profileSettings' className='flex items-center gap-2'>
                                         <Settings size={18} />

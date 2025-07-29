@@ -72,8 +72,7 @@ const updateUser = async (req, res) => {
                 username: updatedUser.username,
                 email: updatedUser.email,
                 bio: updatedUser.bio,
-                profilePic: updatedUser.profilePic,
-                email: updatedUser.email,
+                profilePic: updatedUser.profilePic
             },
         });
     } catch (error) {
@@ -97,7 +96,19 @@ const uploadPicture = async (req, res) => {
         user.profilePic = profilePic;
 
         await user.save();
-        res.status(200).json({ success: true, message: "Profile Picture Updated!" });
+        res.status(200).json({
+            success: true,
+            message: "Profile Picture Updated!",
+            user: {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                email: user.email,
+                bio: user.bio,
+                profilePic: user.profilePic
+            },
+        });
     } catch (error) {
         console.error("Upload profile picture error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
@@ -116,7 +127,19 @@ const removeProfilePic = async (req, res) => {
             await user.save();
         }
 
-        res.status(200).json({ success: true, message: "Profile picture removed!" });
+        res.status(200).json({
+            success: true,
+            message: "Profile picture removed!",
+            user: {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                email: user.email,
+                bio: user.bio,
+                profilePic: user.profilePic
+            },
+        });
     } catch (error) {
         console.error("Remove profile picture error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
@@ -160,4 +183,25 @@ const changePassword = async (req, res) => {
     }
 };
 
-export { updateUser, removeProfilePic, changePassword, userInfo, uploadPicture };
+// get user profile details by fetching using username
+const fetchUserProfile = async (req, res) => {
+    const { username } = req.query;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: "Username is required!" });
+    }
+
+    try {
+        const user = await userModel.findOne({ username }).select('-password');
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found!" });
+        }
+
+        return res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error("Profile fetch error:", error);
+        return res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+};
+
+export { updateUser, removeProfilePic, changePassword, userInfo, uploadPicture, fetchUserProfile };
