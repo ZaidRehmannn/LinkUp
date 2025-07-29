@@ -185,7 +185,7 @@ const changePassword = async (req, res) => {
 
 // get user profile details by fetching using username
 const fetchUserProfile = async (req, res) => {
-    const { username } = req.query;
+    const { username } = req.params;
 
     if (!username) {
         return res.status(400).json({ success: false, message: "Username is required!" });

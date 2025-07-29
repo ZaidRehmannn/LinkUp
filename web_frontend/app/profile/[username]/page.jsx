@@ -5,26 +5,42 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import axios from '@/lib/axios'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { UserCircle } from 'lucide-react'
+import useUserStore from '@/app/stores/userStore'
+import Image from 'next/image'
+import About from '@/components/profile/About'
+import Followers from '@/components/profile/Followers'
+import Following from '@/components/profile/Following'
+import Posts from '@/components/profile/Posts'
 
 const page = () => {
-    const { username } = useParams()
-    const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const params = useParams()
+    const username = params?.username
+    const [user, setuser] = useState(null)
+    const [loading, setloading] = useState(true)
+    const token = useUserStore(state => state.token)
 
     useEffect(() => {
+        if (!username || !token) return;
+
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`/api/profile/${username}`);
-                setUser(response.data.user)
-            } catch (err) {
-                console.error('Failed to load profile:', err)
+                const response = await axios.get(`/api/profile/${username}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+                setuser(response.data.user);
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+                setuser(null);
             } finally {
-                setLoading(false)
+                setloading(false);
             }
-        }
+        };
 
-        fetchUser()
-    }, [username])
+        fetchUser();
+    }, [username, token]);
 
     if (loading) {
         return (
@@ -37,7 +53,7 @@ const page = () => {
     if (!user) {
         return (
             <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
-                <p className="text-red-600 font-bold text-xl">User not found</p>
+                <p className="text-red-600 font-bold text-xl">User not found!</p>
             </main>
         )
     }
@@ -45,42 +61,47 @@ const page = () => {
     return (
         <main className="max-w-4xl mx-auto px-4 py-6">
             {/* Header */}
-            <section className="flex items-center gap-6">
-                <img
-                    src={user.profilePic || '/default-avatar.png'}
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full object-cover border-2 border-blue-600"
-                />
+            <section className="flex items-center justify-center md:justify-start gap-4 lg:gap-6">
+                {/* Profile Picture */}
+                <div className='w-44 h-44 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden'>
+                    {user.profilePic ? (
+                        <Image src={user.profilePic} alt="Profile" width={176} height={176} />
+                    ) : (
+                        <UserCircle className="text-gray-500 w-40 h-40" />
+                    )}
+                </div>
+
+                {/* Name and Username */}
                 <div>
-                    <h1 className="text-2xl font-bold text-blue-600">{user.firstName} {user.lastName}</h1>
-                    <p className="text-gray-600">@{user.username}</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-blue-600">{user.firstName} {user.lastName}</h1>
+                    <p className="text-gray-600 dark:text-gray-300">@{user.username}</p>
                 </div>
             </section>
 
             {/* Tabs */}
             <section className="mt-8">
-                <Tabs defaultValue="about" className="w-full">
-                    <TabsList className="gap-4">
-                        <TabsTrigger value="about">About</TabsTrigger>
-                        <TabsTrigger value="posts">Posts</TabsTrigger>
-                        <TabsTrigger value="followers">Followers</TabsTrigger>
-                        <TabsTrigger value="following">Following</TabsTrigger>
+                <Tabs defaultValue="about" className="w-full flex justify-center items-center md:block">
+                    <TabsList className="gap-6">
+                        <TabsTrigger value="about" className="cursor-pointer">About</TabsTrigger>
+                        <TabsTrigger value="posts" className="cursor-pointer">Posts</TabsTrigger>
+                        <TabsTrigger value="followers" className="cursor-pointer">Followers</TabsTrigger>
+                        <TabsTrigger value="following" className="cursor-pointer">Following</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="about" className="mt-6">
-                        <p className="text-gray-700 whitespace-pre-line">{user.bio || "No bio yet."}</p>
+                        <About user={user} />
                     </TabsContent>
 
                     <TabsContent value="posts" className="mt-6">
-                        <p>All posts will go here...</p>
+                        <Posts />
                     </TabsContent>
 
                     <TabsContent value="followers" className="mt-6">
-                        <p>List of followers will go here...</p>
+                        <Followers />
                     </TabsContent>
 
                     <TabsContent value="following" className="mt-6">
-                        <p>List of following will go here...</p>
+                        <Following />
                     </TabsContent>
                 </Tabs>
             </section>
