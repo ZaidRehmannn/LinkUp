@@ -1,36 +1,31 @@
 'use client'
 
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import axios from '@/lib/axios'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { UserCircle } from 'lucide-react'
-import useUserStore from '@/stores/userStore'
 import Image from 'next/image'
 import About from '@/components/profile/About'
 import Followers from '@/components/profile/Followers'
 import Following from '@/components/profile/Following'
 import Posts from '@/components/profile/Posts'
+import { profileService } from '@/services/profileService'
+import useUserStore from '@/stores/userStore'
 
 const page = () => {
     const params = useParams()
     const username = params?.username
-    const [user, setuser] = useState(null)
-    const [loading, setloading] = useState(true)
-    const token = useUserStore(state => state.token)
+    const [user, setuser] = useState(null);
+    const [loading, setloading] = useState(true);
+    const token = useUserStore(state => state.token);
 
     useEffect(() => {
         if (!username || !token) return;
 
-        const fetchUser = async () => {
+        const getUserDetails = async () => {
             try {
-                const response = await axios.get(`/api/profile/${username}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
-                setuser(response.data.user);
+                const result = await profileService.fetchDetails(username, token);
+                setuser(result.user);
             } catch (error) {
                 console.error('Failed to load profile:', error);
                 setuser(null);
@@ -39,7 +34,7 @@ const page = () => {
             }
         };
 
-        fetchUser();
+        getUserDetails();
     }, [username, token]);
 
     if (loading) {
@@ -97,11 +92,11 @@ const page = () => {
                     </TabsContent>
 
                     <TabsContent value="followers" className="mt-6">
-                        <Followers />
+                        <Followers username={username} />
                     </TabsContent>
 
                     <TabsContent value="following" className="mt-6">
-                        <Following />
+                        <Following username={username} />
                     </TabsContent>
                 </Tabs>
             </section>

@@ -192,7 +192,7 @@ const fetchUserProfile = async (req, res) => {
     }
 
     try {
-        const user = await userModel.findOne({ username }).select('-password');
+        const user = await userModel.findOne({ username }).select('-password -followers -following');
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found!" });
         }

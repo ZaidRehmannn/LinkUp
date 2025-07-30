@@ -34,7 +34,7 @@ const getFollowers = async (req, res) => {
     }
 
     try {
-        const user = await userModel.findOne({ username }).populate("followers", "username profilePic");
+        const user = await userModel.findOne({ username }).populate("followers", "firstName lastName username profilePic");
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found!" });
@@ -56,7 +56,7 @@ const getFollowing = async (req, res) => {
     }
 
     try {
-        const user = await userModel.findOne({ username }).populate("following", "username profilePic");
+        const user = await userModel.findOne({ username }).populate("following", "firstName lastName username profilePic");
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found!" });

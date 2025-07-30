@@ -1,11 +1,8 @@
+import { useProfileForm } from '@/hooks/useProfileSettings'
 import React from 'react'
 
 const About = ({ user }) => {
-    const formattedDate = new Date(user.createdAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    })
+    const { formatAccountDate } = useProfileForm();
 
     return (
         <main className="space-y-4 text-gray-800 w-full max-w-xl">
@@ -35,8 +32,8 @@ const About = ({ user }) => {
             </div>
 
             <div className="text-sm">
-                <span className='text-blue-600 font-semibold'>Joined on: </span> 
-                <span className="font-medium text-gray-700 dark:text-gray-300">{formattedDate}</span>
+                <span className='text-blue-600 font-semibold'>Joined on: </span>
+                <span className="font-medium text-gray-700 dark:text-gray-300">{formatAccountDate(user.createdAt)}</span>
             </div>
         </main>
     )
