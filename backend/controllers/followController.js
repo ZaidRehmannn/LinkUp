@@ -27,10 +27,14 @@ const followUnfollowUser = async (req, res) => {
 
 // get followers of own or any other user
 const getFollowers = async (req, res) => {
-    const userId = req.query.id || req.userId;
+    const { username } = req.params;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: "Username is required!" });
+    }
 
     try {
-        const user = await userModel.findById(userId).populate("followers", "username profilePic");
+        const user = await userModel.findOne({ username }).populate("followers", "username profilePic");
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found!" });
@@ -45,10 +49,14 @@ const getFollowers = async (req, res) => {
 
 // get following of own or any other user
 const getFollowing = async (req, res) => {
-    const userId = req.query.id || req.userId;
+    const { username } = req.params;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: "Username is required!" });
+    }
 
     try {
-        const user = await userModel.findById(userId).populate("following", "username profilePic");
+        const user = await userModel.findOne({ username }).populate("following", "username profilePic");
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found!" });

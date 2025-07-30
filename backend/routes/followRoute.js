@@ -5,9 +5,7 @@ import { followUnfollowUser, getFollowers, getFollowing } from '../controllers/f
 const followRouter = express.Router();
 
 followRouter.put("/follow/:id", authMiddleware, followUnfollowUser);
-// followRouter.get("/followers/:id?", authMiddleware, getFollowers);
-// followRouter.get("/following/:id?", authMiddleware, getFollowing);
-followRouter.get("/followers", authMiddleware, getFollowers);
-followRouter.get("/following", authMiddleware, getFollowing);
+followRouter.get("/followers/:username", authMiddleware, getFollowers);
+followRouter.get("/following/:username", authMiddleware, getFollowing);
 
 export default followRouter;

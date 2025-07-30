@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import useUserStore from '@/app/stores/userStore'
+import useUserStore from '@/stores/userStore'
 import { Settings, Moon, LogOut } from 'lucide-react'
 import Loader from '../loader/Loader'
 import ThemeSwitcher from '../ThemeSwitcher'

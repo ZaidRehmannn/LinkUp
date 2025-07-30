@@ -7,7 +7,7 @@ import axios from '@/lib/axios.js'
 import Link from 'next/link'
 import { EyeOff, Eye } from 'lucide-react'
 import Loader from '@/components/loader/Loader'
-import useUserStore from '@/app/stores/userStore'
+import useUserStore from '@/stores/userStore'
 
 const page = () => {
     const [form, setform] = useState({

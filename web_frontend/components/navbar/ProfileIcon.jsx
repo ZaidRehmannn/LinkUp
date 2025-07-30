@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { UserCircle } from 'lucide-react'
-import useUserStore from '@/app/stores/userStore'
+import useUserStore from '@/stores/userStore'
 import Image from 'next/image'
 
 const ProfileIcon = () => {

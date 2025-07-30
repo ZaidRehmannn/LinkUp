@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import './Loader.css';
 import { useRouter } from 'next/navigation';
-import useUserStore from '@/app/stores/userStore';
+import useUserStore from '@/stores/userStore';
 
 const Loader = ({ title, path, logoutSuccess = false }) => {
     const [isComplete, setIsComplete] = useState(false);

@@ -1,6 +1,6 @@
 'use client'
 
-import useUserStore from '@/app/stores/userStore'
+import useUserStore from '@/stores/userStore'
 import React, { useEffect } from 'react'
 import axios from '@/lib/axios'
 
