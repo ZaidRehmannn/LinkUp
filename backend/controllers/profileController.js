@@ -6,7 +6,7 @@ import cloudinary from "../config/cloudinary.js";
 const userInfo = async (req, res) => {
     const userId = req.userId;
     try {
-        const user = await userModel.findById(userId);
+        const user = await userModel.findById(userId).select('-password');
 
         res.status(200).json({
             success: true,

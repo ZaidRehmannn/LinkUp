@@ -26,5 +26,23 @@ export const profileService = {
             }
         });
         return response.data;
+    },
+
+    async followUser(userId, token) {
+        const response = await axios.put(`/api/follow/${userId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return response.data;
+    },
+
+    async followStatus(userId, token) {
+        const response = await axios.get(`/api/follow/is-following/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        return response.data;
     }
 };

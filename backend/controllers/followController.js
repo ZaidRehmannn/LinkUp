@@ -3,24 +3,47 @@ import userModel from "../models/userModel.js";
 // follow or unfollow a user
 const followUnfollowUser = async (req, res) => {
     const userId = req.userId;
-    const targetId = req.params.id;
+    const { id: targetId } = req.params;
 
     try {
-        const user = await userModel.findById(userId);
+        const user = await userModel.findById(userId).select('following');
+        const targetUser = await userModel.findById(targetId).select('followers');
 
-        if (user.following.includes(targetId)) {
-            // unfollow the user
-            user.following = user.following.filter((id) => id !== targetId);
-            await user.save();
-            res.status(200).json({ success: true, message: "User Unfollowed!" });
+        const isFollowing = user.following.some(id => id.toString() === targetId.toString());
+
+        if (isFollowing) {
+            // Unfollow
+            user.following = user.following.filter(id => id.toString() !== targetId.toString());
+            targetUser.followers = targetUser.followers.filter(id => id.toString() !== user._id.toString());
         } else {
-            // follow the user
+            // Follow
             user.following.push(targetId);
-            await user.save();
-            res.status(200).json({ success: true, message: "User Followed!" });
+            targetUser.followers.push(user._id);
         }
+
+        await user.save();
+        await targetUser.save();
+
+        res.status(200).json({ success: true, message: isFollowing ? "User Unfollowed!" : "User Followed!" });
     } catch (error) {
         console.error("Follow/Unfollow error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+};
+
+// get follow status (whether you are following the user or not)
+const getFollowStatus = async (req, res) => {
+    const userId = req.userId;
+    const { id: targetId } = req.params;
+
+    try {
+        const user = await userModel.findById(userId).select('following');
+
+        const isFollowing = user.following.some(id => id.toString() === targetId.toString());
+
+        res.status(200).json({ success: true, status: isFollowing });
+    } catch (error) {
+        console.error("Follow Status error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };
@@ -69,4 +92,4 @@ const getFollowing = async (req, res) => {
     }
 };
 
-export { followUnfollowUser, getFollowers, getFollowing };
+export { followUnfollowUser, getFollowers, getFollowing, getFollowStatus };
