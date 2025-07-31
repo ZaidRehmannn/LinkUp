@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "LinkUp",
   description: "Connect with people, share moments, and grow your social circle — all in one place with LinkUp.",
+  icons: {
+    icon: "/favicon.ico"
+  }
 }
 
 export default function RootLayout({ children }) {
