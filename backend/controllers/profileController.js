@@ -2,7 +2,7 @@ import userModel from "../models/userModel.js";
 import bcrypt from 'bcrypt';
 import cloudinary from "../config/cloudinary.js";
 
-// get user info (for zustand on page reloads)
+// get user own info (for zustand on page reloads)
 const userInfo = async (req, res) => {
     const userId = req.userId;
     try {
