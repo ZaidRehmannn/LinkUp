@@ -15,7 +15,10 @@ export const useProfileForm = () => {
         username: "",
         email: "",
         bio: "",
-        image: null
+        image: null,
+        followers: null,
+        following: null,
+        createdAt: null
     });
 
     const [successMessageDetails, setSuccessMessageDetails] = useState(null);
@@ -46,15 +49,17 @@ export const useProfileForm = () => {
             lastName: user?.lastName || "",
             username: user?.username || "",
             email: user?.email || "",
-            bio: user?.bio ?? "",
+            bio: user?.bio ?? "No Bio Added",
             image: user?.profilePic ?? null,
+            followers: user?.followers,
+            following: user?.following,
+            createdAt: user?.createdAt
         });
 
         setIsUserReady(true);
     }, [user]);
 
     return {
-        user,
         token,
         setUser,
         isUserReady,

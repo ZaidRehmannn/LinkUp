@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 
 const ProfileDetailsSection = ({
-    user,
     form,
     isEditing,
     setIsEditing,
@@ -87,7 +86,7 @@ const ProfileDetailsSection = ({
             <div className="flex flex-col gap-1 w-full">
                 <span className='font-semibold'>Bio: </span>
                 {!isEditing ? (
-                    <span>{user?.bio?.trim() ? user.bio : "No Bio Added"}</span>
+                    <span>{form.bio}</span>
                 ) : (
                     <Textarea
                         name="bio"
@@ -122,9 +121,9 @@ const ProfileDetailsSection = ({
             )}
 
             <div className="flex gap-10 mt-4 font-semibold">
-                <span>Followers: {user?.followers?.length ? user?.followers?.length : 0}</span>
-                <span>Following: {user?.following?.length ? user?.following?.length : 0}</span>
-                <span>Account Created: {formatAccountDate(user?.createdAt)}</span>
+                <span>Followers: {form.followers}</span>
+                <span>Following: {form.following}</span>
+                <span>Account Created: {formatAccountDate(form.createdAt)}</span>
             </div>
         </section>
     )

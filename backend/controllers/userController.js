@@ -34,6 +34,10 @@ const loginUser = async (req, res) => {
                 username: user.username,
                 email: user.email,
                 profilePic: user.profilePic,
+                bio: user.bio,
+                followers: user.followers.length,
+                following: user.following.length,
+                createdAt: user.createdAt.toISOString()
             },
         });
     } catch (error) {

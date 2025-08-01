@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 
 const ProfilePictureSection = ({
-    user,
     form,
     picturePreview,
     setPicturePreview,
@@ -49,7 +48,7 @@ const ProfilePictureSection = ({
                         Cancel
                     </Button>
                 </div>
-            ) : user?.profilePic ? (
+            ) : form.image ? (
                 <div className="flex flex-col gap-2">
                     <label htmlFor="change-profile-picture" className='bg-blue-600 hover:bg-blue-700 cursor-pointer text-white px-5 py-2 rounded-lg'>
                         Change Picture

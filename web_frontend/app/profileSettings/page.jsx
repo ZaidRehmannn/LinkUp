@@ -9,7 +9,6 @@ import PasswordSection from '@/components/profileSettings/PasswordSection'
 
 const Page = () => {
     const {
-        user,
         token,
         setUser,
         isUserReady,
@@ -184,7 +183,6 @@ const Page = () => {
 
             <div className="flex flex-col lg:flex-row gap-14">
                 <ProfilePictureSection
-                    user={user}
                     form={form}
                     setForm={setForm}
                     picturePreview={picturePreview}
@@ -198,7 +196,6 @@ const Page = () => {
 
                 <div className="flex-1 space-y-6">
                     <ProfileDetailsSection
-                        user={user}
                         form={form}
                         isEditing={isEditing}
                         setIsEditing={setIsEditing}

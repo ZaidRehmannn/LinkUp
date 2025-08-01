@@ -19,6 +19,8 @@ const userInfo = async (req, res) => {
                 bio: user.bio,
                 profilePic: user.profilePic,
                 email: user.email,
+                followers: user.followers.length,
+                following: user.following.length,
                 createdAt: user.createdAt.toISOString(),
             },
         });
