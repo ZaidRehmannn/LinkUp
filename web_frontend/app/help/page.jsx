@@ -3,7 +3,7 @@ import { LockIcon, PencilIcon, UsersIcon, SmartphoneIcon } from "lucide-react";
 
 const page = () => {
   return (
-    <main className="px-6 md:px-20 py-10 max-w-7xl mx-auto">
+    <main className="px-6 md:px-20 py-10 pt-28 max-w-7xl mx-auto">
       <h1 className="text-4xl font-bold text-blue-600 mb-5">Help & Support</h1>
 
       <section className="mb-5">

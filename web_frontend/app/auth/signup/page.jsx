@@ -71,7 +71,7 @@ const page = () => {
     };
 
     return (
-        <main className="flex items-center justify-center px-4 py-8">
+        <main className="flex items-center justify-center px-4 py-24">
             <form onSubmit={handleSubmit} className="dark:bg-gray-900 w-full max-w-md space-y-4 shadow-xl rounded-2xl p-6 border">
                 <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-500">Create Account</h2>
 

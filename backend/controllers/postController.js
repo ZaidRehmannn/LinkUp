@@ -3,12 +3,16 @@ import userModel from "../models/userModel.js";
 
 // create a new post
 const createPost = async (req, res) => {
-    const { text } = req.body;
     const userId = req.userId;
+    let content = "";
     let image = "";
     let video = "";
 
     try {
+        if (req.body.content) {
+            content = req.body.content;
+        }
+
         if (req.file && req.file.mimetype.startsWith("image")) {
             image = req.file.path;
         } else if (req.file && req.file.mimetype.startsWith("video")) {
@@ -17,13 +21,13 @@ const createPost = async (req, res) => {
 
         const newPost = new postModel({
             user: userId,
-            text,
+            caption: content,
             video,
             image,
         });
 
         await newPost.save();
-        res.status(201).json({ success: true, message: "Post created!", post: newPost })
+        res.status(201).json({ success: true, message: "Posted Successfully!", post: newPost })
     } catch (error) {
         console.error("Create post error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });

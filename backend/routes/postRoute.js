@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
   params: {
     folder: "LinkUp-Posts",
     resource_type: "auto",
-    allowedFormats: ["jpg", "png", "jpeg", "mp4", "mov"],
+    allowedFormats: ["jpg", "png", "jpeg", "mp4"],
   },
 });
 

@@ -73,7 +73,7 @@ const page = () => {
 
     if (loading) {
         return (
-            <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
+            <main className="min-h-[calc(100vh-8rem)] pt-28 flex justify-center items-center">
                 <p className="text-blue-600 font-bold text-xl">Loading profile...</p>
             </main>
         )
@@ -81,14 +81,14 @@ const page = () => {
 
     if (!profileUser) {
         return (
-            <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
+            <main className="min-h-[calc(100vh-8rem)] pt-28 flex justify-center items-center">
                 <p className="text-red-600 font-bold text-xl">User not found!</p>
             </main>
         )
     }
 
     return (
-        <main className="max-w-4xl mx-auto px-4 py-6">
+        <main className="max-w-4xl mx-auto px-4 pt-24 py-6">
             {/* Header */}
             <section className="flex items-center justify-center md:justify-start gap-4 lg:gap-6">
                 {/* Profile Picture */}

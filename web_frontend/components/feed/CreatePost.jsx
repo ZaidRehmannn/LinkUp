@@ -1,53 +1,59 @@
-'use client'
-
-import React, { useState } from 'react'
+import React from 'react'
 import Image from 'next/image';
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button';
-import { Image as ImageIcon, Pencil, UserCircle, Video } from 'lucide-react';
-import useUserStore from '@/stores/userStore';
+import { Image as ImageIcon, Pencil, UserCircle, Video, X } from 'lucide-react';
+import { useCreatePost } from '@/hooks/usePost';
+import { postService } from '@/services/postService';
 
 const CreatePost = () => {
-    const user = useUserStore(state => state.user);
-    const [content, setcontent] = useState("");
-    const [preview, setpreview] = useState(null);
-    const [media, setmedia] = useState({
-        image: null,
-        video: null
-    });
-    const [loading, setloading] = useState(false);
-
-    const handleMediaChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const fileType = file.type;
-
-            if (fileType.startsWith("image/")) {
-                setmedia({ ...media, image: file })
-
-                const reader = new FileReader();
-                reader.onload = () => {
-                    setpreview(reader.result);
-                };
-                reader.readAsDataURL(file);
-            } else if (fileType.startsWith("video/")) {
-                setmedia({ ...media, video: file })
-
-                const videoURL = URL.createObjectURL(file);
-                setpreview(videoURL);
-            }
-        }
-    };
+    const {
+        user,
+        token,
+        content,
+        setcontent,
+        preview,
+        setpreview,
+        media,
+        setmedia,
+        loading,
+        setloading,
+        handleMediaChange,
+        successMessage,
+        setsuccessMessage,
+        errorMessage,
+        seterrorMessage
+    } = useCreatePost();
 
     const handleSubmit = async () => {
-        if (!content.trim() && !media.image && !media.video) return
+        setsuccessMessage("");
+        seterrorMessage("");
+        let mediaFile = "";
 
         try {
             setloading(true);
 
+            if (media.image) {
+                mediaFile = media.image;
+            } else {
+                mediaFile = media.video;
+            }
 
+            const result = await postService.createPost(content, mediaFile, token);
+            if (result.success) {
+                setsuccessMessage(result.message);
+                setcontent("");
+                setpreview(null);
+                setmedia({
+                    image: null,
+                    video: null
+                })
+            } else {
+                seterrorMessage("Failed to Post!")
+            }
         } catch (error) {
             console.error("Create Post Error: ", error);
+            seterrorMessage(error.message);
         } finally {
             setloading(false);
         }
@@ -73,7 +79,7 @@ const CreatePost = () => {
                 </div>
 
                 <Textarea
-                    placeholder={`What's on your mind, ${user?.firstName}?`}
+                    placeholder={media.image || media.video ? "Add a caption..." : `What's on your mind, ${user?.firstName}?`}
                     value={content}
                     onChange={(e) => setcontent(e.target.value)}
                     className="resize-none border-none shadow-none p-5 pl-16 pb-9 w-full min-h-min outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none"
@@ -81,41 +87,84 @@ const CreatePost = () => {
 
                 {preview && (
                     media.image ? (
-                        <div className="mt-2">
+                        <div className="mb-3 flex items-center justify-center">
                             <Image
                                 src={preview}
                                 alt="Preview"
-                                width={200}
-                                height={200}
-                                className="rounded-md"
+                                width={180}
+                                height={180}
                             />
                         </div>
-                    ) : media.video ? (
-                        <div className="mt-2">
-                            <video width="200" controls className="rounded-md">
+                    ) : (
+                        <div className="mb-3 flex items-center justify-center">
+                            <video width="220" controls>
                                 <source src={preview} type="video/mp4" />
                             </video>
                         </div>
-                    ) : null
+                    )
                 )}
-
             </div>
 
-            {/* Buttons for Post */}
+            {/* Buttons for adding image/video and post */}
             <div className='flex justify-between mx-3 py-2'>
-                <span className='flex items-center justify-center gap-2'>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs cursor-pointer flex gap-1">
-                        <ImageIcon /> Upload Image
-                    </Button>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs cursor-pointer flex gap-1">
-                        <Video /> Add Video
-                    </Button>
-                </span>
 
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs cursor-pointer flex gap-1" onClick={handleSubmit} disabled={loading || (!content.trim() && !media)}>
+                {/* Cancel button */}
+                {preview ? (
+                    <Button size="sm" className="bg-red-600 hover:bg-red-700 text-xs cursor-pointer flex gap-1" onClick={() => {
+                        setpreview(null)
+                        setmedia({
+                            image: null,
+                            video: null
+                        })
+                    }}>
+                        <X /> Cancel
+                    </Button>
+                ) : (
+                    <div className='flex items-center justify-center gap-2'>
+                        {/* Upload image button */}
+                        <div>
+                            <label htmlFor="post-image" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
+                                <ImageIcon size={16} />
+                                <span>Upload Image</span>
+                            </label>
+                            <input
+                                id="post-image"
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => handleMediaChange(e)}
+                            />
+                        </div>
+
+                        {/* Add video button */}
+                        <div>
+                            <label htmlFor="post-video" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
+                                <Video size={16} />
+                                <span>Add Video</span>
+                            </label>
+                            <input
+                                id="post-video"
+                                type="file"
+                                accept="video/*"
+                                className="hidden"
+                                onChange={(e) => handleMediaChange(e)}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Post button */}
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs cursor-pointer flex gap-1" onClick={handleSubmit} disabled={loading || (!content.trim() && !media.image && !media.video)}>
                     <Pencil /> {loading ? "Posting..." : "Post"}
                 </Button>
             </div>
+
+            {successMessage && (
+                <p className='text-green-600 font-semibold'>{successMessage}</p>
+            )}
+            {errorMessage && (
+                <p className='text-red-600 font-semibold'>{errorMessage}</p>
+            )}
         </div>
     )
 }
