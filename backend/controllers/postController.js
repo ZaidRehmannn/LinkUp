@@ -39,12 +39,12 @@ const fetchAllPosts = async (req, res) => {
     const userId = req.userId;
 
     try {
-        const userPosts = await postModel.find({ user: userId }).populate("user", "username profilePic");
+        const userPosts = await postModel.find({ user: userId }).populate("user", "firstName lastName profilePic");
 
-        const user = await userModel.findById(userId);
+        const user = await userModel.findById(userId).select('following');
         const followingPostsArray = await Promise.all(
             user.following.map((followingUserId) => {
-                return postModel.find({ user: followingUserId }).populate("user", "username profilePic");
+                return postModel.find({ user: followingUserId }).populate("user", "firstName lastName profilePic");
             })
         );
 

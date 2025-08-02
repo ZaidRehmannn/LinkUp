@@ -68,3 +68,17 @@ export const useCreatePost = () => {
         seterrorMessage
     }
 };
+
+export const usefetchPost = () => {
+    const token = useUserStore(state => state.token);
+    const [posts, setposts] = useState([]);
+    const [loading, setloading] = useState(false);
+
+    return {
+        token,
+        posts,
+        setposts,
+        loading,
+        setloading
+    }
+};

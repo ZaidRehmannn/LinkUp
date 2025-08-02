@@ -2,8 +2,8 @@
 
 import React from 'react'
 import Image from 'next/image';
-import { Textarea } from '../ui/textarea'
-import { Button } from '../ui/button';
+import { Textarea } from '../../ui/textarea'
+import { Button } from '../../ui/button';
 import { Image as ImageIcon, Pencil, UserCircle, Video, X } from 'lucide-react';
 import { useCreatePost } from '@/hooks/usePost';
 import { postService } from '@/services/postService';
@@ -82,17 +82,17 @@ const CreatePost = () => {
 
                 {preview && (
                     media.image ? (
-                        <div className="mb-3 flex items-center justify-center">
+                        <div className="w-full h-80 relative overflow-hidden mb-3">
                             <Image
                                 src={preview}
                                 alt="Preview"
-                                width={180}
-                                height={180}
+                                fill
+                                className="object-cover"
                             />
                         </div>
                     ) : (
-                        <div className="mb-3 flex items-center justify-center">
-                            <video width="220" controls>
+                        <div className="w-full h-80 relative overflow-hidden mb-3">
+                            <video className='object-cover' controls>
                                 <source src={preview} type="video/mp4" />
                             </video>
                         </div>

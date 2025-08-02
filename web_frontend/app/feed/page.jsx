@@ -1,6 +1,6 @@
-import CreatePost from '@/components/feed/CreatePost'
+import CreatePost from '@/components/feed/post/CreatePost'
 import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers'
-import PostList from '@/components/feed/PostList'
+import PostList from '@/components/feed/post/PostList'
 import ChatList from '@/components/feed/rightSidebar/ChatList'
 import React from 'react'
 
@@ -16,7 +16,7 @@ const page = () => {
 
       {/* Feed */}
       <section className="col-span-1 lg:col-span-6">
-        <div className="h-full overflow-y-auto rounded-2xl p-4 bg-gray-100 dark:bg-gray-900 shadow-md">
+        <div className="flex flex-col gap-3 h-full overflow-y-auto rounded-2xl p-4 bg-gray-100 dark:bg-gray-900 shadow-md">
           <CreatePost />
           <PostList />
         </div>

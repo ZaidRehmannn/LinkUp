@@ -13,5 +13,14 @@ export const postService = {
             }
         });
         return response.data;
+    },
+
+    async fetchPosts(token) {
+        const response = await axios.get('/api/post/fetchAll', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
     }
 };
