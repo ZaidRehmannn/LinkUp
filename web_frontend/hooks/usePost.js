@@ -4,7 +4,7 @@ import useUserStore from '../stores/userStore'
 export const useCreatePost = () => {
     const user = useUserStore(state => state.user);
     const token = useUserStore(state => state.token);
-    const [content, setcontent] = useState(null);
+    const [content, setcontent] = useState("");
     const [preview, setpreview] = useState(null);
     const [media, setmedia] = useState({
         image: null,
@@ -36,6 +36,20 @@ export const useCreatePost = () => {
         }
     };
 
+    const showSuccessMessage = (message) => {
+        setsuccessMessage(message);
+
+        setTimeout(() => {
+            setsuccessMessage("");
+            setcontent("");
+            setpreview(null);
+            setmedia({
+                image: null,
+                video: null
+            })
+        }, 3000);
+    };
+
     return {
         user,
         token,
@@ -49,7 +63,7 @@ export const useCreatePost = () => {
         setloading,
         handleMediaChange,
         successMessage,
-        setsuccessMessage,
+        showSuccessMessage,
         errorMessage,
         seterrorMessage
     }

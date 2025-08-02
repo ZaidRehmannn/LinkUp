@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image';
 import { Textarea } from '../ui/textarea'
@@ -20,13 +22,12 @@ const CreatePost = () => {
         setloading,
         handleMediaChange,
         successMessage,
-        setsuccessMessage,
+        showSuccessMessage,
         errorMessage,
         seterrorMessage
     } = useCreatePost();
 
     const handleSubmit = async () => {
-        setsuccessMessage("");
         seterrorMessage("");
         let mediaFile = "";
 
@@ -35,19 +36,13 @@ const CreatePost = () => {
 
             if (media.image) {
                 mediaFile = media.image;
-            } else {
+            } else if (media.video) {
                 mediaFile = media.video;
             }
 
             const result = await postService.createPost(content, mediaFile, token);
             if (result.success) {
-                setsuccessMessage(result.message);
-                setcontent("");
-                setpreview(null);
-                setmedia({
-                    image: null,
-                    video: null
-                })
+                showSuccessMessage(result.message);
             } else {
                 seterrorMessage("Failed to Post!")
             }
@@ -105,18 +100,30 @@ const CreatePost = () => {
                 )}
             </div>
 
+            {successMessage && (
+                <span className='text-green-600 font-semibold text-sm ml-3 mt-2'>{successMessage}</span>
+            )}
+            {errorMessage && (
+                <span className='text-red-600 font-semibold text-sm ml-3 mt-2'>{errorMessage}</span>
+            )}
+
             {/* Buttons for adding image/video and post */}
             <div className='flex justify-between mx-3 py-2'>
 
                 {/* Cancel button */}
                 {preview ? (
-                    <Button size="sm" className="bg-red-600 hover:bg-red-700 text-xs cursor-pointer flex gap-1" onClick={() => {
-                        setpreview(null)
-                        setmedia({
-                            image: null,
-                            video: null
-                        })
-                    }}>
+                    <Button
+                        size="sm"
+                        className="bg-red-600 hover:bg-red-700 text-xs cursor-pointer flex gap-1"
+                        onClick={() => {
+                            setpreview(null)
+                            setmedia({
+                                image: null,
+                                video: null
+                            })
+                        }}
+                        disabled={loading}
+                    >
                         <X /> Cancel
                     </Button>
                 ) : (
@@ -158,13 +165,6 @@ const CreatePost = () => {
                     <Pencil /> {loading ? "Posting..." : "Post"}
                 </Button>
             </div>
-
-            {successMessage && (
-                <p className='text-green-600 font-semibold'>{successMessage}</p>
-            )}
-            {errorMessage && (
-                <p className='text-red-600 font-semibold'>{errorMessage}</p>
-            )}
         </div>
     )
 }
