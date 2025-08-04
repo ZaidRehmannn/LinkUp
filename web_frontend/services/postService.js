@@ -22,5 +22,23 @@ export const postService = {
             }
         });
         return response.data;
+    },
+
+    async deletePost(postId, token) {
+        const response = await axios.post(`/api/post/delete/${postId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    },
+
+    async editPost(postId, token) {
+        const response = await axios.post(`/api/post/edit/${postId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
     }
 };

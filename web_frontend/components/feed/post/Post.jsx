@@ -3,57 +3,74 @@
 import React from 'react'
 import Image from 'next/image'
 import { Heart, MessageCircle } from 'lucide-react'
+import PostActionsDropdown from './PostActionsDropdown';
+import usePostStore from '@/stores/postStore';
+import EditPost from './EditPost';
 
-const Post = ({ post }) => {
-    const { user, caption, image, video, likes, commentCount, createdAt } = post
+const Post = ({ post, loggedInUserId }) => {
+    const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
+    const editPost = usePostStore(state => state.editPost);
 
     return (
         <div className="border bg-white rounded-lg shadow p-4 mb-4">
 
             {/* user info and post time */}
-            <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
-                    {user.profilePic ? (
-                        <Image
-                            src={user.profilePic}
-                            alt={user.firstName}
-                            width={40}
-                            height={40}
-                            className="object-cover w-full h-full"
-                            priority
-                        />
-                    ) : (
-                        <UserCircle className="text-gray-500 w-8 h-8" />
-                    )}
+            <div className="flex justify-between">
+                <div className='flex items-center gap-3 mb-2'>
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        {user.profilePic ? (
+                            <Image
+                                src={user.profilePic}
+                                alt={user.firstName}
+                                width={40}
+                                height={40}
+                                className="object-cover w-full h-full"
+                                priority
+                            />
+                        ) : (
+                            <UserCircle className="text-gray-500 w-8 h-8" />
+                        )}
+                    </div>
+
+                    <div>
+                        <p className="font-semibold">{user.firstName} {user.lastName}</p>
+                        <p className="text-xs text-gray-500">{new Date(createdAt).toLocaleString()}</p>
+                    </div>
                 </div>
 
-                <div>
-                    <p className="font-semibold">{user.firstName} {user.lastName}</p>
-                    <p className="text-xs text-gray-500">{new Date(createdAt).toLocaleString()}</p>
-                </div>
+                {/* Own post options (Edit and Delete) */}
+                {user._id.toString() === loggedInUserId.toString() && !editPost && (
+                    <PostActionsDropdown postId={_id} />
+                )}
             </div>
 
-            {/* caption */}
-            <p className="text-sm text-gray-800 mb-3">{caption}</p>
+            {!editPost ? (
+                <>
+                    {/* caption */}
+                    <p className="text-sm text-gray-800 mb-3">{caption}</p>
 
-            {/* media files */}
-            {image && (
-                <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
-                    <Image
-                        src={image}
-                        alt="Post Image"
-                        fill
-                        className="object-cover"
-                    />
-                </div>
-            )}
+                    {/* media files */}
+                    {image && (
+                        <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
+                            <Image
+                                src={image}
+                                alt="Post Image"
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
+                    )}
 
-            {video && (
-                <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
-                    <video className='object-cover' controls>
-                        <source src={video} type="video/mp4" />
-                    </video>
-                </div>
+                    {video && (
+                        <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
+                            <video className='object-cover' controls>
+                                <source src={video} type="video/mp4" />
+                            </video>
+                        </div>
+                    )}
+                </>
+            ) : (
+                <EditPost post={post} />
             )}
 
             {/* user actions */}

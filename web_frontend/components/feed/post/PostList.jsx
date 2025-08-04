@@ -4,8 +4,11 @@ import React, { useEffect } from 'react'
 import Post from './Post'
 import { usefetchPost } from '@/hooks/usePost'
 import { postService } from '@/services/postService'
+import useUserStore from '@/stores/userStore'
 
 const PostList = () => {
+  const loggedInUserId = useUserStore(state => state.user?._id);
+
   const {
     token,
     posts,
@@ -53,7 +56,7 @@ const PostList = () => {
   return (
     <main className="space-y-4">
       {posts.map((post) => (
-        <Post key={post._id} post={post} />
+        <Post key={post._id} post={post} loggedInUserId={loggedInUserId} />
       ))}
     </main>
   )

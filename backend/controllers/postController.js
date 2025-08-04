@@ -44,7 +44,7 @@ const fetchAllPosts = async (req, res) => {
         const user = await userModel.findById(userId).select('following');
         const followingPostsArray = await Promise.all(
             user.following.map((followingUserId) => {
-                return postModel.find({ user: followingUserId }).populate("user", "firstName lastName profilePic");
+                return postModel.find({ user: followingUserId }).populate("user", "_id firstName lastName profilePic");
             })
         );
 
@@ -101,7 +101,7 @@ const deletePost = async (req, res) => {
             return res.status(404).json({ success: false, message: "Post not found!" });
         }
 
-        if (post.user.toString() !== userId) {
+        if (post.user._id.toString() !== userId) {
             return res.status(403).json({ success: false, message: "Unauthorized to delete this post!" });
         }
 
@@ -113,4 +113,45 @@ const deletePost = async (req, res) => {
     }
 };
 
-export { createPost, fetchAllPosts, likeUnlikePost, deletePost };
+// edit a post
+const editPost = async (req, res) => {
+    const postId = req.params.id;
+    const userId = req.userId;
+    let content = "";
+    let image = "";
+    let video = "";
+
+    try {
+        const post = await postModel.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found!" });
+        }
+
+        if (post.user._id.toString() !== userId) {
+            return res.status(403).json({ success: false, message: "Unauthorized to edit this post!" });
+        }
+
+        if (req.body.content) {
+            content = req.body.content;
+        }
+
+        if (req.file && req.file.mimetype.startsWith("image")) {
+            image = req.file.path;
+        } else if (req.file && req.file.mimetype.startsWith("video")) {
+            video = req.file.path;
+        }
+
+        const updatedPost = await postModel.findByIdAndUpdate(postId, {
+            caption: content,
+            video,
+            image
+        });
+        res.status(200).json({ success: true, message: "Post Edited successfully!", updatedPost });
+    } catch (error) {
+        console.error("Delete post error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" })
+    }
+};
+
+export { createPost, fetchAllPosts, likeUnlikePost, deletePost, editPost };
