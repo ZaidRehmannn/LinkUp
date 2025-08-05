@@ -9,7 +9,7 @@ import React, { useEffect } from 'react'
 
 const PostActionsDropdown = ({ postId }) => {
     const token = useUserStore(state => state.token);
-    const setEditPost = usePostStore(state => state.setEditPost);
+    const setEditPostId = usePostStore(state => state.setEditPostId);
 
     useEffect(() => {
         if (!token) return;
@@ -22,7 +22,7 @@ const PostActionsDropdown = ({ postId }) => {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem className="cursor-pointer" onClick={() => setEditPost(true)}>
+                <DropdownMenuItem className="cursor-pointer" onClick={() => setEditPostId(postId)}>
                     <Pencil />
                     <span className='text-gray-800'>Edit Post</span>
                 </DropdownMenuItem>

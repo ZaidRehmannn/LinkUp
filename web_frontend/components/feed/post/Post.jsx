@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { Heart, MessageCircle } from 'lucide-react'
 import PostActionsDropdown from './PostActionsDropdown';
@@ -9,7 +9,11 @@ import EditPost from './EditPost';
 
 const Post = ({ post, loggedInUserId }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
-    const editPost = usePostStore(state => state.editPost);
+    const editPostId = usePostStore(state => state.editPostId);
+    const isEditing = editPostId?.toString() === _id.toString();
+
+    const shouldTruncate = caption.length > 200;
+    const [captionExpanded, setcaptionExpanded] = useState(false);
 
     return (
         <div className="border bg-white rounded-lg shadow p-4 mb-4">
@@ -39,15 +43,24 @@ const Post = ({ post, loggedInUserId }) => {
                 </div>
 
                 {/* Own post options (Edit and Delete) */}
-                {user._id.toString() === loggedInUserId.toString() && !editPost && (
+                {user._id.toString() === loggedInUserId.toString() && !isEditing && (
                     <PostActionsDropdown postId={_id} />
                 )}
             </div>
 
-            {!editPost ? (
+            {!isEditing ? (
                 <>
                     {/* caption */}
-                    <p className="text-sm text-gray-800 mb-3">{caption}</p>
+                    <p className={`text-sm text-gray-800 whitespace-pre-wrap mb-2 ${!captionExpanded && "line-clamp-5"}`}>
+                        {caption}
+                    </p>
+
+                    {/* Read more button */}
+                    {!captionExpanded && shouldTruncate && (
+                        <div className='text-sm text-blue-600 font-semibold w-fit cursor-pointer mb-2' onClick={() => setcaptionExpanded(true)}>
+                            Read more...
+                        </div>
+                    )}
 
                     {/* media files */}
                     {image && (

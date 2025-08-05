@@ -1,10 +1,10 @@
 import { create } from "zustand";
 
 const usePostStore = create((set) => ({
-    editPost: false,
+    editPostId: null,
 
-    setEditPost: (value) => {
-        set({ editPost: value })
+    setEditPostId: (postId) => {
+        set({ editPostId: postId })
     }
 }))
 

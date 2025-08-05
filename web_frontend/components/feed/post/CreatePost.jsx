@@ -1,8 +1,7 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import Image from 'next/image';
-import { Textarea } from '../../ui/textarea'
 import { Button } from '../../ui/button';
 import { Image as ImageIcon, Pencil, UserCircle, Video, X } from 'lucide-react';
 import { useCreatePost } from '@/hooks/usePost';
@@ -26,6 +25,16 @@ const CreatePost = () => {
         errorMessage,
         seterrorMessage
     } = useCreatePost();
+
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    }, [content]);
 
     const handleSubmit = async () => {
         seterrorMessage("");
@@ -73,22 +82,28 @@ const CreatePost = () => {
                     )}
                 </div>
 
-                <Textarea
-                    placeholder={media.image || media.video ? "Add a caption..." : `What's on your mind, ${user?.firstName}?`}
+                <textarea
+                    ref={textareaRef}
+                    placeholder={media.image || media.video
+                        ? "Add a caption..."
+                        : `What's on your mind, ${user?.firstName}?`}
                     value={content}
                     onChange={(e) => setcontent(e.target.value)}
-                    className="resize-none border-none shadow-none p-5 pl-16 pb-9 w-full min-h-min outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:outline-none"
+                    className="text-sm p-4 pl-16 w-full min-h-[80px] resize-none outline-none overflow-hidden"
+                    style={{ height: 'auto' }}
                 />
 
                 {preview && (
                     media.image ? (
-                        <div className="w-full h-80 relative overflow-hidden mb-3">
-                            <Image
-                                src={preview}
-                                alt="Preview"
-                                fill
-                                className="object-cover"
-                            />
+                        <div className='px-4'>
+                            <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
+                                <Image
+                                    src={preview}
+                                    alt="Preview"
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
                         </div>
                     ) : (
                         <div className="w-full h-80 relative overflow-hidden mb-3">

@@ -33,7 +33,7 @@ const PostList = () => {
   };
 
   useEffect(() => {
-    if(!token) return
+    if (!token) return
     fetchPosts();
   }, [token])
 

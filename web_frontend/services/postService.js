@@ -33,8 +33,12 @@ export const postService = {
         return response.data;
     },
 
-    async editPost(postId, token) {
-        const response = await axios.post(`/api/post/edit/${postId}`, {}, {
+    async editPost(postId, content, mediaFile, token) {
+        const formData = new FormData();
+        if (content) formData.append("content", content);
+        if (mediaFile) formData.append("media", mediaFile);
+
+        const response = await axios.post(`/api/post/edit/${postId}`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
