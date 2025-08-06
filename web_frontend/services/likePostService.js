@@ -6,7 +6,7 @@ export const likePostService = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
+        });
         return response.data;
     },
 
@@ -15,7 +15,16 @@ export const likePostService = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        })
+        });
+        return response.data;
+    },
+
+    async fetchLikeUsers(postId, token) {
+        const response = await axios.get(`/api/like/fetchLikes/${postId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     }
 };

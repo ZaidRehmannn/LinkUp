@@ -58,7 +58,25 @@ const likeStatus = async (req, res) => {
 
 // fetch the list of users who liked the post
 const fetchLikes = async (req, res) => {
+    const postId = req.params.id;
 
+    try {
+        const post = await postModel.findById(postId).populate("likes", "firstName lastName username");
+
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found!" });
+        }
+
+        const users = post.likes.map(user => ({
+            fullName: `${user.firstName} ${user.lastName}`,
+            username: user.username
+        }));
+
+        res.status(200).json({ success: true, likes: users });
+    } catch (error) {
+        console.error("Fetch likes error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
 };
 
 export { likeUnlikePost, likeStatus, fetchLikes };
