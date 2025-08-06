@@ -2,89 +2,74 @@
 
 import { Button } from '@/components/ui/button';
 import { postService } from '@/services/postService';
-import usePostStore from '@/stores/postStore';
-import useUserStore from '@/stores/userStore';
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Image as ImageIcon, Video } from 'lucide-react';
+import { useEditPost } from '@/hooks/usePost';
+import toast from 'react-hot-toast';
 
 const EditPost = ({ post }) => {
     const { _id, caption, image, video } = post;
 
-    const token = useUserStore(state => state.token);
-    const setEditPostId = usePostStore(state => state.setEditPostId);
-
-    const [successMessage, setsuccessMessage] = useState("");
-    const [errorMessage, seterrorMessage] = useState("");
-    const [content, setcontent] = useState(caption);
-
-    const [media, setmedia] = useState({
-        image: image ? image : null,
-        video: video ? video : null
-    });
-
-    const handleMediaPreview = (file) => {
-        if (file) {
-            const fileType = file?.type;
-            if (fileType.startsWith("image/")) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    setpreview(reader.result);
-                };
-                reader.readAsDataURL(file);
-            } else if (fileType.startsWith("video/")) {
-                const videoURL = URL.createObjectURL(file);
-                setpreview(videoURL);
-            }
-        }
-    };
-
-    const [preview, setpreview] = useState(handleMediaPreview(image ? image : video ? video : null));
-
-    const handleMediaChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const fileType = file?.type;
-            if (fileType.startsWith("image/")) {
-                setmedia({ ...media, image: file })
-            } else if (fileType.startsWith("video/")) {
-                setmedia({ ...media, video: file })
-            }
-            handleMediaPreview(file);
-        }
-    };
-
-    const textareaRef = useRef(null);
-
-    useEffect(() => {
-        const textarea = textareaRef.current;
-        if (textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-    }, [content]);
+    const {
+        token,
+        setEditPostId,
+        content,
+        setcontent,
+        preview,
+        media,
+        textareaRef,
+        handleMediaChange,
+        initialLoad,
+        removeMedia,
+        setremoveMedia,
+        handleRemoveMedia,
+        loading,
+        setloading
+    } = useEditPost();
 
     const submitPost = async () => {
+        setloading(true);
         let mediaFile = "";
 
         try {
-            if (media.image) {
+            // Check for File objects (new uploads)
+            if (media.image instanceof File) {
                 mediaFile = media.image;
-            } else if (media.video) {
+            } else if (media.video instanceof File) {
                 mediaFile = media.video;
             }
 
-            const result = await postService.editPost(_id, content, mediaFile, token);
-            if (result.success) {
-                setsuccessMessage(result.message)
-            } else {
-                seterrorMessage(result.message)
-            }
+            toast.promise(
+                postService.editPost(_id, content, mediaFile, removeMedia, token),
+                {
+                    loading: 'Updating post...',
+                    success: (result) => {
+                        if (result.success) {
+                            setEditPostId(null);
+                            return result.message;
+                        } else {
+                            throw new Error(result.message);
+                        }
+                    },
+                    error: (error) => error.message || 'Something went wrong!',
+                }
+            );
         } catch (error) {
             console.error("Edit Post Error: ", error);
-            seterrorMessage(error.message);
+        } finally {
+            setloading(false);
         }
     };
+
+    useEffect(() => {
+        initialLoad(caption, image, video);
+        setremoveMedia(false);
+    }, [caption, image, video]);
+
+    if (loading) {
+        toast.loading('Updating');
+    }
 
     return (
         <>
@@ -103,19 +88,19 @@ const EditPost = ({ post }) => {
                 media.image ? (
                     <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
                         <Image
-                            src={media.image}
+                            src={preview}
                             alt="Post Image"
                             fill
                             className="object-cover"
                         />
                     </div>
-                ) : (
+                ) : media.video ? (
                     <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
-                        <video className='object-cover' controls>
-                            <source src={media.video} type="video/mp4" />
+                        <video className='object-cover w-full h-full' controls>
+                            <source src={preview} type="video/mp4" />
                         </video>
                     </div>
-                )
+                ) : null
             )}
 
             {/* action buttons */}
@@ -126,10 +111,7 @@ const EditPost = ({ post }) => {
                         <Button
                             size="sm"
                             className="bg-red-600 hover:bg-red-700 text-white text-xs cursor-pointer"
-                            onClick={() => {
-                                setpreview(null)
-                                setmedia({ ...media, image: null })
-                            }}
+                            onClick={handleRemoveMedia}
                         >
                             Remove Image
                         </Button>
@@ -137,42 +119,45 @@ const EditPost = ({ post }) => {
                         <Button
                             size="sm"
                             className="bg-red-600 hover:bg-red-700 text-white text-xs cursor-pointer"
-                            onClick={() => {
-                                setpreview(null)
-                                setmedia({ ...media, video: null })
-                            }}
+                            onClick={handleRemoveMedia}
                         >
                             Remove Video
                         </Button>
                     ) : (
                         <span className='flex gap-2'>
-                            {/* Upload image button */}
+                            {/* Upload image button - UNIQUE ID */}
                             <div>
-                                <label htmlFor="post-image" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
+                                <label htmlFor="edit-post-image" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
                                     <ImageIcon size={16} />
                                     <span>Upload Image</span>
                                 </label>
                                 <input
-                                    id="post-image"
+                                    id="edit-post-image"
                                     type="file"
                                     accept="image/*"
                                     className="hidden"
-                                    onChange={(e) => handleMediaChange(e)}
+                                    onChange={(e) => {
+                                        handleMediaChange(e)
+                                        setremoveMedia(false);
+                                    }}
                                 />
                             </div>
 
-                            {/* Add video button */}
+                            {/* Add video button - UNIQUE ID */}
                             <div>
-                                <label htmlFor="post-video" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
+                                <label htmlFor="edit-post-video" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
                                     <Video size={16} />
                                     <span>Add Video</span>
                                 </label>
                                 <input
-                                    id="post-video"
+                                    id="edit-post-video"
                                     type="file"
                                     accept="video/*"
                                     className="hidden"
-                                    onChange={(e) => handleMediaChange(e)}
+                                    onChange={(e) => {
+                                        handleMediaChange(e)
+                                        setremoveMedia(false);
+                                    }}
                                 />
                             </div>
                         </span>
@@ -184,7 +169,10 @@ const EditPost = ({ post }) => {
                     <Button
                         size="sm"
                         className='bg-red-600 hover:bg-red-700 text-white text-xs cursor-pointer'
-                        onClick={() => setEditPostId(null)}
+                        onClick={() => {
+                            setEditPostId(null);
+                            setremoveMedia(false);
+                        }}
                     >
                         Cancel
                     </Button>
@@ -192,8 +180,9 @@ const EditPost = ({ post }) => {
                         size="sm"
                         className='bg-green-600 hover:bg-green-700 text-white text-xs cursor-pointer'
                         onClick={submitPost}
+                        disabled={loading || (!content.trim() && !media.image && !media.video)}
                     >
-                        Save Changes
+                        {loading ? "Updating..." : "Save Changes"}
                     </Button>
                 </span>
             </div>

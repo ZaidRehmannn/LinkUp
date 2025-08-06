@@ -2,22 +2,25 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { Heart, MessageCircle } from 'lucide-react'
+import { Heart, MessageCircle, UserCircle } from 'lucide-react'
 import PostActionsDropdown from './PostActionsDropdown';
 import usePostStore from '@/stores/postStore';
 import EditPost from './EditPost';
+import useUserStore from '@/stores/userStore';
 
-const Post = ({ post, loggedInUserId }) => {
+const PostCard = ({ post }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
+
     const editPostId = usePostStore(state => state.editPostId);
     const isEditing = editPostId?.toString() === _id.toString();
 
     const shouldTruncate = caption.length > 200;
     const [captionExpanded, setcaptionExpanded] = useState(false);
 
+    const loggedInUserId = useUserStore(state => state.user?._id);
+
     return (
         <div className="border bg-white rounded-lg shadow p-4 mb-4">
-
             {/* user info and post time */}
             <div className="flex justify-between">
                 <div className='flex items-center gap-3 mb-2'>
@@ -103,4 +106,4 @@ const Post = ({ post, loggedInUserId }) => {
     )
 }
 
-export default Post
+export default PostCard

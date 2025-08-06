@@ -1,21 +1,14 @@
 'use client'
 
-import React, { useEffect } from 'react'
-import Post from './Post'
-import { usefetchPost } from '@/hooks/usePost'
+import React, { useEffect, useState } from 'react'
+import PostCard from './PostCard'
 import { postService } from '@/services/postService'
 import useUserStore from '@/stores/userStore'
 
 const PostList = () => {
-  const loggedInUserId = useUserStore(state => state.user?._id);
-
-  const {
-    token,
-    posts,
-    setposts,
-    loading,
-    setloading
-  } = usefetchPost();
+  const token = useUserStore(state => state.token);
+  const [posts, setposts] = useState([]);
+  const [loading, setloading] = useState(false);
 
   const fetchPosts = async () => {
     try {
@@ -56,7 +49,7 @@ const PostList = () => {
   return (
     <main className="space-y-4">
       {posts.map((post) => (
-        <Post key={post._id} post={post} loggedInUserId={loggedInUserId} />
+        <PostCard key={post._id} post={post} />
       ))}
     </main>
   )

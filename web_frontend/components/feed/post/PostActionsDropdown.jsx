@@ -5,11 +5,38 @@ import { postService } from '@/services/postService'
 import usePostStore from '@/stores/postStore'
 import useUserStore from '@/stores/userStore'
 import { Ellipsis, Pencil, Trash } from 'lucide-react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
 const PostActionsDropdown = ({ postId }) => {
     const token = useUserStore(state => state.token);
     const setEditPostId = usePostStore(state => state.setEditPostId);
+    const [loading, setloading] = useState(false);
+
+    const handleDeletePost = () => {
+        setloading(true);
+
+        try {
+            toast.promise(
+                postService.deletePost(postId, token),
+                {
+                    loading: 'Deleting post...',
+                    success: (result) => {
+                        if (result.success) {
+                            return result.message;
+                        } else {
+                            throw new Error(result.message);
+                        }
+                    },
+                    error: (error) => error.message || 'Something went wrong!',
+                }
+            )
+        } catch (error) {
+            console.error("Delete Post Error: ", error);
+        } finally {
+            setloading(false);
+        }
+    }
 
     useEffect(() => {
         if (!token) return;
@@ -26,7 +53,9 @@ const PostActionsDropdown = ({ postId }) => {
                     <Pencil />
                     <span className='text-gray-800'>Edit Post</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-600 cursor-pointer" onClick={() => postService.deletePost(postId, token)}>
+                <DropdownMenuItem
+                    className="text-red-600 cursor-pointer"
+                    onClick={handleDeletePost}>
                     <Trash />
                     Delete Post
                 </DropdownMenuItem>

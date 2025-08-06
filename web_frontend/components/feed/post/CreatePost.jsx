@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import Image from 'next/image';
 import { Button } from '../../ui/button';
 import { Image as ImageIcon, Pencil, UserCircle, Video, X } from 'lucide-react';
 import { useCreatePost } from '@/hooks/usePost';
 import { postService } from '@/services/postService';
+import toast from 'react-hot-toast';
 
 const CreatePost = () => {
     const {
@@ -20,44 +21,38 @@ const CreatePost = () => {
         loading,
         setloading,
         handleMediaChange,
-        successMessage,
-        showSuccessMessage,
-        errorMessage,
-        seterrorMessage
+        textareaRef,
+        resetToDefault
     } = useCreatePost();
 
-    const textareaRef = useRef(null);
-
-    useEffect(() => {
-        const textarea = textareaRef.current;
-        if (textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-    }, [content]);
-
     const handleSubmit = async () => {
-        seterrorMessage("");
+        setloading(true);
         let mediaFile = "";
 
         try {
-            setloading(true);
-
             if (media.image) {
                 mediaFile = media.image;
             } else if (media.video) {
                 mediaFile = media.video;
             }
 
-            const result = await postService.createPost(content, mediaFile, token);
-            if (result.success) {
-                showSuccessMessage(result.message);
-            } else {
-                seterrorMessage("Failed to Post!")
-            }
+            toast.promise(
+                postService.createPost(content, mediaFile, token),
+                {
+                    loading: 'Posting...',
+                    success: (result) => {
+                        if (result.success) {
+                            resetToDefault();
+                            return result.message;
+                        } else {
+                            throw new Error(result.message);
+                        }
+                    },
+                    error: (error) => error.message || 'Failed to post!',
+                }
+            )
         } catch (error) {
             console.error("Create Post Error: ", error);
-            seterrorMessage(error.message);
         } finally {
             setloading(false);
         }
@@ -65,7 +60,6 @@ const CreatePost = () => {
 
     return (
         <div className='min-h-min bg-white rounded-lg shadow-md'>
-
             {/* Container div to make it like picture inside textarea */}
             <div className="relative">
                 <div className="absolute top-3 left-3 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden z-10">
@@ -114,13 +108,6 @@ const CreatePost = () => {
                     )
                 )}
             </div>
-
-            {successMessage && (
-                <span className='text-green-600 font-semibold text-sm ml-3 mt-2'>{successMessage}</span>
-            )}
-            {errorMessage && (
-                <span className='text-red-600 font-semibold text-sm ml-3 mt-2'>{errorMessage}</span>
-            )}
 
             {/* Buttons for adding image/video and post */}
             <div className='flex justify-between mx-3 py-2'>

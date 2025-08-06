@@ -3,7 +3,8 @@ import "./globals.css";
 import Navbar from "../components/navbar/Navbar";
 import AuthWrapper from "@/components/AuthWrapper";
 import Menu from "@/components/navbar/Menu";
-import { ThemeProvider } from 'next-themes'
+import { ThemeProvider } from 'next-themes';
+import { Toaster } from 'react-hot-toast';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthWrapper>
+            <Toaster position="top-center" />
             <Navbar />
             <Menu />
             <main className="flex-grow">{children}</main>

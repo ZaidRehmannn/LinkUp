@@ -33,14 +33,16 @@ export const postService = {
         return response.data;
     },
 
-    async editPost(postId, content, mediaFile, token) {
+    async editPost(postId, content, mediaFile, removeMedia, token) {
         const formData = new FormData();
         if (content) formData.append("content", content);
         if (mediaFile) formData.append("media", mediaFile);
+        formData.append("removeMedia", removeMedia);
 
-        const response = await axios.post(`/api/post/edit/${postId}`, formData, {
+        const response = await axios.put(`/api/post/edit/${postId}`, formData, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             }
         });
         return response.data;

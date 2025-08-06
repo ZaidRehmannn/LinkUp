@@ -22,6 +22,6 @@ postRouter.post("/create", authMiddleware, upload.single("media"), createPost);
 postRouter.get("/fetchAll", authMiddleware, fetchAllPosts);
 postRouter.post("/like/:id", authMiddleware, likeUnlikePost);
 postRouter.post("/delete/:id", authMiddleware, deletePost);
-postRouter.put("/edit/:id", authMiddleware, editPost);
+postRouter.put("/edit/:id", authMiddleware, upload.single("media"), editPost);
 
 export default postRouter;

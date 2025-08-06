@@ -24,7 +24,6 @@ const InitAuth = () => {
 
                     if (response.data.success) {
                         setUser(response.data.user)
-                        console.log("User details", response.data.user);
                     }
                 } catch (err) {
                     console.error('Auth restore failed:', err)

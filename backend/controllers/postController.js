@@ -1,5 +1,6 @@
 import postModel from "../models/postModel.js";
 import userModel from "../models/userModel.js";
+import cloudinary from "../config/cloudinary.js";
 
 // create a new post
 const createPost = async (req, res) => {
@@ -106,7 +107,7 @@ const deletePost = async (req, res) => {
         }
 
         await postModel.findByIdAndDelete(postId);
-        res.status(200).json({ success: true, message: "Post deleted successfully!" });
+        res.status(200).json({ success: true, message: "Post Deleted Successfully!" });
     } catch (error) {
         console.error("Delete post error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" })
@@ -117,9 +118,6 @@ const deletePost = async (req, res) => {
 const editPost = async (req, res) => {
     const postId = req.params.id;
     const userId = req.userId;
-    let content = "";
-    let image = "";
-    let video = "";
 
     try {
         const post = await postModel.findById(postId);
@@ -132,25 +130,60 @@ const editPost = async (req, res) => {
             return res.status(403).json({ success: false, message: "Unauthorized to edit this post!" });
         }
 
-        if (req.body.content) {
-            content = req.body.content;
+        const updateFields = {};
+        const removeMedia = req.body.removeMedia === 'true' || req.body.removeMedia === true;
+
+        // Handle content update
+        if (req.body && req.body.content !== undefined) {
+            updateFields.caption = req.body.content;
         }
 
-        if (req.file && req.file.mimetype.startsWith("image")) {
-            image = req.file.path;
-        } else if (req.file && req.file.mimetype.startsWith("video")) {
-            video = req.file.path;
+        // Handle new file upload
+        if (req.file) {
+            // Delete old media before adding new one
+            if (req.file.mimetype.startsWith("image")) {
+                if (post.video) {
+                    const publicId = post.video.split('/').pop().split('.')[0];
+                    await cloudinary.uploader.destroy(`LinkUp-Posts/${publicId}`);
+                }
+                updateFields.image = req.file.path;
+                updateFields.video = "";
+            }
+            else if (req.file.mimetype.startsWith("video")) {
+                if (post.image) {
+                    const publicId = post.image.split('/').pop().split('.')[0];
+                    await cloudinary.uploader.destroy(`LinkUp-Posts/${publicId}`);
+                }
+                updateFields.video = req.file.path;
+                updateFields.image = "";
+            }
         }
 
-        const updatedPost = await postModel.findByIdAndUpdate(postId, {
-            caption: content,
-            video,
-            image
-        });
-        res.status(200).json({ success: true, message: "Post Edited successfully!", updatedPost });
+        // Handle media removal
+        if (removeMedia) {
+            if (post.image) {
+                const publicId = post.image.split('/').pop().split('.')[0];
+                await cloudinary.uploader.destroy(`LinkUp-Posts/${publicId}`);
+                updateFields.image = "";
+            }
+            if (post.video) {
+                const publicId = post.video.split('/').pop().split('.')[0];
+                await cloudinary.uploader.destroy(`LinkUp-Posts/${publicId}`);
+                updateFields.video = "";
+            }
+        }
+
+        const updatedPost = await postModel.findByIdAndUpdate(
+            postId,
+            updateFields,
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, message: "Post Updated Successfully!", updatedPost });
+
     } catch (error) {
-        console.error("Delete post error:", error);
-        res.status(500).json({ success: false, message: "Something went wrong!" })
+        console.error("Edit post error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };
 
