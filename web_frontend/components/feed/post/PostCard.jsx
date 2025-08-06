@@ -78,10 +78,12 @@ const PostCard = ({ post }) => {
                     )}
 
                     {video && (
-                        <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
-                            <video className='object-cover' controls>
-                                <source src={video} type="video/mp4" />
-                            </video>
+                        <div className="w-full h-80 rounded-md overflow-hidden mb-3">
+                            <video
+                                src={video}
+                                controls
+                                className="w-full h-full object-cover"
+                            />
                         </div>
                     )}
                 </>
