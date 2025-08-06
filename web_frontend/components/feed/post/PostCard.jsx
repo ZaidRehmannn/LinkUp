@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { Heart, MessageCircle, UserCircle } from 'lucide-react'
+import { MessageCircle, UserCircle } from 'lucide-react'
 import PostActionsDropdown from './PostActionsDropdown';
 import usePostStore from '@/stores/postStore';
 import EditPost from './EditPost';
 import useUserStore from '@/stores/userStore';
+import LikePostButton from './LikePostButton';
 
 const PostCard = ({ post }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
@@ -93,11 +94,7 @@ const PostCard = ({ post }) => {
 
             {/* user actions */}
             <div className="flex justify-between pt-2 border-t text-sm text-gray-600">
-                <button className="flex items-center gap-1 hover:text-blue-600 cursor-pointer">
-                    <Heart className="w-4 h-4" />
-                    {likes.length > 0 && likes.length}
-                    {likes.length > 1 ? "Likes" : "Like"}
-                </button>
+                <LikePostButton postId={_id} likes={likes} />
                 <button className="flex items-center gap-1 hover:text-blue-600 cursor-pointer">
                     <MessageCircle className="w-4 h-4" />
                     {commentCount > 0 && commentCount}

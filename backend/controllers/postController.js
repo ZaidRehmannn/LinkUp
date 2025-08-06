@@ -61,35 +61,6 @@ const fetchAllPosts = async (req, res) => {
     }
 };
 
-// like or unlike a post
-const likeUnlikePost = async (req, res) => {
-    const postId = req.params.id;
-    const userId = req.userId;
-
-    try {
-        const post = await postModel.findById(postId);
-
-        if (!post) {
-            return res.status(404).json({ success: false, message: "Post not found!" });
-        }
-
-        if (post.likes.includes(userId)) {
-            // unlike the post
-            post.likes = post.likes.filter((id) => id.toString() !== userId);
-            await post.save();
-            res.status(200).json({ success: true, message: "Post unliked" });
-        } else {
-            // like the post
-            post.likes.push(userId);
-            await post.save();
-            res.status(200).json({ success: true, message: "Post liked" });
-        }
-    } catch (error) {
-        console.error("Like/unlike error:", error);
-        res.status(500).json({ success: false, message: "Something went wrong!" })
-    }
-};
-
 // delete a post
 const deletePost = async (req, res) => {
     const postId = req.params.id;
@@ -187,4 +158,4 @@ const editPost = async (req, res) => {
     }
 };
 
-export { createPost, fetchAllPosts, likeUnlikePost, deletePost, editPost };
+export { createPost, fetchAllPosts, deletePost, editPost };

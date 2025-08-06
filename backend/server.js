@@ -7,6 +7,7 @@ import profileRouter from './routes/profileRoute.js';
 import postRouter from './routes/postRoute.js';
 import commentRouter from './routes/commentRoute.js';
 import followRouter from './routes/followRoute.js';
+import likeUnlikeRouter from './routes/likeUnlikeRoute.js';
 
 // Load environment variables
 dotenv.config();
@@ -26,6 +27,7 @@ app.use('/api/profile', profileRouter);
 app.use('/api/post', postRouter);
 app.use('/api/comment', commentRouter);
 app.use('/api/follow', followRouter);
+app.use('/api/like', likeUnlikeRouter);
 
 // Basic Route
 app.get("/", (req, res) => {
