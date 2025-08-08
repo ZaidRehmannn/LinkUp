@@ -1,25 +1,32 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { UserCircle } from 'lucide-react'
 import PostActionsDropdown from './PostActionsDropdown';
 import usePostStore from '@/stores/postStore';
 import EditPost from './EditPost';
 import useUserStore from '@/stores/userStore';
-import LikeButton from './LikeButton';
-import CommentButton from './CommentButton';
+import LikeButton from './like/LikeButton';
+import CommentButton from './comment/CommentButton';
+import Comments from './comment/Comments';
 
 const PostCard = ({ post }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
 
     const editPostId = usePostStore(state => state.editPostId);
-    const isEditing = editPostId?.toString() === _id.toString();
+    const isEditing = editPostId?.toString() === _id?.toString();
 
     const shouldTruncate = caption.length > 200;
     const [captionExpanded, setcaptionExpanded] = useState(false);
 
     const loggedInUserId = useUserStore(state => state.user?._id);
+
+    const [openCommentBox, setopenCommentBox] = useState(false);
+
+    useEffect(() => {
+        if (!editPostId) return;
+    }, [editPostId])
 
     return (
         <div className="border bg-white rounded-lg shadow p-4 mb-4">
@@ -95,9 +102,22 @@ const PostCard = ({ post }) => {
 
             {/* user actions */}
             <div className="flex justify-between pt-2 border-t text-sm text-gray-600">
-                <LikeButton postId={_id} likes={likes} />
-                <CommentButton postId={_id} commentCount={commentCount} />
+                <LikeButton
+                    postId={_id}
+                    likes={likes}
+                />
+                <CommentButton
+                    postId={_id}
+                    commentCount={commentCount}
+                    setopenCommentBox={setopenCommentBox}
+                    openCommentBox={openCommentBox}
+                />
             </div>
+
+            {/* comment box */}
+            {openCommentBox && (
+                <Comments postId={_id} />
+            )}
         </div>
     )
 }

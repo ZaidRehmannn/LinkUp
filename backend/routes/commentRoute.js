@@ -4,7 +4,7 @@ import { createComment, getCommentsByPost } from '../controllers/commentControll
 
 const commentRouter = express.Router();
 
-commentRouter.post('/:postId', authMiddleware, createComment);
-commentRouter.get('/:postId', getCommentsByPost);
+commentRouter.post('/create/:postId', authMiddleware, createComment);
+commentRouter.get('/fetch/:postId', authMiddleware, getCommentsByPost);
 
 export default commentRouter;
