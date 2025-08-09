@@ -1,6 +1,7 @@
 import postModel from "../models/postModel.js";
 import userModel from "../models/userModel.js";
 import cloudinary from "../config/cloudinary.js";
+import commentModel from "../models/commentModel.js";
 
 // create a new post
 const createPost = async (req, res) => {
@@ -77,7 +78,12 @@ const deletePost = async (req, res) => {
             return res.status(403).json({ success: false, message: "Unauthorized to delete this post!" });
         }
 
+        // delete the post
         await postModel.findByIdAndDelete(postId);
+
+        // delete all comments on the post
+        await commentModel.deleteMany({ post: postId });
+
         res.status(200).json({ success: true, message: "Post Deleted Successfully!" });
     } catch (error) {
         console.error("Delete post error:", error);

@@ -1,7 +1,7 @@
 import { MessageCircle } from 'lucide-react'
 import React from 'react'
 
-const CommentButton = ({ postId, commentCount, setopenCommentBox, openCommentBox }) => {
+const CommentButton = ({ commentCount, setopenCommentBox, openCommentBox }) => {
     return (
         <button
             onClick={() => setopenCommentBox(!openCommentBox)}

@@ -1,8 +1,8 @@
 import axios from '@/lib/axios'
 
 export const commentService = {
-    async addComment(postId, commentText, token) {
-        const response = await axios.post(`/api/comment/create/${postId}`, commentText, {
+    async addComment(postId, text, token) {
+        const response = await axios.post(`/api/comment/create/${postId}`, { text }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -10,12 +10,30 @@ export const commentService = {
         return response.data;
     },
 
-    async fetchPostComments(postId, token){
+    async fetchPostComments(postId, token) {
         const response = await axios.get(`/api/comment/fetch/${postId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
+        return response.data;
+    },
+
+    async deleteComment(postId, commentId, token) {
+        const response = await axios.delete(`/api/comment/${postId}/${commentId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    },
+
+    async editComment(commentId, text, token) {
+        const response = await axios.put(`/api/comment/edit/${commentId}`, { text }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     }
 };

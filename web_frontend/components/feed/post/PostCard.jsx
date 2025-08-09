@@ -107,7 +107,6 @@ const PostCard = ({ post }) => {
                     likes={likes}
                 />
                 <CommentButton
-                    postId={_id}
                     commentCount={commentCount}
                     setopenCommentBox={setopenCommentBox}
                     openCommentBox={openCommentBox}
