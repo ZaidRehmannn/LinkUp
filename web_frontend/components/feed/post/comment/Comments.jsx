@@ -13,16 +13,20 @@ const Comments = ({ postId }) => {
   const [comments, setcomments] = useState([]);
   const [loadComments, setloadComments] = useState(false);
 
+  const formatComment = (comment, loggedInUserId) => ({
+    ...comment,
+    timeAgo: formatTimeAgo(comment?.createdAt),
+    canEdit: comment?.user._id === loggedInUserId
+  });
+
   const fetchPostComments = async () => {
     setloadComments(true);
     try {
       const result = await commentService.fetchPostComments(postId, token);
       if (result.success) {
-        const formattedComments = result.comments.map(comment => ({
-          ...comment,
-          timeAgo: formatTimeAgo(comment.createdAt),
-          canEdit: comment.user._id === loggedInUserId
-        }));
+        const formattedComments = result.comments.map(comment => (
+          formatComment(comment, loggedInUserId)
+        ));
         setcomments(formattedComments);
       }
     } catch (error) {
@@ -30,30 +34,6 @@ const Comments = ({ postId }) => {
     } finally {
       setloadComments(false);
     }
-  };
-
-  const commentAdded = (newComment) => {
-    if (!newComment) return;
-    setcomments(prevComments => [
-      {
-        ...newComment,
-        timeAgo: formatTimeAgo(newComment.createdAt),
-        canEdit: newComment.user._id === loggedInUserId
-      },
-      ...prevComments // prepend so it appears first
-    ]);
-  };
-
-  const commentEdited = (updatedComment) => {
-    if (!updatedComment) return;
-    setcomments(prevComments =>
-      prevComments.map(c =>
-        c._id === updatedComment._id ? {
-          ...updatedComment,
-          timeAgo: formatTimeAgo(updatedComment.createdAt),
-          canEdit: updatedComment.user._id === loggedInUserId
-        } : c
-      ));
   };
 
   useEffect(() => {
@@ -64,7 +44,13 @@ const Comments = ({ postId }) => {
   return (
     <div className="border rounded-lg bg-white p-3 mt-3 shadow-sm">
       {/* New comment box */}
-      <NewCommentBox postId={postId} commentAdded={commentAdded} />
+      <NewCommentBox
+        postId={postId}
+        setcomments={setcomments}
+        loggedInUserId={loggedInUserId}
+        token={token}
+        formatComment={formatComment}
+      />
 
       {/* Previous comments */}
       <div className="mt-4">
@@ -73,7 +59,13 @@ const Comments = ({ postId }) => {
             <ul className="space-y-3">
               {comments.map(comment => (
                 <li key={comment._id}>
-                  <OldCommentBox comment={comment} commentEdited={commentEdited} />
+                  <OldCommentBox
+                    comment={comment}
+                    setcomments={setcomments}
+                    loggedInUserId={loggedInUserId}
+                    token={token}
+                    formatComment={formatComment}
+                  />
                 </li>
               ))}
             </ul>

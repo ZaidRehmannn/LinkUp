@@ -2,18 +2,15 @@
 
 import { Button } from '@/components/ui/button';
 import { commentService } from '@/services/commentService';
-import useUserStore from '@/stores/userStore';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 
-const NewCommentBox = ({ postId, commentAdded }) => {
-    const token = useUserStore(state => state.token);
+const NewCommentBox = ({ postId, setcomments, loggedInUserId, token, formatComment }) => {
     const [commentText, setcommentText] = useState("");
     const [loading, setloading] = useState(false);
 
     const handleNewComment = async () => {
         setloading(true);
-
         try {
             await toast.promise(
                 commentService.addComment(postId, commentText, token),
@@ -23,8 +20,11 @@ const NewCommentBox = ({ postId, commentAdded }) => {
                         if (result.success) {
                             setcommentText("");
 
-                            // Refresh comments
-                            commentAdded(result.newComment);
+                            // prepend the new comment to the previous comments list
+                            setcomments(prevComments => [
+                                formatComment(result.newComment, loggedInUserId),
+                                ...prevComments
+                            ]);
 
                             return result.message;
                         } else {

@@ -8,8 +8,14 @@ const createComment = async (req, res) => {
     const userId = req.userId;
 
     try {
-        const comment = new commentModel({ post: postId, user: userId, text });
+        const comment = new commentModel({
+            post: postId,
+            user: userId,
+            text
+        });
+
         await comment.save();
+        await comment.populate('user', '_id firstName lastName profilePic');
 
         await postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } });
 
@@ -71,7 +77,7 @@ const editComment = async (req, res) => {
     const { text } = req.body;
 
     try {
-        const comment = await commentModel.findById(commentId);
+        const comment = await commentModel.findById(commentId).populate('user', '_id firstName lastName profilePic');
 
         if (!comment) {
             return res.status(404).json({ success: false, message: "Comment not found!" });

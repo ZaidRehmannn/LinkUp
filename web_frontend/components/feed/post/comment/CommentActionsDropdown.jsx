@@ -7,14 +7,12 @@ import { Ellipsis, Pencil, Trash } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
-const CommentActionsDropdown = ({ postId, commentId, setisEditing }) => {
+const CommentActionsDropdown = ({ postId, commentId, setisEditing, setcomments }) => {
     const token = useUserStore(state => state.token);
-    // const setEditPostId = usePostStore(state => state.setEditPostId);
     const [loading, setloading] = useState(false);
 
     const handleDeleteComment = () => {
         setloading(true);
-
         try {
             toast.promise(
                 commentService.deleteComment(postId, commentId, token),
@@ -22,6 +20,13 @@ const CommentActionsDropdown = ({ postId, commentId, setisEditing }) => {
                     loading: 'Deleting comment...',
                     success: (result) => {
                         if (result.success) {
+                            // removing the deleted comment from the parent state
+                            setcomments(prevComments =>
+                                prevComments.filter(comment =>
+                                    comment._id !== commentId
+                                )
+                            )
+
                             return result.message;
                         } else {
                             throw new Error(result.message);
