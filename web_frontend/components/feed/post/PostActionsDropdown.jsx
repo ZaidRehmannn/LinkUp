@@ -50,15 +50,15 @@ const PostActionsDropdown = ({ postId }) => {
                 <Ellipsis size={18} className='cursor-pointer dark:text-black' />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem className="cursor-pointer" onClick={() => setEditPostId(postId)}>
-                    <Pencil />
+            <DropdownMenuContent align="end" className="w-40 dark:bg-gray-300 dark:text-gray-900">
+                <DropdownMenuItem className="cursor-pointer dark:hover:bg-gray-400" onClick={() => setEditPostId(postId)}>
+                    <Pencil className='dark:text-gray-900' />
                     <span className='text-gray-800'>Edit Post</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                    className="text-red-600 cursor-pointer"
+                    className="text-red-600 cursor-pointer dark:hover:bg-gray-400 dark:hover:text-red-600"
                     onClick={handleDeletePost}>
-                    <Trash />
+                    <Trash className='dark:text-gray-900' />
                     Delete Post
                 </DropdownMenuItem>
             </DropdownMenuContent>
