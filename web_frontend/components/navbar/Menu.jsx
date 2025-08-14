@@ -7,7 +7,7 @@ import { Settings, Moon, LogOut } from 'lucide-react'
 import Loader from '../loader/Loader'
 import ThemeSwitcher from '../ThemeSwitcher'
 import Link from 'next/link'
-import ProfileIcon from './ProfileIcon'
+import ProfileIcon from '../feed/leftSidebar/ProfileIcon'
 
 const Menu = () => {
     const openMenu = useUserStore(state => state.openMenu);

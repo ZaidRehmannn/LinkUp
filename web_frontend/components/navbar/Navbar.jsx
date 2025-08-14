@@ -6,8 +6,7 @@ import React from "react"
 import HomePageLinks from "./HomePageLinks"
 import useUserStore from "@/stores/userStore"
 import FeedSearchBar from "./FeedSearchBar"
-import ProfileIcon from "./ProfileIcon"
-import { House, Menu, Moon } from "lucide-react"
+import { Bell, House, Menu, Moon } from "lucide-react"
 import ThemeSwitcher from "../ThemeSwitcher"
 
 const Navbar = () => {
@@ -39,8 +38,8 @@ const Navbar = () => {
       {token ? (
         <>
           <FeedSearchBar />
-          <div className="flex gap-2 items-center">
-            <Link href={`/profile/${user?.username}`} className="hidden lg:block"><ProfileIcon /></Link>
+          <div className="flex gap-5 items-center">
+            <Bell className="text-gray-500 dark:text-gray-300 cursor-pointer" />
             <Menu className="text-gray-500 dark:text-gray-300 cursor-pointer" onClick={toggleMenu} />
           </div>
         </>
