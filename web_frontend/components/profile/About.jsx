@@ -5,23 +5,21 @@ const About = ({ profileUser }) => {
     const { formatAccountDate } = useProfileForm();
 
     return (
-        <main className="space-y-4 text-gray-800 w-full max-w-xl">
-            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
-                <span className="text-blue-600 font-semibold">
-                    First Name: <span className="text-gray-700 dark:text-gray-300">{profileUser.firstName}</span>
-                </span>
-                <span className="text-blue-600 font-semibold">
-                    Last Name: <span className="text-gray-700 dark:text-gray-300">{profileUser.lastName}</span>
-                </span>
+        <main className="space-y-4 text-gray-800 w-full max-w-xl flex flex-col">
+            <div className="text-blue-600 font-semibold">
+                First Name: <span className="text-gray-700 dark:text-gray-300">{profileUser.firstName}</span>
             </div>
 
-            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
-                <span className="text-blue-600 font-semibold">
-                    Username: <span className="text-gray-700 dark:text-gray-300">@{profileUser.username}</span>
-                </span>
-                <span className="text-blue-600 font-semibold">
-                    Email: <span className="text-gray-700 dark:text-gray-300">{profileUser.email}</span>
-                </span>
+            <div className="text-blue-600 font-semibold">
+                Last Name: <span className="text-gray-700 dark:text-gray-300">{profileUser.lastName}</span>
+            </div>
+
+            <div className="text-blue-600 font-semibold">
+                Username: <span className="text-gray-700 dark:text-gray-300">@{profileUser.username}</span>
+            </div>
+
+            <div className="text-blue-600 font-semibold">
+                Email: <span className="text-gray-700 dark:text-gray-300">{profileUser.email}</span>
             </div>
 
             <div className="flex flex-col gap-1">

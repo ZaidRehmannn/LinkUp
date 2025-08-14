@@ -5,12 +5,10 @@ import { UserCircle } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { profileService } from '@/services/profileService'
-import useUserStore from '@/stores/userStore'
 
-const Followers = ({ username }) => {
+const Followers = ({ username, token }) => {
     const [followers, setfollowers] = useState([]);
     const [loading, setloading] = useState(true);
-    const token = useUserStore(state => state.token);
 
     useEffect(() => {
         const getUserFollowers = async () => {
@@ -30,47 +28,49 @@ const Followers = ({ username }) => {
 
     if (loading) {
         return (
-            <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
-                <p className="text-blue-600 font-bold text-xl">Loading followers...</p>
-            </main>
+            <div className="flex justify-center items-center py-12">
+                <p className="text-blue-600 dark:text-blue-400 font-bold text-xl">Loading followers...</p>
+            </div>
         )
     }
 
     if (followers.length === 0) {
         return (
-            <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
-                <p className="text-gray-600 text-lg">No followers yet.</p>
-            </main>
+            <div className="flex justify-center items-center py-12">
+                <p className="text-gray-600 dark:text-gray-400 text-lg">No followers yet.</p>
+            </div>
         )
     }
 
     return (
-        <main className="grid gap-4 max-w-xl mx-auto">
-            {followers.map(follower => (
-                <Link key={follower.username} href={`/profile/${follower.username}`}>
-                    <div className="flex items-center gap-4 border rounded-xl p-4 bg-white hover:bg-gray-50 shadow-sm transition">
-                        {follower.profilePic ? (
-                            <Image
-                                src={follower.profilePic}
-                                alt={follower.username}
-                                width={48}
-                                height={48}
-                                className="rounded-full object-cover w-12 h-12"
-                            />
-                        ) : (
-                            <UserCircle className="w-12 h-12 text-gray-400" />
-                        )}
-
-                        <div>
-                            <p className="font-medium text-base">
-                                {follower.firstName} {follower.lastName}
-                            </p>
-                            <p className="text-gray-500 text-sm">@{follower.username}</p>
+        <div className="w-full">
+            <div className="space-y-3">
+                {followers.map(follower => (
+                    <Link key={follower.username} href={`/profile/${follower.username}`}>
+                        <div className="flex items-center gap-4 border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm transition-colors duration-200 w-full">
+                            {follower.profilePic ? (
+                                <Image
+                                    src={follower.profilePic}
+                                    alt={follower.username}
+                                    width={48}
+                                    height={48}
+                                    className="rounded-full object-cover w-12 h-12 flex-shrink-0"
+                                />
+                            ) : (
+                                <UserCircle className="w-12 h-12 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                            )}
+                            
+                            <div className="flex flex-col min-w-0 flex-1">
+                                <p className="font-medium text-base text-gray-900 dark:text-gray-100 truncate">
+                                    {follower.firstName} {follower.lastName}
+                                </p>
+                                <p className="text-gray-500 dark:text-gray-400 text-sm truncate">@{follower.username}</p>
+                            </div>
                         </div>
-                    </div>
-                </Link>
-            ))}
-        </main>
+                    </Link>
+                ))}
+            </div>
+        </div>
     )
 }
 

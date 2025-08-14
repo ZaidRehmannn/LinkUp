@@ -16,7 +16,16 @@ export const postService = {
     },
 
     async fetchPosts(token) {
-        const response = await axios.get('/api/post/fetchAll', {
+        const response = await axios.get('/api/post/fetchAllPosts', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    },
+
+    async fetchUserPosts(username, token) {
+        const response = await axios.get(`/api/post/fetchUserPosts/${username}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

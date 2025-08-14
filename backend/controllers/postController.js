@@ -56,9 +56,33 @@ const fetchAllPosts = async (req, res) => {
         const allPosts = [...userPosts, ...followingPosts];
         const sortedAllPosts = allPosts.sort((a, b) => b.createdAt - a.createdAt);
 
-        res.status(200).json({ success: true, message: "All Posts Fetched", posts: sortedAllPosts })
+        res.status(200).json({ success: true, message: "All Posts Fetched", posts: sortedAllPosts });
     } catch (error) {
         console.error("fetching posts error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+};
+
+// fetch a user's posts using his username (for profile page)
+const fetchUserPosts = async (req, res) => {
+    const { username } = req.params;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: "Username is required!" });
+    }
+
+    try {
+        const userId = await userModel.findOne({ username }).select('_id');
+        if (!userId) {
+            return res.status(404).json({ success: false, message: "User not found!" });
+        }
+
+        const userPosts = await postModel.find({ user: userId }).populate("user", "_id firstName lastName profilePic");
+        const sortedPosts = userPosts.sort((a, b) => b.createdAt - a.createdAt);
+
+        res.status(200).json({ success: true, message: "User Posts Fetched", userPosts: sortedPosts });
+    } catch (error) {
+        console.error("fetching user posts error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };
@@ -166,4 +190,4 @@ const editPost = async (req, res) => {
     }
 };
 
-export { createPost, fetchAllPosts, deletePost, editPost };
+export { createPost, fetchAllPosts, deletePost, editPost, fetchUserPosts };
