@@ -27,8 +27,9 @@ const createPost = async (req, res) => {
             video,
             image,
         });
-
         await newPost.save();
+        await newPost.populate('user', '_id firstName lastName profilePic');
+
         res.status(201).json({ success: true, message: "Posted Successfully!", post: newPost })
     } catch (error) {
         console.error("Create post error:", error);
@@ -41,7 +42,7 @@ const fetchAllPosts = async (req, res) => {
     const userId = req.userId;
 
     try {
-        const userPosts = await postModel.find({ user: userId }).populate("user", "firstName lastName profilePic");
+        const userPosts = await postModel.find({ user: userId }).populate("user", "_id firstName lastName profilePic");
 
         const user = await userModel.findById(userId).select('following');
         const followingPostsArray = await Promise.all(
@@ -155,6 +156,7 @@ const editPost = async (req, res) => {
             updateFields,
             { new: true }
         );
+        await updatedPost.populate('user', '_id firstName lastName profilePic');
 
         res.status(200).json({ success: true, message: "Post Updated Successfully!", updatedPost });
 

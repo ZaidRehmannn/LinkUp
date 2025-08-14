@@ -42,7 +42,7 @@ const Comments = ({ postId }) => {
   }, [token, loggedInUserId]);
 
   return (
-    <div className="border rounded-lg bg-white p-3 mt-3 shadow-sm">
+    <div className="border dark:border-gray-500 rounded-lg bg-white dark:bg-gray-300 p-3 mt-3 shadow-sm dark:shadow-xl">
       {/* New comment box */}
       <NewCommentBox
         postId={postId}
@@ -70,7 +70,7 @@ const Comments = ({ postId }) => {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-gray-500 text-center">No comments yet</p>
+            <p className="text-sm text-gray-500 dark:text-gray-800 text-center">No comments yet</p>
           )
         ) : (
           <div className="flex justify-center items-center text-blue-600 font-medium">

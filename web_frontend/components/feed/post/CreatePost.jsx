@@ -22,7 +22,8 @@ const CreatePost = () => {
         setloading,
         handleMediaChange,
         textareaRef,
-        resetToDefault
+        resetToDefault,
+        addPost
     } = useCreatePost();
 
     const handleSubmit = async () => {
@@ -42,6 +43,8 @@ const CreatePost = () => {
                     loading: 'Posting...',
                     success: (result) => {
                         if (result.success) {
+                            // prepend the new post to posts state in zustand store
+                            addPost(result.post);
                             resetToDefault();
                             return result.message;
                         } else {
@@ -59,10 +62,10 @@ const CreatePost = () => {
     };
 
     return (
-        <div className='min-h-min bg-white rounded-lg shadow-md'>
+        <div className='min-h-min bg-white dark:bg-gray-300 dark:text-black rounded-lg shadow-md'>
             {/* Container div to make it like picture inside textarea */}
             <div className="relative">
-                <div className="absolute top-3 left-3 w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden z-10">
+                <div className="absolute top-3 left-3 w-10 h-10 rounded-full bg-gray-200 border border-gray-700 flex items-center justify-center overflow-hidden z-10">
                     {user?.profilePic ? (
                         <Image
                             src={user?.profilePic}
@@ -83,7 +86,7 @@ const CreatePost = () => {
                         : `What's on your mind, ${user?.firstName}?`}
                     value={content}
                     onChange={(e) => setcontent(e.target.value)}
-                    className="text-sm p-4 pl-16 w-full min-h-[80px] resize-none outline-none overflow-hidden"
+                    className="dark:placeholder:text-gray-700 text-sm p-4 pl-16 w-full min-h-[80px] resize-none outline-none overflow-hidden"
                     style={{ height: 'auto' }}
                 />
 
@@ -163,7 +166,7 @@ const CreatePost = () => {
                 )}
 
                 {/* Post button */}
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs cursor-pointer flex gap-1" onClick={handleSubmit} disabled={loading || (!content.trim() && !media.image && !media.video)}>
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 dark:text-white text-xs cursor-pointer flex gap-1" onClick={handleSubmit} disabled={loading || (!content.trim() && !media.image && !media.video)}>
                     <Pencil /> {loading ? "Posting..." : "Post"}
                 </Button>
             </div>

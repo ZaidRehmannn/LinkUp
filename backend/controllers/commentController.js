@@ -16,6 +16,7 @@ const createComment = async (req, res) => {
 
         await comment.save();
         await comment.populate('user', '_id firstName lastName profilePic');
+        await comment.populate('post', '_id');
 
         await postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } });
 

@@ -10,6 +10,7 @@ import useUserStore from '@/stores/userStore';
 import LikeButton from './like/LikeButton';
 import CommentButton from './comment/CommentButton';
 import Comments from './comment/Comments';
+import useCommentStore from '@/stores/commentStore';
 
 const PostCard = ({ post }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
@@ -24,16 +25,26 @@ const PostCard = ({ post }) => {
 
     const [openCommentBox, setopenCommentBox] = useState(false);
 
+    const storeCommentCount = useCommentStore(state => state.commentCounts[_id]);
+    const setCommentCount = useCommentStore(state => state.setCommentCount);
+    const displayCommentCount = storeCommentCount ?? commentCount;
+
+    useEffect(() => {
+        if (storeCommentCount === undefined) {
+            setCommentCount(_id, commentCount);
+        }
+    }, [_id, commentCount, storeCommentCount, setCommentCount]);
+
     useEffect(() => {
         if (!editPostId) return;
     }, [editPostId])
 
     return (
-        <div className="border bg-white rounded-lg shadow p-4 mb-4">
+        <div className="border bg-white dark:bg-gray-300 rounded-lg shadow p-4 mb-4">
             {/* user info and post time */}
             <div className="flex justify-between">
                 <div className='flex items-center gap-3 mb-2'>
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 border border-gray-700">
                         {user.profilePic ? (
                             <Image
                                 src={user.profilePic}
@@ -49,8 +60,8 @@ const PostCard = ({ post }) => {
                     </div>
 
                     <div>
-                        <p className="font-semibold">{user.firstName} {user.lastName}</p>
-                        <p className="text-xs text-gray-500">{new Date(createdAt).toLocaleString()}</p>
+                        <p className="font-semibold dark:text-black">{user.firstName} {user.lastName}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-700">{new Date(createdAt).toLocaleString()}</p>
                     </div>
                 </div>
 
@@ -63,7 +74,7 @@ const PostCard = ({ post }) => {
             {!isEditing ? (
                 <>
                     {/* caption */}
-                    <p className={`text-sm text-gray-800 whitespace-pre-wrap mb-2 ${!captionExpanded && "line-clamp-5"}`}>
+                    <p className={`text-sm text-gray-800 dark:text-black whitespace-pre-wrap mb-2 ${!captionExpanded && "line-clamp-5"}`}>
                         {caption}
                     </p>
 
@@ -101,13 +112,13 @@ const PostCard = ({ post }) => {
             )}
 
             {/* user actions */}
-            <div className="flex justify-between pt-2 border-t text-sm text-gray-600">
+            <div className="flex justify-between pt-2 border-t text-sm text-gray-600 dark:text-gray-800">
                 <LikeButton
                     postId={_id}
                     likes={likes}
                 />
                 <CommentButton
-                    commentCount={commentCount}
+                    commentCount={displayCommentCount}
                     setopenCommentBox={setopenCommentBox}
                     openCommentBox={openCommentBox}
                 />

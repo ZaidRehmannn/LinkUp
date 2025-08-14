@@ -2,6 +2,7 @@
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { commentService } from '@/services/commentService'
+import useCommentStore from '@/stores/commentStore'
 import useUserStore from '@/stores/userStore'
 import { Ellipsis, Pencil, Trash } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
@@ -10,6 +11,7 @@ import toast from 'react-hot-toast'
 const CommentActionsDropdown = ({ postId, commentId, setisEditing, setcomments }) => {
     const token = useUserStore(state => state.token);
     const [loading, setloading] = useState(false);
+    const decrementCommentCount = useCommentStore(state => state.decrementCommentCount);
 
     const handleDeleteComment = () => {
         setloading(true);
@@ -26,6 +28,7 @@ const CommentActionsDropdown = ({ postId, commentId, setisEditing, setcomments }
                                     comment._id !== commentId
                                 )
                             )
+                            decrementCommentCount(postId);
 
                             return result.message;
                         } else {
@@ -43,13 +46,13 @@ const CommentActionsDropdown = ({ postId, commentId, setisEditing, setcomments }
     }
 
     useEffect(() => {
-        if (!token) return;
-    }, [token])
+        if (!token || !decrementCommentCount) return;
+    }, [token, decrementCommentCount])
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Ellipsis size={15} className='cursor-pointer' />
+                <Ellipsis size={15} className='cursor-pointer dark:text-black' />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-40">

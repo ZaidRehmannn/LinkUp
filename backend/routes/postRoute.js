@@ -20,7 +20,7 @@ const upload = multer({ storage });
 
 postRouter.post("/create", authMiddleware, upload.single("media"), createPost);
 postRouter.get("/fetchAll", authMiddleware, fetchAllPosts);
-postRouter.post("/delete/:id", authMiddleware, deletePost);
+postRouter.delete("/:id", authMiddleware, deletePost);
 postRouter.put("/edit/:id", authMiddleware, upload.single("media"), editPost);
 
 export default postRouter;

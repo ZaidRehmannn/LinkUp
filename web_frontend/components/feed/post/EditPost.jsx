@@ -25,7 +25,8 @@ const EditPost = ({ post }) => {
         setremoveMedia,
         handleRemoveMedia,
         loading,
-        setloading
+        setloading,
+        updatePost
     } = useEditPost();
 
     const submitPost = async () => {
@@ -46,6 +47,7 @@ const EditPost = ({ post }) => {
                     loading: 'Updating post...',
                     success: (result) => {
                         if (result.success) {
+                            updatePost(result.updatedPost);
                             setEditPostId(null);
                             return result.message;
                         } else {
@@ -79,7 +81,7 @@ const EditPost = ({ post }) => {
                 placeholder={image || video ? "Add a caption..." : "Write something here..."}
                 value={content}
                 onChange={(e) => setcontent(e.target.value)}
-                className="text-sm text-gray-800 mb-2 w-full resize-none outline-none overflow-hidden"
+                className="text-sm text-gray-800 bg-gray-100 rounded-md p-1 px-2 mb-2 w-full resize-none outline-none overflow-hidden"
                 style={{ height: 'auto' }}
             />
 
@@ -125,7 +127,7 @@ const EditPost = ({ post }) => {
                         </Button>
                     ) : (
                         <span className='flex gap-2'>
-                            {/* Upload image button - UNIQUE ID */}
+                            {/* Upload image button */}
                             <div>
                                 <label htmlFor="edit-post-image" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
                                     <ImageIcon size={16} />
@@ -143,7 +145,7 @@ const EditPost = ({ post }) => {
                                 />
                             </div>
 
-                            {/* Add video button - UNIQUE ID */}
+                            {/* Add video button */}
                             <div>
                                 <label htmlFor="edit-post-video" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
                                     <Video size={16} />

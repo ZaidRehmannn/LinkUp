@@ -5,6 +5,7 @@ import usePostStore from "@/stores/postStore";
 export const useCreatePost = () => {
     const user = useUserStore(state => state.user);
     const token = useUserStore(state => state.token);
+    const addPost = usePostStore(state => state.addPost);
     const [content, setcontent] = useState("");
     const [preview, setpreview] = useState(null);
     const [media, setmedia] = useState({
@@ -84,13 +85,15 @@ export const useCreatePost = () => {
         setloading,
         handleMediaChange,
         textareaRef,
-        resetToDefault
+        resetToDefault,
+        addPost
     }
 };
 
 export const useEditPost = () => {
     const token = useUserStore(state => state.token);
     const setEditPostId = usePostStore(state => state.setEditPostId);
+    const updatePost = usePostStore(state => state.updatePost);
     const [content, setcontent] = useState("");
     const [preview, setpreview] = useState(null);
     const [media, setmedia] = useState({
@@ -184,6 +187,7 @@ export const useEditPost = () => {
         setremoveMedia,
         handleRemoveMedia,
         loading,
-        setloading
+        setloading,
+        updatePost
     }
 };

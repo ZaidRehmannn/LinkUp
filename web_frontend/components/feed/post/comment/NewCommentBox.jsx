@@ -2,12 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { commentService } from '@/services/commentService';
-import React, { useState } from 'react';
+import useCommentStore from '@/stores/commentStore';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
 const NewCommentBox = ({ postId, setcomments, loggedInUserId, token, formatComment }) => {
     const [commentText, setcommentText] = useState("");
     const [loading, setloading] = useState(false);
+    const incrementCommentCount = useCommentStore(state => state.incrementCommentCount);
 
     const handleNewComment = async () => {
         setloading(true);
@@ -25,6 +27,7 @@ const NewCommentBox = ({ postId, setcomments, loggedInUserId, token, formatComme
                                 formatComment(result.newComment, loggedInUserId),
                                 ...prevComments
                             ]);
+                            incrementCommentCount(postId);
 
                             return result.message;
                         } else {
@@ -41,11 +44,16 @@ const NewCommentBox = ({ postId, setcomments, loggedInUserId, token, formatComme
         }
     };
 
+    useEffect(() => {
+        if (!incrementCommentCount) return
+    }, [incrementCommentCount])
+
+
     return (
         <div className="flex gap-2">
             <textarea
                 placeholder="Write a comment..."
-                className="w-full resize-none text-sm outline-none p-2 rounded-md border focus:ring-1 focus:ring-blue-600"
+                className="w-full dark:placeholder:text-gray-700 dark:text-black resize-none text-sm outline-none p-2 rounded-md border dark:border-gray-500 focus:ring-1 focus:ring-blue-600"
                 value={commentText}
                 onChange={(e) => setcommentText(e.target.value)}
                 rows={2}

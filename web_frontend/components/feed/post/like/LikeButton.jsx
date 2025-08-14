@@ -43,7 +43,7 @@ const LikeButton = ({ postId, likes }) => {
 
     return (
         <>
-            <button className="group flex items-center gap-1 text-sm text-gray-600 hover:text-blue-600 cursor-pointer" onClick={handleLikePost}>
+            <button className="group flex items-center gap-1 text-sm hover:text-blue-600 cursor-pointer" onClick={handleLikePost}>
                 <Heart className={`w-4 h-4 ${status ? "fill-blue-600 text-blue-600" : "fill-none"}`} />
                 <span className="group-hover:underline group-hover:underline-offset-2 group-hover:decoration-blue-600" onClick={(e) => {
                     e.stopPropagation();

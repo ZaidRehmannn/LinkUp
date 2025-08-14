@@ -25,7 +25,7 @@ export const postService = {
     },
 
     async deletePost(postId, token) {
-        const response = await axios.post(`/api/post/delete/${postId}`, {}, {
+        const response = await axios.delete(`/api/post/${postId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

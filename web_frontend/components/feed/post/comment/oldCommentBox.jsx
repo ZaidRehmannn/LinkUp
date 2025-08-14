@@ -55,7 +55,7 @@ function OldCommentBox({ comment, setcomments, loggedInUserId, token, formatComm
   return (
     <div className="flex flex-col gap-2">
       <div className="flex gap-2">
-        <div className="w-11 h-10 mt-1 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+        <div className="w-11 h-10 mt-1 rounded-full bg-gray-200 border border-gray-700 flex items-center justify-center overflow-hidden">
           {profilePic ? (
             <Image
               src={profilePic}
@@ -70,13 +70,13 @@ function OldCommentBox({ comment, setcomments, loggedInUserId, token, formatComm
           )}
         </div>
 
-        <div className="bg-gray-100 rounded-lg px-3 py-2 w-full">
+        <div className="bg-gray-100 dark:bg-gray-200 border border-gray-300 dark:border-gray-400 rounded-lg px-3 py-2 w-full">
           <div className="flex justify-between">
-            <span className="font-semibold text-sm text-gray-900">
+            <span className="font-semibold text-sm text-gray-900 dark:text-black">
               {firstName} {lastName}
             </span>
             <span className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">{timeAgo}</span>
+              <span className="text-xs text-gray-500 dark:text-gray-800">{timeAgo}</span>
               {canEdit && !isEditing && (
                 <CommentActionsDropdown
                   postId={postId}
@@ -97,7 +97,7 @@ function OldCommentBox({ comment, setcomments, loggedInUserId, token, formatComm
               rows={2}
             />
           ) : (
-            <p className="text-sm text-gray-700 whitespace-pre-wrap">{text}</p>
+            <p className="text-sm text-gray-700 dark:text-black whitespace-pre-wrap">{text}</p>
           )}
 
           {isEditing && (

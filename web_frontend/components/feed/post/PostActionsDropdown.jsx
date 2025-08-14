@@ -11,6 +11,7 @@ import toast from 'react-hot-toast'
 const PostActionsDropdown = ({ postId }) => {
     const token = useUserStore(state => state.token);
     const setEditPostId = usePostStore(state => state.setEditPostId);
+    const removePost = usePostStore(state => state.removePost);
     const [loading, setloading] = useState(false);
 
     const handleDeletePost = () => {
@@ -23,6 +24,7 @@ const PostActionsDropdown = ({ postId }) => {
                     loading: 'Deleting post...',
                     success: (result) => {
                         if (result.success) {
+                            removePost(postId);
                             return result.message;
                         } else {
                             throw new Error(result.message);
@@ -45,7 +47,7 @@ const PostActionsDropdown = ({ postId }) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Ellipsis size={18} className='cursor-pointer' />
+                <Ellipsis size={18} className='cursor-pointer dark:text-black' />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-40">

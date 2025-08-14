@@ -29,20 +29,20 @@ const LikeListDialog = ({ postId, open, onOpenChange }) => {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
+            <DialogContent className="dark:bg-gray-300 dark:text-black">
                 <DialogHeader>
                     <DialogTitle>Liked by</DialogTitle>
                 </DialogHeader>
 
                 <div className="mt-2">
                     {users.length === 0 ? (
-                        <p className="text-sm text-gray-500">No likes yet.</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-700">No likes yet.</p>
                     ) : (
                         <ul className="space-y-1">
                             {users.map((user) => (
-                                <li key={user.username} className="text-sm text-gray-800">
+                                <li key={user.username} className="text-sm text-gray-800 dark:text-black">
                                     {user.fullName}{' '}
-                                    <span className="text-gray-500">(@{user.username})</span>
+                                    <span className="text-gray-500 dark:text-gray-700">(@{user.username})</span>
                                 </li>
                             ))}
                         </ul>
