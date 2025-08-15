@@ -9,6 +9,7 @@ import commentRouter from './routes/commentRoute.js';
 import followRouter from './routes/followRoute.js';
 import likeUnlikeRouter from './routes/likeUnlikeRoute.js';
 import exploreRouter from './routes/exploreRoute.js';
+import searchRouter from './routes/searchRoute.js';
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +31,7 @@ app.use('/api/comment', commentRouter);
 app.use('/api/follow', followRouter);
 app.use('/api/like', likeUnlikeRouter);
 app.use('/api/explore', exploreRouter);
+app.use('/api/search', searchRouter);
 
 // Basic Route
 app.get("/", (req, res) => {
