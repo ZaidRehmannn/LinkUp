@@ -1,5 +1,6 @@
 import React from 'react'
-import ProfileIcon from '@/components/feed/leftSidebar/ProfileIcon';
+import ProfileIcon from './ProfileIcon';
+import ExploreUserList from './ExploreUserList';
 
 const SuggestedUsers = () => {
   return (
@@ -8,9 +9,7 @@ const SuggestedUsers = () => {
       <ProfileIcon />
 
       {/* explore new people section */}
-      <div className='bg-gray-200 dark:bg-gray-300 rounded-md border-2 h-full p-2'>
-        <p className='font-semibold text-gray-900 text-lg'>Explore New People</p>
-      </div>
+      <ExploreUserList />
     </div>
   )
 }
