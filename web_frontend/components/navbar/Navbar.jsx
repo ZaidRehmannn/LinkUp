@@ -6,12 +6,12 @@ import React from "react"
 import HomePageLinks from "./HomePageLinks"
 import useUserStore from "@/stores/userStore"
 import FeedSearchBar from "./FeedSearchBar"
-import { Bell, House, Menu, Moon } from "lucide-react"
+import { House, Menu, Moon } from "lucide-react"
 import ThemeSwitcher from "../ThemeSwitcher"
+import Notifications from "./Notifications"
 
 const Navbar = () => {
   const token = useUserStore(state => state.token);
-  const user = useUserStore(state => state.user);
   const toggleMenu = useUserStore(state => state.toggleMenu);
 
   return (
@@ -39,7 +39,7 @@ const Navbar = () => {
         <>
           <FeedSearchBar />
           <div className="flex gap-5 items-center">
-            <Bell className="text-gray-500 dark:text-gray-300 cursor-pointer" />
+            <Notifications />
             <Menu className="text-gray-500 dark:text-gray-300 cursor-pointer" onClick={toggleMenu} />
           </div>
         </>

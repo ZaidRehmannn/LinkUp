@@ -1,4 +1,5 @@
 import postModel from "../models/postModel.js";
+import { notifyUser } from "../utils/notify.js";
 
 // like or unlike a post
 const likeUnlikePost = async (req, res) => {
@@ -6,12 +7,16 @@ const likeUnlikePost = async (req, res) => {
     const userId = req.userId;
 
     try {
-        const post = await postModel.findById(postId);
+        const post = await postModel.findById(postId)
+            .select("likes user")
+            .populate("user", "_id")
+            .populate("likes", "_id")
 
         if (!post) {
             return res.status(404).json({ success: false, message: "Post not found!" });
         }
 
+        const postOwner = post.user;
         let likeCount = post.likes.length;
 
         if (post.likes.includes(userId)) {
@@ -25,6 +30,16 @@ const likeUnlikePost = async (req, res) => {
             post.likes.push(userId);
             likeCount = likeCount + 1;
             await post.save();
+
+            // emit real-time notification
+            notifyUser(postOwner, {
+                type: "like",
+                fromUserId: userId,
+                postId,
+                message: "liked your post",
+                createdAt: new Date().toISOString()
+            });
+
             res.status(200).json({ success: true, message: "Post liked", likeStatus: true, likeCount });
         }
     } catch (error) {

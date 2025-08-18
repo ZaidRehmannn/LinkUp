@@ -19,6 +19,14 @@ const followUnfollowUser = async (req, res) => {
             // Follow
             user.following.push(targetId);
             targetUser.followers.push(user._id);
+
+            // emit real-time notification
+            notifyUser(targetId, {
+                type: "follow",
+                fromUserId: userId,
+                message: "started following you",
+                createdAt: new Date().toISOString()
+            });
         }
 
         await user.save();

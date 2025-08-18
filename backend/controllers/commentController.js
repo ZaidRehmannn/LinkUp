@@ -14,11 +14,22 @@ const createComment = async (req, res) => {
             text
         });
 
+        const postOwner = await postModel.findById(postId).select("user").populate("user", "_id");
+
         await comment.save();
         await comment.populate('user', '_id firstName lastName profilePic');
         await comment.populate('post', '_id');
 
         await postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } });
+
+        // emit real-time notification
+        notifyUser(postOwner, {
+            type: "comment",
+            fromUserId: userId,
+            postId,
+            message: "commented on your post",
+            createdAt: new Date().toISOString()
+        });
 
         res.status(201).json({ success: true, message: "Comment added", newComment: comment });
     } catch (error) {

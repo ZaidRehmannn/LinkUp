@@ -44,7 +44,7 @@ const PostCard = ({ post }) => {
             {/* user info and post time */}
             <div className="flex justify-between">
                 <div className='flex items-center gap-3 mb-2'>
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 border border-gray-700">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 border border-gray-700 flex items-center justify-center">
                         {user.profilePic ? (
                             <Image
                                 src={user.profilePic}
