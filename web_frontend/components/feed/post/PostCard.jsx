@@ -11,6 +11,7 @@ import LikeButton from './like/LikeButton';
 import CommentButton from './comment/CommentButton';
 import Comments from './comment/Comments';
 import useCommentStore from '@/stores/commentStore';
+import Link from 'next/link';
 
 const PostCard = ({ post }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
@@ -60,7 +61,7 @@ const PostCard = ({ post }) => {
                     </div>
 
                     <div>
-                        <p className="font-semibold dark:text-black">{user.firstName} {user.lastName}</p>
+                        <Link href={`/profile/${user.username}`}><p className="font-semibold dark:text-black">{user.firstName} {user.lastName}</p></Link>
                         <p className="text-xs text-gray-500 dark:text-gray-700">{new Date(createdAt).toLocaleString()}</p>
                     </div>
                 </div>

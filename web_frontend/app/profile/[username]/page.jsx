@@ -123,7 +123,7 @@ const page = () => {
                                 <div className="flex justify-center">
                                     {isFollowing ? (
                                         <Button
-                                            className="flex items-center gap-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-700 text-black dark:text-white px-6 py-2 text-sm"
+                                            className="flex items-center gap-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-700 text-black dark:text-white px-6 py-2 text-sm cursor-pointer"
                                             onClick={followUnfollowProfileUser}
                                             disabled={actionLoading}
                                         >
@@ -131,7 +131,7 @@ const page = () => {
                                         </Button>
                                     ) : (
                                         <Button
-                                            className="flex items-center gap-2 bg-blue-600 dark:bg-blue-600 hover:bg-blue-800 dark:hover:bg-blue-700 text-white px-6 py-2 text-sm"
+                                            className="flex items-center gap-2 bg-blue-600 dark:bg-blue-600 hover:bg-blue-800 dark:hover:bg-blue-700 text-white px-6 py-2 text-sm cursor-pointer"
                                             onClick={followUnfollowProfileUser}
                                             disabled={actionLoading}
                                         >

@@ -1,5 +1,6 @@
 import commentModel from "../models/commentModel.js";
 import postModel from "../models/postModel.js";
+import { notifyUser } from "../utils/notify.js";
 
 // create a new comment
 const createComment = async (req, res) => {
@@ -23,7 +24,7 @@ const createComment = async (req, res) => {
         await postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } });
 
         // emit real-time notification
-        notifyUser(postOwner, {
+        notifyUser(postOwner.user._id, {
             type: "comment",
             fromUserId: userId,
             postId,

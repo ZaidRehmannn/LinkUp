@@ -1,4 +1,5 @@
 import userModel from "../models/userModel.js";
+import { notifyUser } from "../utils/notify.js";
 
 // follow or unfollow a user
 const followUnfollowUser = async (req, res) => {

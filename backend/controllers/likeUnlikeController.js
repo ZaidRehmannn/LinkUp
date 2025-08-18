@@ -7,10 +7,7 @@ const likeUnlikePost = async (req, res) => {
     const userId = req.userId;
 
     try {
-        const post = await postModel.findById(postId)
-            .select("likes user")
-            .populate("user", "_id")
-            .populate("likes", "_id")
+        const post = await postModel.findById(postId).select("likes user").populate("user", "_id")
 
         if (!post) {
             return res.status(404).json({ success: false, message: "Post not found!" });
@@ -32,7 +29,7 @@ const likeUnlikePost = async (req, res) => {
             await post.save();
 
             // emit real-time notification
-            notifyUser(postOwner, {
+            notifyUser(postOwner._id, {
                 type: "like",
                 fromUserId: userId,
                 postId,
