@@ -1,10 +1,33 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
+import UserChats from './UserChats'
+import ChatSearch from './ChatSearch'
+import useUserStore from '@/stores/userStore'
 
 const ChatList = () => {
+  const token = useUserStore(state => state.token);
+  const [results, setresults] = useState([]);
+  const [query, setquery] = useState("");
+
+  const resetOnSelect = () => {
+    setquery("");
+    setresults([]);
+  };
+
   return (
-    <div>
-      ChatList
-    </div>
+    <main className='flex flex-col gap-3 h-full'>
+      {/* heading + search chats */}
+      <div className='flex flex-col gap-1'>
+        <p className='font-semibold text-blue-700 text-xl p-1'>LinkUp Chats</p>
+        <ChatSearch setresults={setresults} query={query} setquery={setquery} token={token} />
+      </div>
+
+      {/* user chats list */}
+      <div className='bg-gray-200 dark:bg-gray-300 lg:px-3 py-2 rounded-lg transition flex-1 overflow-y-auto'>
+        <UserChats results={results} resetOnSelect={resetOnSelect} />
+      </div>
+    </main>
   )
 }
 
