@@ -1,4 +1,6 @@
 import postModel from "../models/postModel.js";
+import userModel from "../models/userModel.js";
+import notificationModel from "../models/notificationModel.js";
 import { notifyUser } from "../utils/notify.js";
 
 // like or unlike a post
@@ -13,7 +15,6 @@ const likeUnlikePost = async (req, res) => {
             return res.status(404).json({ success: false, message: "Post not found!" });
         }
 
-        const postOwner = post.user;
         let likeCount = post.likes.length;
 
         if (post.likes.includes(userId)) {
@@ -28,14 +29,28 @@ const likeUnlikePost = async (req, res) => {
             likeCount = likeCount + 1;
             await post.save();
 
-            // emit real-time notification
-            notifyUser(postOwner._id, {
-                type: "like",
-                fromUserId: userId,
-                postId,
-                message: "liked your post",
-                createdAt: new Date().toISOString()
-            });
+            if (post.user._id.toString() !== userId) {
+                // saving notification in db
+                await notificationModel.create({
+                    sender: userId,
+                    receiver: post.user._id,
+                    type: "like",
+                    postId,
+                    message: "liked your post"
+                });
+
+                // getting sender details for real-time notification
+                const senderUser = await userModel.findById(userId).select("_id firstName lastName profilePic username");
+
+                // emit real-time notification using socket.io
+                notifyUser(post.user._id, {
+                    type: "like",
+                    sender: senderUser,
+                    postId,
+                    message: "liked your post",
+                    createdAt: new Date().toISOString()
+                });
+            }
 
             res.status(200).json({ success: true, message: "Post liked", likeStatus: true, likeCount });
         }

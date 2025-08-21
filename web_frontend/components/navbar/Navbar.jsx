@@ -8,7 +8,7 @@ import useUserStore from "@/stores/userStore"
 import FeedSearchBar from "./FeedSearchBar"
 import { House, Menu, Moon } from "lucide-react"
 import ThemeSwitcher from "../ThemeSwitcher"
-import Notifications from "./Notifications"
+import Notifications from "./notifications/Notifications"
 
 const Navbar = () => {
   const token = useUserStore(state => state.token);

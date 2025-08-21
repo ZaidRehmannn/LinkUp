@@ -11,6 +11,7 @@ import followRouter from './routes/followRoute.js';
 import likeUnlikeRouter from './routes/likeUnlikeRoute.js';
 import exploreRouter from './routes/exploreRoute.js';
 import searchRouter from './routes/searchRoute.js';
+import notificationRouter from './routes/notificationRoute.js';
 import { initSocket } from './socket.js';
 
 // Load environment variables
@@ -35,6 +36,7 @@ app.use('/api/follow', followRouter);
 app.use('/api/like', likeUnlikeRouter);
 app.use('/api/explore', exploreRouter);
 app.use('/api/search', searchRouter);
+app.use('/api/notifications', notificationRouter);
 
 // Test Route
 app.get("/", (req, res) => {

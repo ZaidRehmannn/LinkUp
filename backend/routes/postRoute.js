@@ -3,7 +3,7 @@ import authMiddleware from '../middleware/auth.js';
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../config/cloudinary.js";
-import { createPost, deletePost, editPost, fetchAllPosts, fetchUserPosts } from '../controllers/postController.js';
+import { createPost, deletePost, editPost, fetchAllPosts, fetchUserPosts, postById } from '../controllers/postController.js';
 
 const postRouter = express.Router();
 
@@ -23,5 +23,6 @@ postRouter.get("/fetchAllPosts", authMiddleware, fetchAllPosts);
 postRouter.delete("/:id", authMiddleware, deletePost);
 postRouter.put("/edit/:id", authMiddleware, upload.single("media"), editPost);
 postRouter.get("/fetchUserPosts/:username", authMiddleware, fetchUserPosts);
+postRouter.get("/:postId", authMiddleware, postById);
 
 export default postRouter;

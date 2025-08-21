@@ -21,10 +21,21 @@ const followUnfollowUser = async (req, res) => {
             user.following.push(targetId);
             targetUser.followers.push(user._id);
 
+            // saving notification in db
+            await notificationModel.create({
+                sender: userId,
+                receiver: targetId,
+                type: "follow",
+                message: "started following you"
+            });
+
+            // getting sender details for real-time notification
+            const senderUser = await userModel.findById(userId).select("_id firstName lastName profilePic username");
+
             // emit real-time notification
             notifyUser(targetId, {
                 type: "follow",
-                fromUserId: userId,
+                sender: senderUser,
                 message: "started following you",
                 createdAt: new Date().toISOString()
             });
@@ -32,7 +43,6 @@ const followUnfollowUser = async (req, res) => {
 
         await user.save();
         await targetUser.save();
-
         res.status(200).json({ success: true, message: isFollowing ? "User Unfollowed!" : "User Followed!" });
     } catch (error) {
         console.error("Follow/Unfollow error:", error);

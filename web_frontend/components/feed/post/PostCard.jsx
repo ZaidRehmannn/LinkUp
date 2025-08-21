@@ -13,7 +13,7 @@ import Comments from './comment/Comments';
 import useCommentStore from '@/stores/commentStore';
 import Link from 'next/link';
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, postPage = false }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
 
     const editPostId = usePostStore(state => state.editPostId);
@@ -41,7 +41,7 @@ const PostCard = ({ post }) => {
     }, [editPostId])
 
     return (
-        <div className="border bg-white dark:bg-gray-300 rounded-lg shadow p-4 mb-4">
+        <div className="border bg-white dark:bg-gray-300 rounded-lg shadow p-4 mb-4 w-full">
             {/* user info and post time */}
             <div className="flex justify-between">
                 <div className='flex items-center gap-3 mb-2'>
@@ -126,7 +126,7 @@ const PostCard = ({ post }) => {
             </div>
 
             {/* comment box */}
-            {openCommentBox && (
+            {(openCommentBox || postPage) && (
                 <Comments postId={_id} />
             )}
         </div>

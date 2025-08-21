@@ -13,9 +13,8 @@ const PostList = () => {
   const [loading, setloading] = useState(false);
 
   const fetchPosts = async () => {
+    setloading(true);
     try {
-      setloading(true);
-
       const result = await postService.fetchPosts(token);
       if (result.success) {
         setPosts(result.posts);

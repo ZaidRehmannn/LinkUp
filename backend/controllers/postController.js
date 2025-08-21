@@ -190,4 +190,25 @@ const editPost = async (req, res) => {
     }
 };
 
-export { createPost, fetchAllPosts, deletePost, editPost, fetchUserPosts };
+// fetch a post using the postId
+const postById = async (req, res) => {
+    const { postId } = req.params;
+
+    if (!postId) {
+        return res.status(400).json({ success: false, message: "PostId is required!" });
+    }
+
+    try {
+        const post = await postModel.findOne({ _id: postId }).populate("user", "_id firstName lastName profilePic username");
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found!" });
+        }
+
+        return res.status(200).json({ success: true, post });
+    } catch (error) {
+        console.error("Fetch post by id error:", error);
+        return res.status(500).json({ success: false, message: "Something went wrong!" });
+    }
+};
+
+export { createPost, fetchAllPosts, deletePost, editPost, fetchUserPosts, postById };

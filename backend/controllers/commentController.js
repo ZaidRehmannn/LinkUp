@@ -1,5 +1,7 @@
 import commentModel from "../models/commentModel.js";
+import notificationModel from "../models/notificationModel.js";
 import postModel from "../models/postModel.js";
+import userModel from "../models/userModel.js";
 import { notifyUser } from "../utils/notify.js";
 
 // create a new comment
@@ -23,14 +25,28 @@ const createComment = async (req, res) => {
 
         await postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } });
 
-        // emit real-time notification
-        notifyUser(postOwner.user._id, {
-            type: "comment",
-            fromUserId: userId,
-            postId,
-            message: "commented on your post",
-            createdAt: new Date().toISOString()
-        });
+        if (postOwner.user._id.toString() !== userId) {
+            // saving notification in db
+            await notificationModel.create({
+                sender: userId,
+                receiver: postOwner.user._id,
+                type: "comment",
+                postId,
+                message: "commented on your post"
+            });
+
+            // getting sender details for real-time notification
+            const senderUser = await userModel.findById(userId).select("_id firstName lastName profilePic username");
+
+            // emit real-time notification
+            notifyUser(postOwner.user._id, {
+                type: "comment",
+                sender: senderUser,
+                postId,
+                message: "commented on your post",
+                createdAt: new Date().toISOString()
+            });
+        }
 
         res.status(201).json({ success: true, message: "Comment added", newComment: comment });
     } catch (error) {

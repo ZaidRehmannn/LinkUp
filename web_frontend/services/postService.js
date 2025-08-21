@@ -56,4 +56,13 @@ export const postService = {
         });
         return response.data;
     },
+
+    async fetchPostById(postId, token) {
+        const response = await axios.get(`/api/post/${postId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;      
+    }
 };
