@@ -56,7 +56,7 @@ const Notifications = () => {
     };
 
     useEffect(() => {
-        if(!token) return;
+        if (!token) return;
         getNotifications();
         getInitialUnreadCount();
     }, [token]);
