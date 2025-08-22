@@ -1,0 +1,80 @@
+'use client'
+
+import useChatStore from '@/stores/chatStore';
+import { Send, UserCircle, X } from 'lucide-react';
+import Image from 'next/image';
+import React, { useRef } from 'react';
+
+const OpenChatWindow = ({ user }) => {
+    const toggleChat = useChatStore(state => state.toggleChat);
+    const closeChat = useChatStore(state => state.closeChat);
+    const textareaRef = useRef(null);
+
+    // Auto-resize textarea up to max height
+    const handleInputChange = (e) => {
+        const textarea = textareaRef.current;
+        textarea.style.height = "auto";
+        const maxHeight = 120;
+        textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
+        textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
+    };
+
+    return (
+        <div className="w-80 h-96 bg-white rounded-lg shadow-lg border flex flex-col">
+            {/* Chat header */}
+            <div
+                className="flex justify-between items-center p-2 border-b bg-gray-100 cursor-pointer"
+                onClick={() => toggleChat(user)}
+            >
+                <div className="flex items-center gap-2">
+                    {user.profilePic ? (
+                        <Image
+                            src={user.profilePic}
+                            alt="User profile"
+                            width={36}
+                            height={36}
+                            className="w-10 h-10 rounded-full border border-gray-700 object-cover"
+                        />
+                    ) : (
+                        <UserCircle className="w-9 h-9 text-gray-500" />
+                    )}
+                    <span className="font-semibold">{user.firstName} {user.lastName}</span>
+                </div>
+
+                {/* Close chat button */}
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        closeChat(user);
+                    }}
+                    className='cursor-pointer'
+                >
+                    <X size={16} />
+                </button>
+            </div>
+
+            {/* chat messages */}
+            <div className="flex-1 p-3 overflow-y-auto">
+                <p className="text-gray-500 text-sm text-center">
+                    Start chatting with {user.firstName}...
+                </p>
+            </div>
+
+            {/* Type a message box */}
+            <div className="border-t p-2 flex items-center gap-2">
+                <textarea
+                    ref={textareaRef}
+                    onChange={handleInputChange}
+                    rows={1}
+                    placeholder="Type a message..."
+                    className="w-full px-2 py-2 rounded border text-sm resize-none overflow-hidden max-h-32 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+                <button className="p-2 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer">
+                    <Send size={16} className="text-white" />
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default OpenChatWindow;

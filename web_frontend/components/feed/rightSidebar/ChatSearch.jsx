@@ -1,28 +1,24 @@
 'use client'
 
+import { searchService } from '@/services/searchService';
 import { Search } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-const ChatSearch = ({ setresults, query, setquery }) => {
+const ChatSearch = ({ setuserChats, query, setquery, token }) => {
     useEffect(() => {
         if (!token) return;
 
         if (query.trim().length === 0) {
-            setresults([]);
+            setuserChats([]);
             return;
         }
 
         // wait 0.3 second before firing API for optimization
         const timeoutId = setTimeout(async () => {
             try {
-                const response = await axios.get(`/api/search?q=${query}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                if (response.data.success) {
-                    setresults(response.data.users);
+                const result = await searchService.searchChats(query, token);
+                if (result.success) {
+                    setuserChats(result.chatUsers);
                 }
             } catch (error) {
                 console.error("Search users error:", error);

@@ -3,6 +3,7 @@ import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers'
 import PostList from '@/components/feed/post/PostList'
 import ChatList from '@/components/feed/rightSidebar/ChatList'
 import React from 'react'
+import FloatingChats from '@/components/feed/rightSidebar/FloatingChats'
 
 const page = () => {
   return (
@@ -26,6 +27,7 @@ const page = () => {
       <aside className="hidden lg:block lg:col-span-3">
         <div className="sticky top-[80px] h-[calc(100vh-100px)] rounded-2xl p-3 bg-gray-100 dark:bg-gray-900 shadow-md overflow-y-auto">
           <ChatList />
+          <FloatingChats />
         </div>
       </aside>
     </main>

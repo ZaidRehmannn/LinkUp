@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { Search } from 'lucide-react'
-import axios from '@/lib/axios';
 import useUserStore from '@/stores/userStore';
 import ExploreUserCard from '../feed/leftSidebar/ExploreUserCard';
+import { searchService } from '@/services/searchService';
 
 const FeedSearchBar = () => {
   const token = useUserStore(state => state.token);
@@ -27,14 +27,9 @@ const FeedSearchBar = () => {
     // wait 0.3 second before firing API for optimization
     const timeoutId = setTimeout(async () => {
       try {
-        const response = await axios.get(`/api/search?q=${query}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-
-        if (response.data.success) {
-          setresults(response.data.users);
+        const result = await searchService.searchUsers(query, token);
+        if (result.success) {
+          setresults(result.users);
         }
       } catch (error) {
         console.error("Search users error:", error);
