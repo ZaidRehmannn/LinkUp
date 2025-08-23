@@ -4,12 +4,12 @@ import { searchService } from '@/services/searchService';
 import { Search } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-const ChatSearch = ({ setuserChats, query, setquery, token }) => {
+const ChatSearch = ({ setsearchResults, query, setquery, token }) => {
     useEffect(() => {
         if (!token) return;
 
         if (query.trim().length === 0) {
-            setuserChats([]);
+            setsearchResults([]);
             return;
         }
 
@@ -18,7 +18,7 @@ const ChatSearch = ({ setuserChats, query, setquery, token }) => {
             try {
                 const result = await searchService.searchChats(query, token);
                 if (result.success) {
-                    setuserChats(result.chatUsers);
+                    setsearchResults(result.chatUsers);
                 }
             } catch (error) {
                 console.error("Search users error:", error);

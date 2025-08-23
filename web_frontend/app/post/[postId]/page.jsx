@@ -2,7 +2,7 @@
 
 import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers'
 import PostCard from '@/components/feed/post/PostCard'
-import ChatList from '@/components/feed/rightSidebar/ChatList'
+import ChatList from '@/components/feed/rightSidebar/chatList/ChatList'
 import { postService } from '@/services/postService'
 import useUserStore from '@/stores/userStore'
 import { useParams } from 'next/navigation'

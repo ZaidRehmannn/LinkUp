@@ -48,7 +48,6 @@ const Notifications = () => {
             const result = await notificationService.fetchUnreadCount(token);
             if (result.success) {
                 setnotificationCount(result.count);
-                console.log("unread notifications count:", result.count);
             }
         } catch (error) {
             console.log("Unread notifications count error:", error);

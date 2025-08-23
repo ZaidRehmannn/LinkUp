@@ -1,9 +1,9 @@
 import CreatePost from '@/components/feed/post/CreatePost'
 import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers'
 import PostList from '@/components/feed/post/PostList'
-import ChatList from '@/components/feed/rightSidebar/ChatList'
+import ChatList from '@/components/feed/rightSidebar/chatList/ChatList'
 import React from 'react'
-import FloatingChats from '@/components/feed/rightSidebar/FloatingChats'
+import FloatingChats from '@/components/feed/rightSidebar/chatBox/FloatingChats'
 
 const page = () => {
   return (

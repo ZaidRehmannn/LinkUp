@@ -24,6 +24,10 @@ export default function useSocket(userId, onNotification) {
             if (onNotification) onNotification(payload)
         })
 
+        socket.on("newMessage", (payload) => {
+            if (onNotification) onNotification(payload)
+        })
+
         return () => {
             socket.disconnect();
         }

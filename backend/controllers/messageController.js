@@ -5,18 +5,18 @@ import { messageUser } from "../utils/message.js";
 // send new message in a conversation
 const sendMessage = async (req, res) => {
     const senderId = req.userId;
-    const { conversationId, receiverId, text } = req.body;
+    const { receiverId, text } = req.body;
 
     try {
         // find existing conversation or create a new one
-        let conversation;
-        if (conversationId) {
-            conversation = await conversationModel.findById(conversationId);
-        } else {
+        let conversation = await conversationModel.findOne({
+            participants: { $all: [senderId, receiverId] }
+        });
+
+        if (!conversation) {
             conversation = await conversationModel.create({
-                participants: [senderId, receiverId],
-                receiver: receiverId
-            })
+                participants: [senderId, receiverId]
+            });
         }
 
         // Create the new message
@@ -28,7 +28,7 @@ const sendMessage = async (req, res) => {
         });
 
         // emit real-time message using socket.io
-        messageUser(receiverId, { text })
+        messageUser(receiverId, message);
 
         res.status(200).json({ success: true, message });
     } catch (error) {
@@ -39,10 +39,17 @@ const sendMessage = async (req, res) => {
 
 // fetch all messages of a conversation
 const getMessages = async (req, res) => {
-    const { conversationId } = req.params;
+    const senderId = req.userId;
+    const { receiverId } = req.params;
 
     try {
-        const messages = await messageModel.find({ conversationId }).sort({ createdAt: 1 });
+        const messages = await messageModel.find({
+            $or: [
+                { sender: senderId, receiver: receiverId },
+                { sender: receiverId, receiver: senderId }
+            ]
+        }).sort({ createdAt: 1 });
+
         res.status(200).json({ success: true, messages });
     } catch (error) {
         console.error("Fetch messages error:", error);
