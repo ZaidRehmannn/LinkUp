@@ -1,29 +1,36 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import UserChatCard from './UserChatCard'
 import useChatStore from '@/stores/chatStore'
-import axios from '@/lib/axios'
 import useUserStore from '@/stores/userStore'
+import { conversationService } from '@/services/conversationService'
+import useSocket from '@/hooks/useSocket'
 
 const UserChats = ({ searchResults, resetOnSelect }) => {
-  const toggleChat = useChatStore(state => state.toggleChat);
   const token = useUserStore(state => state.token);
-  const [userConversations, setuserConversations] = useState([]);
+  const userConversations = useChatStore(state => state.userConversations);
+  const setuserConversations = useChatStore(state => state.setuserConversations);
+  const toggleChat = useChatStore(state => state.toggleChat);
+  const markConversationAsReadInStore = useChatStore(state => state.markConversationAsReadInStore);
+  const currentUserId = useUserStore(state => state.user?._id);
 
   const fetchUserConversations = async () => {
     try {
-      const response = await axios.get('/api/conversation/fetchAll', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      if (response.data.success) {
-        setuserConversations(response.data.conversations);
+      const result = await conversationService.fetchConversations(token);
+      if (result.success) {
+        setuserConversations(result.conversations);
       }
     } catch (error) {
       console.error("Fetch user conversations error:", error);
+    }
+  };
+
+  const markConversationAsRead = async (senderId) => {
+    try {
+      await conversationService.markAsRead(senderId, token);
+    } catch (error) {
+      console.error("Mark as read conversation error:", error);
     }
   };
 
@@ -31,6 +38,12 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
     if (!token) return;
     fetchUserConversations();
   }, [token])
+
+  // handle incoming new conversations
+  const handleIncomingNewConversation = (conversation) => {
+    setuserConversations(prev => [conversation, ...prev])
+  }
+  useSocket(currentUserId, { onNewConversation: handleIncomingNewConversation });
 
   return (
     <>
@@ -56,9 +69,11 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
               onClick={() => {
                 resetOnSelect()
                 toggleChat(convo.otherUser)
+                markConversationAsRead(convo.otherUser._id)
+                markConversationAsReadInStore(convo._id)
               }}
             >
-              <UserChatCard user={convo.otherUser} />
+              <UserChatCard user={convo.otherUser} unreadCount={convo.unreadCount} />
             </li>
           ))}
         </ul>

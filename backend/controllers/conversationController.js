@@ -1,6 +1,7 @@
 import conversationModel from "../models/conversationModel.js";
 import userModel from "../models/userModel.js";
 
+// fetch all conversations of a user
 const getConversations = async (req, res) => {
     const userId = req.userId;
 
@@ -11,14 +12,14 @@ const getConversations = async (req, res) => {
         const formattedConversations = await Promise.all(
             conversations.map(async (conv) => {
                 const otherUserId = conv.participants.find((id) => id.toString() !== userId.toString());
-                
+
                 const otherUser = await userModel.findById(otherUserId).select("_id firstName lastName profilePic");
 
                 return {
                     _id: conv._id,
                     participants: conv.participants,
                     otherUser,
-                    unreadCounts: conv.unreadCounts,
+                    unreadCounts: conv.unreadCounts.get(userId.toString()) || 0,
                     updatedAt: conv.updatedAt,
                     createdAt: conv.createdAt,
                 };
@@ -32,4 +33,25 @@ const getConversations = async (req, res) => {
     }
 };
 
-export { getConversations };
+// mark a conversation as read
+const markConversationAsRead = async (req, res) => {
+    const receiverId = req.userId;
+    const { senderId } = req.params;
+
+    try {
+        const conversation = await conversationModel.findOne({ participants: { $all: [senderId, receiverId] } });
+        if (!conversation) {
+            return res.status(404).json({ success: false, message: "Conversation not found" });
+        }
+
+        conversation.unreadCounts.set(receiverId, 0);
+        await conversation.save();
+
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error("Mark conversation as read error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+};
+
+export { getConversations, markConversationAsRead };

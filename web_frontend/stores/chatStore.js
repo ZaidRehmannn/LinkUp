@@ -1,8 +1,37 @@
 import { create } from "zustand";
 
 const useChatStore = create((set) => ({
+    userConversations: [],
     openChat_Users: [],
     minimizedChat_Users: [],
+
+    setuserConversations: (conversations) => set({ userConversations: conversations }),
+
+    updateUnreadCount: (conversationId, senderId) => set((state) => {
+        const updatedConversations = state.userConversations.map(convo => {
+            if (convo._id === conversationId) {
+                return {
+                    ...convo,
+                    unreadCount: convo.otherUser._id === senderId
+                        ? (convo.unreadCount || 0) + 1
+                        : convo.unreadCount
+                };
+            }
+            return convo;
+        });
+
+        return { userConversations: updatedConversations };
+    }),
+
+    markConversationAsReadInStore: (conversationId) =>
+        set((state) => {
+            const updated = state.userConversations.map((convo) =>
+                convo._id === conversationId
+                    ? { ...convo, unreadCount: 0 }
+                    : convo
+            );
+            return { userConversations: updated };
+        }),
 
     toggleChat: (chat_User) => set((state) => {
         const isOpen = state.openChat_Users.find(user => user._id === chat_User._id);

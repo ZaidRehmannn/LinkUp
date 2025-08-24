@@ -1,6 +1,8 @@
 'use client'
 
+import { conversationService } from '@/services/conversationService';
 import useChatStore from '@/stores/chatStore';
+import useUserStore from '@/stores/userStore';
 import { UserCircle, X } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react'
@@ -8,9 +10,22 @@ import React from 'react'
 const MinimizedChat = ({ user }) => {
     const toggleChat = useChatStore(state => state.toggleChat);
     const closeChat = useChatStore(state => state.closeChat);
+    const token = useUserStore(state => state.token);
+
+    const markConversationAsRead = async (senderId) => {
+        try {
+            await conversationService.markAsRead(senderId, token);
+        } catch (error) {
+            console.error("Mark as read conversation error:", error);
+        }
+    };
 
     return (
-        <div className="flex items-center justify-between w-64 p-2 bg-gray-100 border rounded-lg shadow cursor-pointer" onClick={() => toggleChat(user)}>
+        <div
+            className="flex items-center justify-between w-64 p-2 bg-gray-100 border rounded-lg shadow cursor-pointer" onClick={() => {
+                toggleChat(user)
+                markConversationAsRead(user._id)
+            }}>
             <div className='flex items-center gap-2'>
                 {user.profilePic ? (
                     <Image

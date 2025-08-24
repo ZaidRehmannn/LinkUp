@@ -7,7 +7,6 @@ import { Send, UserCircle, X } from 'lucide-react';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import ChatMessages from './ChatMessages';
-import playSound from '@/lib/webAudioAPI';
 import useSocket from '@/hooks/useSocket';
 
 const OpenChatWindow = ({ user }) => {
@@ -51,17 +50,16 @@ const OpenChatWindow = ({ user }) => {
         }
     };
 
-    const handleIncomingMessage = (message) => {
-        setmessages(prev => [...prev, message])
-        playSound("message");
-    }
-
-    useSocket(currentUserId, handleIncomingMessage)
-
     useEffect(() => {
         if (!token) return;
         fetchChatMessages();
     }, [token])
+
+    // this socket.io event is listened by the message receiver only
+    const handleIncomingMessage = (message) => {
+        setmessages(prev => [...prev, message]);
+    };
+    useSocket(currentUserId, { onNewMessage: handleIncomingMessage });
 
     return (
         <div className="w-80 h-96 bg-white rounded-lg shadow-lg border flex flex-col">

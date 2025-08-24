@@ -1,6 +1,7 @@
 import conversationModel from "../models/conversationModel.js";
 import messageModel from "../models/messageModel.js";
 import { messageUser } from "../utils/message.js";
+import { convoUser } from "../utils/convo.js";
 
 // send new message in a conversation
 const sendMessage = async (req, res) => {
@@ -8,6 +9,7 @@ const sendMessage = async (req, res) => {
     const { receiverId, text } = req.body;
 
     try {
+        let newConversation = false;
         // find existing conversation or create a new one
         let conversation = await conversationModel.findOne({
             participants: { $all: [senderId, receiverId] }
@@ -15,8 +17,9 @@ const sendMessage = async (req, res) => {
 
         if (!conversation) {
             conversation = await conversationModel.create({
-                participants: [senderId, receiverId]
+                participants: [senderId, receiverId],
             });
+            newConversation = true;
         }
 
         // Create the new message
@@ -26,6 +29,18 @@ const sendMessage = async (req, res) => {
             conversationId: conversation._id,
             text
         });
+
+        // Increment receiver's unread count
+        conversation.unreadCounts.set(
+            receiverId,
+            (conversation.unreadCounts.get(receiverId) || 0) + 1
+        );
+        await conversation.save();
+
+        // emit real-time new conversation using socket.io
+        if (newConversation) {
+            convoUser(receiverId, conversation)
+        }
 
         // emit real-time message using socket.io
         messageUser(receiverId, message);
