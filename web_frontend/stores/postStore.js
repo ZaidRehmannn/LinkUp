@@ -5,7 +5,14 @@ const usePostStore = create((set) => ({
     editPostId: null,
 
     setPosts: (newPosts) => {
-        set((state) => ({ posts: [...newPosts, ...state.posts] }))
+        set({ posts: newPosts });
+    },
+
+    // for load more posts button
+    addPosts: (newPosts) => {
+        set((state) => ({
+            posts: [...state.posts, ...newPosts]
+        }));
     },
 
     addPost: (post) => {

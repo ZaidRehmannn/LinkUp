@@ -2,7 +2,7 @@
 
 import { commentService } from '@/services/commentService';
 import useUserStore from '@/stores/userStore';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import OldCommentBox from './OldCommentBox';
 import NewCommentBox from './NewCommentBox';
 import formatTimeAgo from '@/lib/formatTime';
@@ -11,10 +11,14 @@ const Comments = ({ postId }) => {
   const token = useUserStore(state => state.token);
   const loggedInUserId = useUserStore(state => state.user?._id);
   const [comments, setcomments] = useState([]);
-  const [loadComments, setloadComments] = useState(false);
+
+  const [loading, setloading] = useState(false);
   const [skip, setskip] = useState(0);
   const [hasMore, sethasMore] = useState(true);
+  const [initialLoad, setinitialLoad] = useState(false);
+
   const limit = 5;
+  const skipRef = useRef(0);
 
   const formatComment = (comment, loggedInUserId) => ({
     ...comment,
@@ -22,29 +26,61 @@ const Comments = ({ postId }) => {
     canEdit: comment?.user._id === loggedInUserId
   });
 
-  const fetchPostComments = async () => {
-    setloadComments(true);
+  const fetchPostComments = useCallback(async (isInitial = false) => {
+    if (loading || !hasMore || !token) return;
+    setloading(true);
+
     try {
-      const result = await commentService.fetchPostComments(postId, token, skip, limit);
+      const currentSkip = isInitial ? 0 : skipRef.current;
+      const result = await commentService.fetchPostComments(postId, token, currentSkip, limit);
+
       if (result.success) {
         const formattedComments = result.comments.map(comment => (
           formatComment(comment, loggedInUserId)
         ));
-        setcomments(prev => [...formattedComments, ...prev]);
-        setskip(prev => prev + limit);
+        if (isInitial) {
+          setcomments(formattedComments);
+          skipRef.current = limit;
+          setskip(limit);
+          setinitialLoad(true);
+        } else {
+          setcomments(prev => [...formattedComments, ...prev]);
+          skipRef.current += limit;
+          setskip(prev => prev + limit);
+        }
         sethasMore(result.hasMore);
       }
     } catch (error) {
       console.error("Fetch post comments error:", error);
     } finally {
-      setloadComments(false);
+      setloading(false);
     }
-  };
+  }, [token, loading, hasMore, limit]);
 
+  // Initial load
   useEffect(() => {
-    if (!token && !loggedInUserId) return;
-    fetchPostComments();
-  }, [token, loggedInUserId]);
+    if (!token || !loggedInUserId || initialLoad) return;
+    fetchPostComments(true);
+  }, [token, loggedInUserId, fetchPostComments, initialLoad]);
+
+  // Handle load more
+  const handleLoadMore = useCallback(() => {
+    fetchPostComments(false);
+  }, [fetchPostComments]);
+
+  if (loading && !initialLoad) {
+    return (
+      <div className="mt-4 flex justify-center items-center text-blue-600 font-medium">
+        Loading Comments...
+      </div>
+    )
+  }
+
+  if (comments.length === 0 && !loading) {
+    return (
+      <p className="mt-4 text-sm text-gray-500 dark:text-gray-800 text-center">No comments yet</p>
+    )
+  }
 
   return (
     <div className="border dark:border-gray-500 rounded-lg bg-white dark:bg-gray-300 p-3 mt-3 shadow-sm dark:shadow-xl">
@@ -59,40 +95,30 @@ const Comments = ({ postId }) => {
 
       {/* Previous comments */}
       <div className="mt-4">
-        {!loadComments ? (
-          comments.length > 0 ? (
-            <ul className="space-y-3">
-              {comments.map(comment => (
-                <li key={comment._id}>
-                  <OldCommentBox
-                    comment={comment}
-                    setcomments={setcomments}
-                    loggedInUserId={loggedInUserId}
-                    token={token}
-                    formatComment={formatComment}
-                  />
-                </li>
-              ))}
+        <ul className="space-y-3">
+          {comments.map(comment => (
+            <li key={comment._id}>
+              <OldCommentBox
+                comment={comment}
+                setcomments={setcomments}
+                loggedInUserId={loggedInUserId}
+                token={token}
+                formatComment={formatComment}
+              />
+            </li>
+          ))}
+        </ul>
 
-              {hasMore ? (
-                <button
-                  onClick={fetchPosts}
-                  disabled={loading}
-                  className="px-4 py-2 bg-green-600 text-white rounded"
-                >
-                  {loading ? "Loading..." : "Load More"}
-                </button>
-              ) : (
-                <p className="text-gray-500 text-center mt-4">No more comments</p>
-              )}
-            </ul>
-          ) : (
-            <p className="text-sm text-gray-500 dark:text-gray-800 text-center">No comments yet</p>
-          )
+        {hasMore ? (
+          <button
+            onClick={handleLoadMore}
+            disabled={loading}
+            className="w-full px-14 py-2 border border-blue-600 text-blue-600 text-sm font-semibold rounded cursor-pointer mt-3 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Loading Comments..." : "Load More Comments"}
+          </button>
         ) : (
-          <div className="flex justify-center items-center text-blue-600 font-medium">
-            Loading Comments...
-          </div>
+          <p className="text-gray-500 text-center mt-4">No more comments</p>
         )}
       </div>
     </div>

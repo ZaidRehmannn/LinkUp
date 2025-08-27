@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { UserCircle } from 'lucide-react'
 import PostActionsDropdown from './PostActionsDropdown';
@@ -13,7 +13,7 @@ import Comments from './comment/Comments';
 import useCommentStore from '@/stores/commentStore';
 import Link from 'next/link';
 
-const PostCard = ({ post, postPage = false }) => {
+const PostCard = React.memo(({ post, postPage = false }) => {
     const { _id, user, caption, image, video, likes, commentCount, createdAt } = post;
 
     const editPostId = usePostStore(state => state.editPostId);
@@ -29,6 +29,11 @@ const PostCard = ({ post, postPage = false }) => {
     const storeCommentCount = useCommentStore(state => state.commentCounts[_id]);
     const setCommentCount = useCommentStore(state => state.setCommentCount);
     const displayCommentCount = storeCommentCount ?? commentCount;
+
+    // Memoize handlers to prevent unnecessary re-renders
+    const handleCaptionExpand = useCallback(() => {
+        setcaptionExpanded(true);
+    }, []);
 
     useEffect(() => {
         if (storeCommentCount === undefined) {
@@ -67,7 +72,7 @@ const PostCard = ({ post, postPage = false }) => {
                 </div>
 
                 {/* Own post options (Edit and Delete) */}
-                {user._id.toString() === loggedInUserId.toString() && !isEditing && (
+                {user._id.toString() === loggedInUserId?.toString() && !isEditing && (
                     <PostActionsDropdown postId={_id} />
                 )}
             </div>
@@ -81,7 +86,7 @@ const PostCard = ({ post, postPage = false }) => {
 
                     {/* Read more button */}
                     {!captionExpanded && shouldTruncate && (
-                        <div className='text-sm text-blue-600 font-semibold w-fit cursor-pointer mb-2' onClick={() => setcaptionExpanded(true)}>
+                        <div className='text-sm text-blue-600 font-semibold w-fit cursor-pointer mb-2' onClick={handleCaptionExpand}>
                             Read more...
                         </div>
                     )}
@@ -131,6 +136,7 @@ const PostCard = ({ post, postPage = false }) => {
             )}
         </div>
     )
-}
+})
 
+PostCard.displayName = 'PostCard';
 export default PostCard

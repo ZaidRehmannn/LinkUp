@@ -16,7 +16,7 @@ export const postService = {
     },
 
     async fetchPosts(token, skip, limit) {
-        const response = await axios.get(`/api/posts/fetch-posts?skip=${skip}&limit=${limit}`, {
+        const response = await axios.get(`/api/post/fetch-posts?skip=${skip}&limit=${limit}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

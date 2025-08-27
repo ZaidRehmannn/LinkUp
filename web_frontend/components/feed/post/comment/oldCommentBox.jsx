@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { commentService } from '@/services/commentService';
 import CommentActionsDropdown from './CommentActionsDropdown';
 
-function OldCommentBox({ comment, setcomments, loggedInUserId, token, formatComment }) {
+const OldCommentBox = React.memo(({ comment, setcomments, loggedInUserId, token, formatComment }) => {
   const { _id, text, user, timeAgo, canEdit, post } = comment;
   const { firstName, lastName, profilePic } = user;
   const postId = post._id;
@@ -126,6 +126,7 @@ function OldCommentBox({ comment, setcomments, loggedInUserId, token, formatComm
       </div>
     </div>
   );
-}
+})
 
+OldCommentBox.displayName = 'OldCommentBox';
 export default OldCommentBox;

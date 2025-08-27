@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import PostCard from './PostCard'
 import { postService } from '@/services/postService'
 import useUserStore from '@/stores/userStore'
@@ -10,20 +10,35 @@ const PostList = () => {
   const token = useUserStore(state => state.token);
   const posts = usePostStore(state => state.posts);
   const setPosts = usePostStore(state => state.setPosts);
+  const addPosts = usePostStore(state => state.addPosts);
+
   const [loading, setloading] = useState(false);
   const [skip, setskip] = useState(0);
   const [hasMore, sethasMore] = useState(true);
-  const limit = 5;
+  const [initialLoad, setinitialLoad] = useState(false);
 
-  const fetchPosts = async () => {
-    if (loading || !hasMore) return;
+  const limit = 5;
+  const skipRef = useRef(0);
+
+  const fetchPosts = useCallback(async (isInitial = false) => {
+    if (loading || !hasMore || !token) return;
     setloading(true);
 
     try {
-      const result = await postService.fetchPosts(token, skip, limit);
+      const currentSkip = isInitial ? 0 : skipRef.current;
+      const result = await postService.fetchPosts(token, currentSkip, limit);
+
       if (result.success) {
-        setPosts(result.posts);
-        setskip(prev => prev + limit);
+        if (isInitial) {
+          setPosts(result.posts);
+          skipRef.current = limit;
+          setskip(limit);
+          setinitialLoad(true);
+        } else {
+          addPosts(result.posts);
+          skipRef.current += limit;
+          setskip(prev => prev + limit);
+        }
         sethasMore(result.hasMore);
       }
     } catch (error) {
@@ -31,14 +46,21 @@ const PostList = () => {
     } finally {
       setloading(false);
     }
-  };
+  }, [token, loading, hasMore, limit, setPosts, addPosts]);
 
+  // Initial load
   useEffect(() => {
-    if (!token || !setPosts) return
-    fetchPosts();
-  }, [token, setPosts])
+    if (!token || initialLoad) return;
+    fetchPosts(true);
+  }, [token, initialLoad, fetchPosts]);
 
-  if (loading) {
+  // Handle load more
+  const handleLoadMore = useCallback(() => {
+    fetchPosts(false);
+  }, [fetchPosts]);
+
+  // Show loading only for initial load
+  if (loading && !initialLoad) {
     return (
       <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
         <p className="text-blue-600 font-bold text-xl">Loading posts...</p>
@@ -46,7 +68,7 @@ const PostList = () => {
     );
   }
 
-  if (posts.length === 0) {
+  if (posts.length === 0 && !loading) {
     return (
       <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
         <p className="text-gray-700 dark:text-gray-900 font-bold text-xl">No posts yet...</p>
@@ -56,17 +78,17 @@ const PostList = () => {
 
   return (
     <main className="space-y-4">
-      {posts.length > 0 && posts.map((post) => (
+      {posts.map((post) => (
         <PostCard key={post._id} post={post} />
       ))}
 
       {hasMore ? (
         <button
-          onClick={fetchPosts}
+          onClick={handleLoadMore}
           disabled={loading}
-          className="px-4 py-2 bg-green-600 text-white rounded"
+          className="w-full px-14 py-2 border border-blue-600 text-blue-600 text-sm font-semibold rounded cursor-pointer mt-1 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Loading..." : "Load More"}
+          {loading ? "Loading Posts..." : "Load More Posts"}
         </button>
       ) : (
         <p className="text-gray-500 text-center mt-4">No more posts</p>
@@ -75,4 +97,4 @@ const PostList = () => {
   )
 }
 
-export default PostList
+export default PostList;
