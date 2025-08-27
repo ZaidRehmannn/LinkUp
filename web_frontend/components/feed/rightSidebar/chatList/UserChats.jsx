@@ -6,6 +6,7 @@ import useChatStore from '@/stores/chatStore'
 import useUserStore from '@/stores/userStore'
 import { conversationService } from '@/services/conversationService'
 import useSocket from '@/hooks/useSocket'
+import playSound from '@/lib/webAudioAPI'
 
 const UserChats = ({ searchResults, resetOnSelect }) => {
   const token = useUserStore(state => state.token);
@@ -15,6 +16,8 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
   const addConversationToStore = useChatStore(state => state.addConversationToStore);
   const toggleChat = useChatStore(state => state.toggleChat);
   const markConversationAsReadInStore = useChatStore(state => state.markConversationAsReadInStore);
+  const chatWindowStatus = useChatStore(state => state.chatWindowStatus);
+  const updateUnreadCount = useChatStore(state => state.updateUnreadCount);
 
   const fetchUserConversations = async () => {
     try {
@@ -45,6 +48,23 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
     addConversationToStore(conversation);
   }
   useSocket(currentUserId, { onNewConversation: handleIncomingNewConversation });
+
+  // Handle incoming new messages
+  const handleIncomingMessage = (message) => {
+    const isChatOpen = chatWindowStatus(message.sender);
+
+    if (isChatOpen) {
+      // mark chat as read 
+      markConversationAsRead(message.sender);
+      markConversationAsReadInStore(message.conversationId, currentUserId);
+    } else {
+      // update unread messages count
+      updateUnreadCount(message.conversationId, message.receiver);
+    }
+
+    playSound("message");
+  };
+  useSocket(currentUserId, { onNewMessage: handleIncomingMessage });
 
   return (
     <>

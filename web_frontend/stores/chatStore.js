@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const useChatStore = create((set) => ({
+const useChatStore = create((set, get) => ({
     userConversations: [],
     openChat_Users: [],
     minimizedChat_Users: [],
@@ -76,10 +76,11 @@ const useChatStore = create((set) => ({
         };
     }),
 
-    chatWindowStatus: (chat_UserId) => ((state) => {
+    chatWindowStatus: (chat_UserId) => {
+        const state = get();
         const isOpen = state.openChat_Users.find(user => user._id === chat_UserId);
-        return isOpen;
-    }),
+        return !!isOpen;
+    },
 
     closeChat: (chat_User) => set((state) => ({
         openChat_Users: state.openChat_Users.filter(user => user._id !== chat_User._id),
