@@ -40,25 +40,29 @@ const createPost = async (req, res) => {
 // fetch the user's own post and the following users posts
 const fetchAllPosts = async (req, res) => {
     const userId = req.userId;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = parseInt(req.query.skip) || 0;
 
     try {
-        const userPosts = await postModel.find({ user: userId }).populate("user", "_id firstName lastName profilePic");
+        // Get current user following list
+        const user = await userModel.findById(userId).select("following");
 
-        const user = await userModel.findById(userId).select('following');
-        const followingPostsArray = await Promise.all(
-            user.following.map((followingUserId) => {
-                return postModel.find({ user: followingUserId }).populate("user", "_id firstName lastName profilePic");
-            })
-        );
+        // Fetch own posts and following users posts
+        const allPosts = await postModel
+            .find({ user: { $in: [userId, ...user.following] } })
+            .populate("user", "_id firstName lastName profilePic")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
-        const followingPosts = followingPostsArray.flat();
+        // Count total posts for loading on frontend
+        const totalPosts = await postModel.countDocuments({
+            user: { $in: [userId, ...user.following] },
+        });
 
-        const allPosts = [...userPosts, ...followingPosts];
-        const sortedAllPosts = allPosts.sort((a, b) => b.createdAt - a.createdAt);
-
-        res.status(200).json({ success: true, message: "All Posts Fetched", posts: sortedAllPosts });
+        res.status(200).json({ success: true, posts: allPosts, totalPosts, hasMore: skip + allPosts.length < totalPosts });
     } catch (error) {
-        console.error("fetching posts error:", error);
+        console.error("Fetching posts error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };
@@ -66,23 +70,32 @@ const fetchAllPosts = async (req, res) => {
 // fetch a user's posts using his username (for profile page)
 const fetchUserPosts = async (req, res) => {
     const { username } = req.params;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = parseInt(req.query.skip) || 0;
 
     if (!username) {
         return res.status(400).json({ success: false, message: "Username is required!" });
     }
 
     try {
-        const userId = await userModel.findOne({ username }).select('_id');
-        if (!userId) {
+        const user = await userModel.findOne({ username }).select("_id");
+        if (!user) {
             return res.status(404).json({ success: false, message: "User not found!" });
         }
 
-        const userPosts = await postModel.find({ user: userId }).populate("user", "_id firstName lastName profilePic");
-        const sortedPosts = userPosts.sort((a, b) => b.createdAt - a.createdAt);
+        const userPosts = await postModel
+            .find({ user: user._id })
+            .populate("user", "_id firstName lastName profilePic")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
-        res.status(200).json({ success: true, message: "User Posts Fetched", userPosts: sortedPosts });
+        // Count total posts for this user
+        const totalPosts = await postModel.countDocuments({ user: user._id });
+
+        res.status(200).json({ success: true, userPosts, totalPosts, hasMore: skip + userPosts.length < totalPosts });
     } catch (error) {
-        console.error("fetching user posts error:", error);
+        console.error("Fetching user posts error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };

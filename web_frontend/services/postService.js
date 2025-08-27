@@ -15,8 +15,8 @@ export const postService = {
         return response.data;
     },
 
-    async fetchPosts(token) {
-        const response = await axios.get('/api/post/fetchAllPosts', {
+    async fetchPosts(token, skip, limit) {
+        const response = await axios.get(`/api/posts/fetch-posts?skip=${skip}&limit=${limit}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -24,8 +24,8 @@ export const postService = {
         return response.data;
     },
 
-    async fetchUserPosts(username, token) {
-        const response = await axios.get(`/api/post/fetchUserPosts/${username}`, {
+    async fetchUserPosts(username, token, skip, limit) {
+        const response = await axios.get(`/api/post/fetch-userPosts/${username}?skip=${skip}&limit=${limit}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

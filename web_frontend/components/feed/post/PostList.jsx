@@ -11,13 +11,20 @@ const PostList = () => {
   const posts = usePostStore(state => state.posts);
   const setPosts = usePostStore(state => state.setPosts);
   const [loading, setloading] = useState(false);
+  const [skip, setskip] = useState(0);
+  const [hasMore, sethasMore] = useState(true);
+  const limit = 5;
 
   const fetchPosts = async () => {
+    if (loading || !hasMore) return;
     setloading(true);
+
     try {
-      const result = await postService.fetchPosts(token);
+      const result = await postService.fetchPosts(token, skip, limit);
       if (result.success) {
         setPosts(result.posts);
+        setskip(prev => prev + limit);
+        sethasMore(result.hasMore);
       }
     } catch (error) {
       console.error("Fetch Posts Error: ", error);
@@ -52,6 +59,18 @@ const PostList = () => {
       {posts.length > 0 && posts.map((post) => (
         <PostCard key={post._id} post={post} />
       ))}
+
+      {hasMore ? (
+        <button
+          onClick={fetchPosts}
+          disabled={loading}
+          className="px-4 py-2 bg-green-600 text-white rounded"
+        >
+          {loading ? "Loading..." : "Load More"}
+        </button>
+      ) : (
+        <p className="text-gray-500 text-center mt-4">No more posts</p>
+      )}
     </main>
   )
 }

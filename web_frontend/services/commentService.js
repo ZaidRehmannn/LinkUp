@@ -10,8 +10,8 @@ export const commentService = {
         return response.data;
     },
 
-    async fetchPostComments(postId, token) {
-        const response = await axios.get(`/api/comment/fetch/${postId}`, {
+    async fetchPostComments(postId, token, skip, limit) {
+        const response = await axios.get(`/api/comment/fetch/${postId}?skip=${skip}&limit=${limit}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

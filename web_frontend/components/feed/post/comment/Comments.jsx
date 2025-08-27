@@ -12,6 +12,9 @@ const Comments = ({ postId }) => {
   const loggedInUserId = useUserStore(state => state.user?._id);
   const [comments, setcomments] = useState([]);
   const [loadComments, setloadComments] = useState(false);
+  const [skip, setskip] = useState(0);
+  const [hasMore, sethasMore] = useState(true);
+  const limit = 5;
 
   const formatComment = (comment, loggedInUserId) => ({
     ...comment,
@@ -22,12 +25,14 @@ const Comments = ({ postId }) => {
   const fetchPostComments = async () => {
     setloadComments(true);
     try {
-      const result = await commentService.fetchPostComments(postId, token);
+      const result = await commentService.fetchPostComments(postId, token, skip, limit);
       if (result.success) {
         const formattedComments = result.comments.map(comment => (
           formatComment(comment, loggedInUserId)
         ));
-        setcomments(formattedComments);
+        setcomments(prev => [...formattedComments, ...prev]);
+        setskip(prev => prev + limit);
+        sethasMore(result.hasMore);
       }
     } catch (error) {
       console.error("Fetch post comments error:", error);
@@ -68,6 +73,18 @@ const Comments = ({ postId }) => {
                   />
                 </li>
               ))}
+
+              {hasMore ? (
+                <button
+                  onClick={fetchPosts}
+                  disabled={loading}
+                  className="px-4 py-2 bg-green-600 text-white rounded"
+                >
+                  {loading ? "Loading..." : "Load More"}
+                </button>
+              ) : (
+                <p className="text-gray-500 text-center mt-4">No more comments</p>
+              )}
             </ul>
           ) : (
             <p className="text-sm text-gray-500 dark:text-gray-800 text-center">No comments yet</p>

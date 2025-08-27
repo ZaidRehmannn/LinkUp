@@ -19,10 +19,10 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 postRouter.post("/create", authMiddleware, upload.single("media"), createPost);
-postRouter.get("/fetchAllPosts", authMiddleware, fetchAllPosts);
+postRouter.get("/fetch-posts", authMiddleware, fetchAllPosts);
 postRouter.delete("/:id", authMiddleware, deletePost);
 postRouter.put("/edit/:id", authMiddleware, upload.single("media"), editPost);
-postRouter.get("/fetchUserPosts/:username", authMiddleware, fetchUserPosts);
+postRouter.get("/fetch-userPosts/:username", authMiddleware, fetchUserPosts);
 postRouter.get("/:postId", authMiddleware, postById);
 
 export default postRouter;

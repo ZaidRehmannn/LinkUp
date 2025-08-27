@@ -17,7 +17,7 @@ const ChatMessages = ({ messages }) => {
                             className={`max-w-[70%] px-3 py-2 rounded-2xl shadow
                                 ${isSentByMe
                                     ? "bg-blue-600 text-white rounded-br-none"
-                                    : "bg-gray-200 text-gray-900 rounded-bl-none"}
+                                    : "bg-gray-300 dark:bg-gray-100 text-gray-900 rounded-bl-none"}
                             `}
                         >
                             <p className="text-sm">{message.text}</p>

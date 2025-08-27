@@ -13,6 +13,15 @@ const searchUsers = async (req, res) => {
                 { username: { $regex: query, $options: "i" } },
                 { firstName: { $regex: query, $options: "i" } },
                 { lastName: { $regex: query, $options: "i" } },
+                {
+                    $expr: {
+                        $regexMatch: {
+                            input: { $concat: ["$firstName", " ", "$lastName"] },
+                            regex: query,
+                            options: "i"
+                        }
+                    }
+                }
             ]
         }).select("_id firstName lastName username profilePic");
 
@@ -40,7 +49,16 @@ const searchChats = async (req, res) => {
             _id: { $in: allowedUsers },
             $or: [
                 { firstName: { $regex: query, $options: "i" } },
-                { lastName: { $regex: query, $options: "i" } }
+                { lastName: { $regex: query, $options: "i" } },
+                {
+                    $expr: {
+                        $regexMatch: {
+                            input: { $concat: ["$firstName", " ", "$lastName"] },
+                            regex: query,
+                            options: "i"
+                        }
+                    }
+                }
             ]
         }).select("_id firstName lastName profilePic");
 

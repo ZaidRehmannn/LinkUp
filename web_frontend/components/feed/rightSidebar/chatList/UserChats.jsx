@@ -9,11 +9,12 @@ import useSocket from '@/hooks/useSocket'
 
 const UserChats = ({ searchResults, resetOnSelect }) => {
   const token = useUserStore(state => state.token);
+  const currentUserId = useUserStore(state => state.user?._id);
   const userConversations = useChatStore(state => state.userConversations);
   const setuserConversations = useChatStore(state => state.setuserConversations);
+  const addConversationToStore = useChatStore(state => state.addConversationToStore);
   const toggleChat = useChatStore(state => state.toggleChat);
   const markConversationAsReadInStore = useChatStore(state => state.markConversationAsReadInStore);
-  const currentUserId = useUserStore(state => state.user?._id);
 
   const fetchUserConversations = async () => {
     try {
@@ -41,7 +42,7 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
 
   // handle incoming new conversations
   const handleIncomingNewConversation = (conversation) => {
-    setuserConversations(prev => [conversation, ...prev])
+    addConversationToStore(conversation);
   }
   useSocket(currentUserId, { onNewConversation: handleIncomingNewConversation });
 
@@ -70,10 +71,13 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
                 resetOnSelect()
                 toggleChat(convo.otherUser)
                 markConversationAsRead(convo.otherUser._id)
-                markConversationAsReadInStore(convo._id)
+                markConversationAsReadInStore(convo._id, currentUserId)
               }}
             >
-              <UserChatCard user={convo.otherUser} unreadCount={convo.unreadCount} />
+              <UserChatCard
+                user={convo.otherUser}
+                unreadCount={convo.unreadCounts?.[currentUserId] || 0}
+              />
             </li>
           ))}
         </ul>

@@ -4,7 +4,7 @@ import React from 'react'
 
 const UserChatCard = ({ user, unreadCount }) => {
     return (
-        <div className={`flex items-center justify-between lg:px-2 py-1 rounded-lg transition cursor-pointer border border-gray-400 ${unreadCount > 0 ? "bg-blue-400 hover:bg-blue-500 border-blue-500" : "bg-gray-100 hover:bg-gray-300 dark:bg-gray-100 dark:hover:bg-gray-400"}`}>
+        <div className={`flex items-center justify-between lg:px-2 py-1 rounded-lg transition cursor-pointer border border-gray-400 ${unreadCount > 0 ? "bg-blue-400 hover:bg-blue-500 border-blue-500" : "bg-gray-100 hover:bg-gray-300 dark:bg-gray-100 dark:hover:bg-gray-300"}`}>
             <div className='flex items-center gap-2'>
                 {/* Profile Image or Icon */}
                 {user.profilePic ? (

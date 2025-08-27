@@ -7,13 +7,18 @@ import PostCard from '../feed/post/PostCard';
 const Posts = ({ username, token }) => {
     const [userPosts, setuserPosts] = useState([]);
     const [loading, setloading] = useState(false);
+    const [skip, setskip] = useState(0);
+    const [hasMore, sethasMore] = useState(true);
+    const limit = 5;
 
     const getUserPosts = async () => {
         setloading(true)
         try {
-            const result = await postService.fetchUserPosts(username, token);
+            const result = await postService.fetchUserPosts(username, token, skip, limit);
             if (result.success) {
-                setuserPosts(result.userPosts);
+                setuserPosts(prev => [...result.userPosts, ...prev]);
+                setskip(prev => prev + limit);
+                sethasMore(result.hasMore);
             }
         } catch (error) {
             console.error("Fetch User Posts Error:", error);
@@ -45,6 +50,18 @@ const Posts = ({ username, token }) => {
                     </div>
                 ) : (
                     <p className="text-gray-700 dark:text-gray-300 text-center">No posts yet...</p>
+                )}
+
+                {hasMore ? (
+                    <button
+                        onClick={fetchPosts}
+                        disabled={loading}
+                        className="px-4 py-2 bg-green-600 text-white rounded"
+                    >
+                        {loading ? "Loading..." : "Load More"}
+                    </button>
+                ) : (
+                    <p className="text-gray-500 text-center mt-4">No more posts</p>
                 )}
             </div>
         </div>

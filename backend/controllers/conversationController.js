@@ -19,7 +19,7 @@ const getConversations = async (req, res) => {
                     _id: conv._id,
                     participants: conv.participants,
                     otherUser,
-                    unreadCounts: conv.unreadCounts.get(userId.toString()) || 0,
+                    unreadCounts: Object.fromEntries(conv.unreadCounts || []),
                     updatedAt: conv.updatedAt,
                     createdAt: conv.createdAt,
                 };

@@ -12,6 +12,7 @@ import useSocket from '@/hooks/useSocket';
 const OpenChatWindow = ({ user }) => {
     const toggleChat = useChatStore(state => state.toggleChat);
     const closeChat = useChatStore(state => state.closeChat);
+    const addConversationToStore = useChatStore(state => state.addConversationToStore);
     const token = useUserStore(state => state.token);
     const currentUserId = useUserStore(state => state.user?._id);
     const [messageText, setmessageText] = useState("");
@@ -42,6 +43,9 @@ const OpenChatWindow = ({ user }) => {
         try {
             const result = await messageService.sendNewMessage(user._id, messageText, token);
             if (result.success) {
+                if (result.newConversation) {
+                    addConversationToStore(result.conversation)
+                }
                 setmessages(prev => [...prev, result.message])
                 setmessageText("");
             }
@@ -62,10 +66,10 @@ const OpenChatWindow = ({ user }) => {
     useSocket(currentUserId, { onNewMessage: handleIncomingMessage });
 
     return (
-        <div className="w-80 h-96 bg-white rounded-lg shadow-lg border flex flex-col">
+        <div className="w-80 h-96 bg-white dark:bg-gray-300 rounded-lg shadow-lg border dark:border-gray-500 flex flex-col">
             {/* Chat header */}
             <div
-                className="flex justify-between items-center p-2 border-b bg-gray-100 rounded-t-lg cursor-pointer"
+                className="flex justify-between items-center p-2 border-b bg-gray-100 dark:bg-gray-100 rounded-t-lg cursor-pointer"
                 onClick={() => toggleChat(user)}
             >
                 <div className="flex items-center gap-2">
@@ -80,7 +84,7 @@ const OpenChatWindow = ({ user }) => {
                     ) : (
                         <UserCircle className="w-9 h-9 text-gray-500" />
                     )}
-                    <span className="font-semibold">{user.firstName} {user.lastName}</span>
+                    <span className="font-semibold dark:text-gray-900">{user.firstName} {user.lastName}</span>
                 </div>
 
                 {/* Close chat button */}
@@ -89,7 +93,7 @@ const OpenChatWindow = ({ user }) => {
                         e.stopPropagation();
                         closeChat(user);
                     }}
-                    className='cursor-pointer'
+                    className='cursor-pointer dark:text-gray-900'
                 >
                     <X size={16} />
                 </button>
@@ -121,7 +125,7 @@ const OpenChatWindow = ({ user }) => {
                     }}
                     rows={1}
                     placeholder="Type a message..."
-                    className="w-full px-2 py-2 rounded border text-sm resize-none overflow-hidden max-h-32 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-2 py-2 rounded border dark:border-gray-500 text-sm dark:text-gray-900 dark:placeholder:text-gray-600 resize-none overflow-hidden max-h-32 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
                 <button className="p-2 bg-blue-600 rounded-full flex items-center justify-center cursor-pointer" onClick={sendNewMessage} disabled={!messageText} >
                     <Send size={16} className="text-white" />

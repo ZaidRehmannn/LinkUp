@@ -6,7 +6,7 @@ import React from 'react'
 const ExploreUserCard = ({ user }) => {
     return (
         <Link href={`/profile/${user.username}`}>
-            <div className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-200 dark:hover:bg-gray-400 lg:px-3 py-2 rounded-lg transition cursor-pointer border border-gray-400">
+            <div className="flex items-center gap-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-200 dark:hover:bg-gray-300 lg:px-3 py-2 rounded-lg transition cursor-pointer border border-gray-400">
                 {/* Profile Image or Icon */}
                 {user.profilePic ? (
                     <Image

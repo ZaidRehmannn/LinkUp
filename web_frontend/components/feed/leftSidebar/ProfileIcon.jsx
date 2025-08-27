@@ -30,7 +30,7 @@ const ProfileIcon = () => {
             className="w-10 h-10 rounded-full border border-gray-700 object-cover"
           />
         ) : (
-          <UserCircle className="w-9 h-9 text-gray-500 dark:text-gray-300" />
+          <UserCircle className="w-9 h-9 text-gray-500 bg-gray-200 border border-gray-700 p-0.5 rounded-full" />
         )}
 
         {/* User Info */}

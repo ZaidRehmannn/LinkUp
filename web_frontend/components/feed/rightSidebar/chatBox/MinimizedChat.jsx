@@ -8,9 +8,12 @@ import Image from 'next/image';
 import React from 'react'
 
 const MinimizedChat = ({ user }) => {
+    const token = useUserStore(state => state.token);
+    const currentUserId = useUserStore(state => state.user?._id);
     const toggleChat = useChatStore(state => state.toggleChat);
     const closeChat = useChatStore(state => state.closeChat);
-    const token = useUserStore(state => state.token);
+    const markConversationAsReadInStore = useChatStore(state => state.markConversationAsReadInStore);
+
 
     const markConversationAsRead = async (senderId) => {
         try {
@@ -25,6 +28,7 @@ const MinimizedChat = ({ user }) => {
             className="flex items-center justify-between w-64 p-2 bg-gray-100 border rounded-lg shadow cursor-pointer" onClick={() => {
                 toggleChat(user)
                 markConversationAsRead(user._id)
+                markConversationAsReadInStore()
             }}>
             <div className='flex items-center gap-2'>
                 {user.profilePic ? (
