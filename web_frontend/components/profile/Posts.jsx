@@ -73,7 +73,7 @@ const Posts = ({ username, token }) => {
 
     return (
         <div className="w-full">
-            <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-6 bg-gray-50 dark:bg-gray-700">
+            <div className="border border-gray-200 dark:border-gray-600 rounded-lg p-2 lg:p-6 bg-gray-50 dark:bg-gray-700">
                 <div className='space-y-4'>
                     {userPosts.map((post) => (
                         <PostCard key={post._id} post={post} />

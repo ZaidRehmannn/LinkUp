@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react'
 import Image from 'next/image';
@@ -43,7 +43,6 @@ const CreatePost = () => {
                     loading: 'Posting...',
                     success: (result) => {
                         if (result.success) {
-                            // prepend the new post to posts state in zustand store
                             addPost(result.post);
                             resetToDefault();
                             return result.message;
@@ -93,27 +92,33 @@ const CreatePost = () => {
                 {preview && (
                     media.image ? (
                         <div className='px-4'>
-                            <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
+                            <div className="relative w-full max-h-[500px] flex items-center justify-center rounded-md overflow-hidden mb-3 bg-black">
                                 <Image
                                     src={preview}
                                     alt="Preview"
-                                    fill
-                                    className="object-cover"
+                                    width={800}
+                                    height={600}
+                                    className="object-contain w-full h-auto max-h-[500px]"
                                 />
                             </div>
                         </div>
                     ) : (
-                        <div className="w-full h-80 relative overflow-hidden mb-3">
-                            <video className='object-cover' controls>
-                                <source src={preview} type="video/mp4" />
-                            </video>
+                        <div className="px-4">
+                            <div className="relative w-full max-h-[500px] flex items-center justify-center rounded-md overflow-hidden mb-3 bg-black">
+                                <video
+                                    className="object-contain w-full h-auto max-h-[500px]"
+                                    controls
+                                >
+                                    <source src={preview} type="video/mp4" />
+                                </video>
+                            </div>
                         </div>
                     )
                 )}
             </div>
 
             {/* Buttons for adding image/video and post */}
-            <div className='flex justify-between mx-3 py-2'>
+            <div className='flex justify-between mx-3 py-2 flex-wrap gap-2'>
 
                 {/* Cancel button */}
                 {preview ? (
@@ -132,7 +137,7 @@ const CreatePost = () => {
                         <X /> Cancel
                     </Button>
                 ) : (
-                    <div className='flex items-center justify-center gap-2'>
+                    <div className='flex items-center justify-center gap-2 flex-wrap'>
                         {/* Upload image button */}
                         <div>
                             <label htmlFor="post-image" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
@@ -166,7 +171,12 @@ const CreatePost = () => {
                 )}
 
                 {/* Post button */}
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 dark:text-white text-xs cursor-pointer flex gap-1" onClick={handleSubmit} disabled={loading || (!content.trim() && !media.image && !media.video)}>
+                <Button
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700 dark:text-white text-xs cursor-pointer flex gap-1"
+                    onClick={handleSubmit}
+                    disabled={loading || (!content.trim() && !media.image && !media.video)}
+                >
                     <Pencil /> {loading ? "Posting..." : "Post"}
                 </Button>
             </div>
@@ -174,4 +184,4 @@ const CreatePost = () => {
     )
 }
 
-export default CreatePost
+export default CreatePost;

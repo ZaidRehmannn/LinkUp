@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { Button } from '@/components/ui/button';
 import { postService } from '@/services/postService';
@@ -34,7 +34,6 @@ const EditPost = ({ post }) => {
         let mediaFile = "";
 
         try {
-            // Check for File objects (new uploads)
             if (media.image instanceof File) {
                 mediaFile = media.image;
             } else if (media.video instanceof File) {
@@ -88,17 +87,22 @@ const EditPost = ({ post }) => {
             {/* media files */}
             {preview && (
                 media.image ? (
-                    <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
+                    <div className="relative w-full max-h-[600px] flex items-center justify-center rounded-md overflow-hidden mb-3 bg-black">
                         <Image
                             src={preview}
                             alt="Post Image"
-                            fill
-                            className="object-cover"
+                            width={800}
+                            height={600}
+                            className="object-contain w-full h-auto max-h-[600px]"
+                            priority
                         />
                     </div>
                 ) : media.video ? (
-                    <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
-                        <video className='object-cover w-full h-full' controls>
+                    <div className="relative w-full max-h-[600px] flex items-center justify-center rounded-md overflow-hidden mb-3 bg-black">
+                        <video
+                            className="object-contain w-full h-auto max-h-[600px]"
+                            controls
+                        >
                             <source src={preview} type="video/mp4" />
                         </video>
                     </div>
@@ -106,9 +110,9 @@ const EditPost = ({ post }) => {
             )}
 
             {/* action buttons */}
-            <div className='flex justify-between items-center mb-2'>
+            <div className='flex justify-between items-center mb-2 flex-wrap gap-2'>
                 {/* add/remove media buttons */}
-                <span>
+                <span className="flex flex-wrap gap-2">
                     {media.image ? (
                         <Button
                             size="sm"
@@ -126,7 +130,7 @@ const EditPost = ({ post }) => {
                             Remove Video
                         </Button>
                     ) : (
-                        <span className='flex gap-2'>
+                        <span className='flex flex-wrap gap-2'>
                             {/* Upload image button */}
                             <div>
                                 <label htmlFor="edit-post-image" className="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 rounded-md text-xs cursor-pointer">
@@ -139,7 +143,7 @@ const EditPost = ({ post }) => {
                                     accept="image/*"
                                     className="hidden"
                                     onChange={(e) => {
-                                        handleMediaChange(e)
+                                        handleMediaChange(e);
                                         setremoveMedia(false);
                                     }}
                                 />
@@ -157,7 +161,7 @@ const EditPost = ({ post }) => {
                                     accept="video/*"
                                     className="hidden"
                                     onChange={(e) => {
-                                        handleMediaChange(e)
+                                        handleMediaChange(e);
                                         setremoveMedia(false);
                                     }}
                                 />
@@ -192,4 +196,4 @@ const EditPost = ({ post }) => {
     )
 }
 
-export default EditPost
+export default EditPost;

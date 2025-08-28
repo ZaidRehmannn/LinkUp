@@ -52,10 +52,12 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
   const handleIncomingMessage = (message) => {
     const isChatOpen = chatWindowStatus(message.sender);
 
-    if (isChatOpen) {   // mark chat as read 
+    if (isChatOpen) {
+      // mark chat as read
       markConversationAsRead(message.sender);
       markConversationAsReadInStore(message.conversationId, currentUserId);
-    } else {    // update unread messages count
+    } else {
+      // update unread messages count
       updateUnreadCount(message.conversationId, message.receiver);
     }
 

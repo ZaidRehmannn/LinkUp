@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
@@ -30,7 +30,6 @@ const PostCard = React.memo(({ post, postPage = false }) => {
     const setCommentCount = useCommentStore(state => state.setCommentCount);
     const displayCommentCount = storeCommentCount ?? commentCount;
 
-    // Memoize handlers to prevent unnecessary re-renders
     const handleCaptionExpand = useCallback(() => {
         setcaptionExpanded(true);
     }, []);
@@ -40,10 +39,6 @@ const PostCard = React.memo(({ post, postPage = false }) => {
             setCommentCount(_id, commentCount);
         }
     }, [_id, commentCount, storeCommentCount, setCommentCount]);
-
-    useEffect(() => {
-        if (!editPostId) return;
-    }, [editPostId])
 
     return (
         <div className="border bg-white dark:bg-gray-300 rounded-lg shadow p-4 mb-4 w-full">
@@ -66,8 +61,12 @@ const PostCard = React.memo(({ post, postPage = false }) => {
                     </div>
 
                     <div>
-                        <Link href={`/profile/${user.username}`}><p className="font-semibold dark:text-black">{user.firstName} {user.lastName}</p></Link>
-                        <p className="text-xs text-gray-500 dark:text-gray-700">{new Date(createdAt).toLocaleString()}</p>
+                        <Link href={`/profile/${user.username}`}>
+                            <p className="font-semibold dark:text-black">{user.firstName} {user.lastName}</p>
+                        </Link>
+                        <p className="text-xs text-gray-500 dark:text-gray-700">
+                            {new Date(createdAt).toLocaleString()}
+                        </p>
                     </div>
                 </div>
 
@@ -86,29 +85,34 @@ const PostCard = React.memo(({ post, postPage = false }) => {
 
                     {/* Read more button */}
                     {!captionExpanded && shouldTruncate && (
-                        <div className='text-sm text-blue-600 font-semibold w-fit cursor-pointer mb-2' onClick={handleCaptionExpand}>
+                        <div
+                            className='text-sm text-blue-600 font-semibold w-fit cursor-pointer mb-2'
+                            onClick={handleCaptionExpand}
+                        >
                             Read more...
                         </div>
                     )}
 
                     {/* media files */}
                     {image && (
-                        <div className="w-full h-80 relative rounded-md overflow-hidden mb-3">
+                        <div className="relative w-full max-h-[600px] flex items-center justify-center rounded-md overflow-hidden mb-3 bg-black">
                             <Image
                                 src={image}
                                 alt="Post Image"
-                                fill
-                                className="object-cover"
+                                width={800}
+                                height={600}
+                                className="object-contain w-full h-auto max-h-[600px]"
+                                priority
                             />
                         </div>
                     )}
 
                     {video && (
-                        <div className="w-full h-80 rounded-md overflow-hidden mb-3">
+                        <div className="relative w-full max-h-[600px] flex items-center justify-center rounded-md overflow-hidden mb-3 bg-black">
                             <video
                                 src={video}
                                 controls
-                                className="w-full h-full object-cover"
+                                className="object-contain w-full h-auto max-h-[600px]"
                             />
                         </div>
                     )}
@@ -119,10 +123,7 @@ const PostCard = React.memo(({ post, postPage = false }) => {
 
             {/* user actions */}
             <div className="flex justify-between pt-2 border-t text-sm text-gray-600 dark:text-gray-800">
-                <LikeButton
-                    postId={_id}
-                    likes={likes}
-                />
+                <LikeButton postId={_id} likes={likes} />
                 <CommentButton
                     commentCount={displayCommentCount}
                     setopenCommentBox={setopenCommentBox}
@@ -139,4 +140,4 @@ const PostCard = React.memo(({ post, postPage = false }) => {
 })
 
 PostCard.displayName = 'PostCard';
-export default PostCard
+export default PostCard;

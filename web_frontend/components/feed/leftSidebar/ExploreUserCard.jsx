@@ -14,10 +14,10 @@ const ExploreUserCard = ({ user }) => {
                         alt="User profile"
                         width={36}
                         height={36}
-                        className="w-10 h-10 rounded-full border border-gray-700 object-cover"
+                        className="w-10 h-10 rounded-full border border-gray-700 object-cover ml-2"
                     />
                 ) : (
-                    <UserCircle className="w-9 h-9 text-gray-500" />
+                    <UserCircle className="w-9 h-9 text-gray-500 ml-2" />
                 )}
 
                 {/* User Info */}

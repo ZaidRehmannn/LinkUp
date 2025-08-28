@@ -18,7 +18,7 @@ const ProfileIcon = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 bg-gray-200 dark:bg-gray-300 lg:px-3 py-2 rounded-lg transition">
+    <div className="flex flex-col gap-4 bg-gray-200 dark:bg-gray-300 px-3 py-2 rounded-lg transition">
       <div className='flex items-center gap-3'>
         {/* Profile Image or Icon */}
         {user.profilePic ? (

@@ -1,3 +1,4 @@
+import notificationModel from "../models/notificationModel.js";
 import userModel from "../models/userModel.js";
 import { notifyUser } from "../utils/notify.js";
 

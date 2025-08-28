@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import useUserStore from "@/stores/userStore.js";
 import useSocket from "@/hooks/useSocket.js";
 import { Bell } from "lucide-react";
-import formatTimeAgo from '@/lib/formatTime';
+import formatTimeAgo from "@/lib/formatTime";
 import SenderUser from "./SenderUser";
 import Link from "next/link";
 import { notificationService } from "@/services/notificationService";
@@ -23,7 +23,7 @@ const Notifications = () => {
         try {
             const result = await notificationService.fetchNotifications(token);
             if (result.success) {
-                setnotifications(result.notifications)
+                setnotifications(result.notifications);
             }
         } catch (error) {
             console.log("Fetch notifications error:", error);
@@ -68,16 +68,16 @@ const Notifications = () => {
     };
 
     const handleIncoming = (notif) => {
-        setnotifications(prev => [notif, ...prev])
-        setnotificationCount((prevCount) => prevCount + 1)
+        setnotifications(prev => [notif, ...prev]);
+        setnotificationCount((prevCount) => prevCount + 1);
         playSound("notification");
-    }
+    };
 
-    useSocket(userId, handleIncoming)
+    useSocket(userId, handleIncoming);
 
     if (loading) {
         return (
-            <div className="absolute right-0 mt-2 min-w-[400px] min-h-96 bg-white rounded-lg shadow border p-3 text-gray-500 font-semibold z-50 flex items-center justify-center">
+            <div className="absolute right-0 mt-2 w-[95vw] max-w-[400px] sm:w-[350px] bg-white rounded-lg shadow border p-3 text-gray-500 font-semibold z-50 flex items-center justify-center">
                 Loading Notifications...
             </div>
         );
@@ -87,11 +87,11 @@ const Notifications = () => {
         <div className="relative">
             <button className="relative mt-2">
                 <Bell
-                    className="text-gray-500 dark:text-gray-300 cursor-pointer"
+                    className="text-gray-500 dark:text-gray-300 cursor-pointer w-5 h-5 sm:w-6 sm:h-6"
                     onClick={handleNotificationClick}
                 />
                 {notificationCount > 0 && (
-                    <span className="absolute -top-1 -right-1 text-xs bg-blue-600 text-white rounded-full px-1">
+                    <span className="absolute -top-1 -right-1 text-xs bg-blue-600 text-white rounded-full px-1 min-w-[16px] h-4 flex items-center justify-center">
                         {notificationCount}
                     </span>
                 )}
@@ -100,7 +100,7 @@ const Notifications = () => {
             {/* dropdown */}
             {notificationTab && (
                 notifications.length > 0 ? (
-                    <div className="absolute right-0 mt-2 min-w-[400px] min-h-96 bg-white rounded-lg shadow border max-h-96 overflow-y-auto z-50">
+                    <div className="absolute -right-3 md:right-0 mt-2 lg:w-[95vw] lg:max-w-[400px] w-[350px] min-h-80 bg-white rounded-lg shadow border max-h-96 overflow-y-auto z-50">
                         {notifications.map((notification, i) => (
                             <Link
                                 href={
@@ -116,9 +116,9 @@ const Notifications = () => {
                                     <SenderUser user={notification.sender} />
                                 </span>
 
-                                <div className="flex items-center justify-between flex-1">
-                                    <span>— {notification.message}</span>
-                                    <span className="text-xs text-gray-500">
+                                <div className="flex items-center justify-between flex-1 min-w-0">
+                                    <span className="text-xs lg:text-base truncate">— {notification.message}</span>
+                                    <span className="text-[8px] lg:text-xs text-gray-500 ml-2 flex-shrink-0">
                                         {formatTimeAgo(notification.createdAt)}
                                     </span>
                                 </div>
@@ -126,13 +126,13 @@ const Notifications = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="absolute right-0 mt-2 min-w-[400px] min-h-96 bg-white rounded-lg shadow border p-3 text-gray-500 font-semibold z-50 flex items-center justify-center">
+                    <div className="absolute right-0 mt-2 w-[95vw] max-w-[400px] sm:w-[350px] min-h-80 bg-white rounded-lg shadow border p-3 text-gray-500 font-semibold z-50 flex items-center justify-center">
                         No Notifications to show
                     </div>
                 )
             )}
         </div>
-    )
-}
+    );
+};
 
-export default Notifications
+export default Notifications;

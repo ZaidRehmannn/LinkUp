@@ -15,7 +15,7 @@ const Navbar = () => {
   const toggleMenu = useUserStore(state => state.toggleMenu);
 
   return (
-    <div className="fixed w-full top-0 z-50 shadow h-16 flex justify-end lg:justify-between items-center gap-4 md:gap-0 px-6 py-3 border-b bg-gray-100 dark:bg-gray-900">
+    <div className="fixed w-full top-0 z-50 shadow h-16 flex justify-between items-center gap-4 md:gap-0 px-6 py-3 border-b bg-gray-100 dark:bg-gray-900">
       {/* Left Side - Logo (Desktop View) */}
       <Link href={token ? "/feed" : "/"} className="hidden lg:flex items-center relative h-10 w-[120px]">
         <Image

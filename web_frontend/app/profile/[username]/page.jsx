@@ -179,19 +179,19 @@ const page = () => {
 
                                 {/* Tab Contents with Max Height and Scroll */}
                                 <div className="max-h-[calc(100vh-12rem)] overflow-y-auto">
-                                    <TabsContent value="about" className="mt-0 p-6">
+                                    <TabsContent value="about" className="mt-0 p-4 md:p-6">
                                         <About profileUser={profileUser} />
                                     </TabsContent>
 
-                                    <TabsContent value="posts" className="mt-0 p-6">
+                                    <TabsContent value="posts" className="mt-0 p-4 md:p-6">
                                         <Posts username={username} token={token} />
                                     </TabsContent>
 
-                                    <TabsContent value="followers" className="mt-0 p-6">
+                                    <TabsContent value="followers" className="mt-0 p-4 md:p-6">
                                         <Followers username={username} token={token} />
                                     </TabsContent>
 
-                                    <TabsContent value="following" className="mt-0 p-6">
+                                    <TabsContent value="following" className="mt-0 p-4 md:p-6">
                                         <Following username={username} token={token} />
                                     </TabsContent>
                                 </div>
