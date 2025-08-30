@@ -4,12 +4,14 @@ import ExploreUserList from './ExploreUserList';
 
 const SuggestedUsers = () => {
   return (
-    <div className='flex flex-col gap-3 h-full'>
-      {/* profile section */}
+    <div className="flex flex-col gap-3 h-full">
+      {/* Profile Section */}
       <ProfileIcon />
 
-      {/* explore new people section */}
-      <ExploreUserList />
+      {/* Explore New People Section */}
+      <div className="flex-1 overflow-y-auto">
+        <ExploreUserList />
+      </div>
     </div>
   )
 }

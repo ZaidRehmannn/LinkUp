@@ -21,6 +21,7 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
 
   const fetchUserConversations = async () => {
     try {
+      if (userConversations.length > 0) return;
       const result = await conversationService.fetchConversations(token);
       if (result.success) {
         setuserConversations(result.conversations);
@@ -46,9 +47,9 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
   };
 
   const handleSearchResult = (searchResult) => {
-    const existingConversation = userConversations.find((convo) => {
-      convo.participants.some((participant) => participant.toString === searchResult._id)
-    })
+    const existingConversation = userConversations.find((convo) =>
+      convo.participants.some((participant) => participant.toString() === searchResult._id)
+    );
 
     if (existingConversation) {
       handleChatClick(existingConversation)
@@ -96,7 +97,7 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
           {searchResults.map((result) => (
             <li
               key={result._id}
-              onClick={handleSearchResult(result)}
+              onClick={() => handleSearchResult(result)}
             >
               <UserChatCard user={result} />
             </li>
@@ -107,7 +108,7 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
           {userConversations.map((convo) => (
             <li
               key={convo._id}
-              onClick={handleChatClick(convo)}
+              onClick={() => handleChatClick(convo)}
             >
               <UserChatCard
                 user={convo.otherUser}

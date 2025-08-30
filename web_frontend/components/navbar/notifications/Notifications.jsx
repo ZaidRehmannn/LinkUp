@@ -73,7 +73,9 @@ const Notifications = () => {
         playSound("notification");
     };
 
-    useSocket(userId, handleIncoming);
+    useSocket(userId, {
+        onNotification: handleIncoming
+    });
 
     if (loading) {
         return (

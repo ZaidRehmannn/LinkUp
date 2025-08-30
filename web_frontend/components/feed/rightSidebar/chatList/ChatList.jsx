@@ -10,7 +10,6 @@ const ChatList = () => {
   const token = useUserStore(state => state.token);
   const [searchResults, setsearchResults] = useState([]);
   const [query, setquery] = useState("");
-  const isDesktop = window.innerWidth >= 1024;
 
   const resetOnSelect = () => {
     setquery("");
@@ -21,7 +20,9 @@ const ChatList = () => {
     <main className='flex flex-col gap-3 h-full'>
       {/* heading + search chats */}
       <div className='flex flex-col gap-1'>
-        <p className='font-semibold text-blue-700 text-4xl lg:text-xl px-2 py-3 lg:p-1'>LinkUp Chats</p>
+        <p className='font-semibold text-blue-700 text-4xl lg:text-xl px-2 py-3 lg:p-1'>
+          LinkUp Chats
+        </p>
         <ChatSearch
           setsearchResults={setsearchResults}
           query={query}
@@ -32,17 +33,21 @@ const ChatList = () => {
 
       {/* user chats list */}
       <div className='bg-gray-200 dark:bg-gray-300 p-1 rounded-lg transition flex-1 overflow-y-auto'>
-        {isDesktop ? (
+        {/* Show desktop chat list on lg and above */}
+        <div className="hidden lg:block">
           <UserChats
             searchResults={searchResults}
             resetOnSelect={resetOnSelect}
           />
-        ) : (
+        </div>
+
+        {/* Show mobile chat list below lg */}
+        <div className="block lg:hidden">
           <UserChatsMobile
             searchResults={searchResults}
             resetOnSelect={resetOnSelect}
           />
-        )}
+        </div>
       </div>
     </main>
   )

@@ -35,28 +35,30 @@ const ExploreUserList = () => {
     }, [token])
 
     return (
-        <div className='bg-gray-200 dark:bg-gray-300 rounded-md border-2 h-full p-2'>
-            <p className='font-semibold text-blue-700 text-lg'>Explore New People</p>
+        <div className="bg-gray-200 dark:bg-gray-300 rounded-md border-2 p-2 flex flex-col h-full">
+            <p className="font-semibold text-blue-700 text-lg">Explore New People</p>
 
-            {loading ? (
-                <div className="flex justify-center items-center h-full">
-                    <p className="text-blue-600 font-semibold">Loading...</p>
-                </div>
-            ) : exploreUsers.length > 0 ? (
-                <ul className='space-y-3 mt-2'>
-                    {exploreUsers.map((user) => (
-                        <li key={user._id}>
-                            <ExploreUserCard user={user} />
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <div className="flex justify-center items-center h-full">
-                    <p className="text-gray-500 font-semibold">No People to Show...</p>
-                </div>
-            )}
+            <div className="flex-1 mt-2 overflow-y-auto">
+                {loading ? (
+                    <div className="flex justify-center items-center h-full">
+                        <p className="text-blue-600 font-semibold">Loading...</p>
+                    </div>
+                ) : exploreUsers.length > 0 ? (
+                    <ul className="space-y-3">
+                        {exploreUsers.map((user) => (
+                            <li key={user._id}>
+                                <ExploreUserCard user={user} />
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <div className="flex justify-center items-center h-full">
+                        <p className="text-gray-500 font-semibold">No People to Show...</p>
+                    </div>
+                )}
+            </div>
         </div>
-    )
+    );
 }
 
 export default ExploreUserList

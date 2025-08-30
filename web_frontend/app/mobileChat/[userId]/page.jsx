@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
@@ -21,9 +23,9 @@ const page = () => {
             </div>
 
             {/* Chat Window */}
-            <div className="flex-1 overflow-y-auto">
+            {/* <div className="flex-1 overflow-y-auto">
                 <ChatWindow userId={id} />
-            </div>
+            </div> */}
         </main>
     )
 }

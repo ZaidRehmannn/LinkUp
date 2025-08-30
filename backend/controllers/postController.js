@@ -37,33 +37,40 @@ const createPost = async (req, res) => {
     }
 };
 
-// fetch the user's own post and the following users posts
+// Fetch the user's own posts and following users' posts
 const fetchAllPosts = async (req, res) => {
     const userId = req.userId;
     const limit = parseInt(req.query.limit) || 5;
     const skip = parseInt(req.query.skip) || 0;
 
     try {
-        // Get current user following list
-        const user = await userModel.findById(userId).select("following");
+        const user = await userModel.findById(userId).select("following").lean();
 
-        // Fetch own posts and following users posts
         const allPosts = await postModel
             .find({ user: { $in: [userId, ...user.following] } })
-            .populate("user", "_id firstName lastName profilePic")
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .populate("user", "_id firstName lastName profilePic")
+            .lean();
 
-        // Count total posts for loading on frontend
+        // Count total posts
         const totalPosts = await postModel.countDocuments({
             user: { $in: [userId, ...user.following] },
         });
 
-        res.status(200).json({ success: true, posts: allPosts, totalPosts, hasMore: skip + allPosts.length < totalPosts });
+        res.status(200).json({
+            success: true,
+            posts: allPosts,
+            totalPosts,
+            hasMore: skip + allPosts.length < totalPosts,
+        });
     } catch (error) {
         console.error("Fetching posts error:", error);
-        res.status(500).json({ success: false, message: "Something went wrong!" });
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong!",
+        });
     }
 };
 

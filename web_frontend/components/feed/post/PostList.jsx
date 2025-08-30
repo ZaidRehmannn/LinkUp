@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import React, { useEffect, useState, useCallback, useRef } from 'react'
-import PostCard from './PostCard'
-import { postService } from '@/services/postService'
-import useUserStore from '@/stores/userStore'
-import usePostStore from '@/stores/postStore'
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import PostCard from './PostCard';
+import { postService } from '@/services/postService';
+import useUserStore from '@/stores/userStore';
+import usePostStore from '@/stores/postStore';
 
 const PostList = () => {
   const token = useUserStore(state => state.token);
@@ -12,17 +12,19 @@ const PostList = () => {
   const setPosts = usePostStore(state => state.setPosts);
   const addPosts = usePostStore(state => state.addPosts);
 
-  const [loading, setloading] = useState(false);
-  const [skip, setskip] = useState(0);
-  const [hasMore, sethasMore] = useState(true);
-  const [initialLoad, setinitialLoad] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [skip, setSkip] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
 
   const limit = 5;
   const skipRef = useRef(0);
+  const isFetchingRef = useRef(false);
 
   const fetchPosts = useCallback(async (isInitial = false) => {
-    if (loading || !hasMore || !token) return;
-    setloading(true);
+    if (isFetchingRef.current || loading || !hasMore || !token) return;
+    isFetchingRef.current = true;
+    setLoading(true);
 
     try {
       const currentSkip = isInitial ? 0 : skipRef.current;
@@ -32,35 +34,33 @@ const PostList = () => {
         if (isInitial) {
           setPosts(result.posts);
           skipRef.current = limit;
-          setskip(limit);
-          setinitialLoad(true);
+          setSkip(limit);
+          setInitialLoadDone(true);
         } else {
           addPosts(result.posts);
           skipRef.current += limit;
-          setskip(prev => prev + limit);
+          setSkip(prev => prev + limit);
         }
-        sethasMore(result.hasMore);
+        setHasMore(result.hasMore);
       }
     } catch (error) {
-      console.error("Fetch Posts Error: ", error);
+      console.error('Fetch Posts Error:', error);
     } finally {
-      setloading(false);
+      setLoading(false);
+      isFetchingRef.current = false;
     }
   }, [token, loading, hasMore, limit, setPosts, addPosts]);
 
-  // Initial load
   useEffect(() => {
-    if (!token || initialLoad) return;
+    if (!token || initialLoadDone) return;
     fetchPosts(true);
-  }, [token, initialLoad, fetchPosts]);
+  }, [token, initialLoadDone]);
 
-  // Handle load more
   const handleLoadMore = useCallback(() => {
-    fetchPosts(false);
-  }, [fetchPosts]);
+    if (!loading && hasMore) fetchPosts(false);
+  }, [loading, hasMore, fetchPosts]);
 
-  // Show loading only for initial load
-  if (loading && !initialLoad) {
+  if (loading && !initialLoadDone) {
     return (
       <main className="min-h-[calc(100vh-8rem)] flex justify-center items-center">
         <p className="text-blue-600 font-bold text-xl">Loading posts...</p>
@@ -88,13 +88,13 @@ const PostList = () => {
           disabled={loading}
           className="w-full px-14 py-2 border border-blue-600 text-blue-600 text-sm font-semibold rounded cursor-pointer mt-1 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Loading Posts..." : "Load More Posts"}
+          {loading ? 'Loading Posts...' : 'Load More Posts'}
         </button>
       ) : (
         <p className="text-gray-500 text-center mt-4">No more posts</p>
       )}
     </main>
-  )
-}
+  );
+};
 
 export default PostList;

@@ -1,44 +1,52 @@
-'use client'
+'use client';
 
 import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export default function useSocket(userId, { onNotification, onNewMessage, onNewConversation }) {
+export default function useSocket(userId, { onNotification, onNewMessage, onNewConversation } = {}) {
     const socketRef = useRef(null);
 
     useEffect(() => {
-        if (!userId) return
+        if (!userId) return;
+        if (socketRef.current) return;
 
         const socket = io(SOCKET_URL, {
-            transports: ["websocket"]
-        })
-        socketRef.current = socket
+            transports: ["websocket"],
+            reconnection: true,
+            reconnectionAttempts: 5,
+        });
+
+        socketRef.current = socket;
 
         socket.on("connect", () => {
-            socket.emit("join", userId)
-        })
+            socket.emit("join", userId);
+            console.log("Socket connected:", socket.id);
+        });
 
-        // for listening to new notifications (like, commment, follow)
-        socket.on("notification", (payload) => {
-            if (onNotification) onNotification(payload)
-        })
+        if (onNotification) {
+            socket.on("notification", onNotification);
+        }
 
-        // for listening to new chat messages
-        socket.on("newMessage", (payload) => {
-            if (onNewMessage) onNewMessage(payload)
-        })
+        if (onNewMessage) {
+            socket.on("newMessage", onNewMessage);
+        }
 
-        // for listening to new conversations
-        socket.on("newConversation", (payload) => {
-            if (onNewConversation) onNewConversation(payload)
-        })
+        if (onNewConversation) {
+            socket.on("newConversation", onNewConversation);
+        }
 
         return () => {
-            socket.disconnect();
-        }
-    }, [userId, onNotification, onNewMessage])
+            if (socketRef.current) {
+                socket.off("notification");
+                socket.off("newMessage");
+                socket.off("newConversation");
+                socket.disconnect();
+                socketRef.current = null;
+            }
+        };
+    }, [userId]);
 
     return socketRef.current;
-};
+}

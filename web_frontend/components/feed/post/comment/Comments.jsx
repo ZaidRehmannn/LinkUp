@@ -44,7 +44,7 @@ const Comments = ({ postId }) => {
           setskip(limit);
           setinitialLoad(true);
         } else {
-          setcomments(prev => [...formattedComments, ...prev]);
+          setcomments(prev => [...prev, ...formattedComments]);
           skipRef.current += limit;
           setskip(prev => prev + limit);
         }

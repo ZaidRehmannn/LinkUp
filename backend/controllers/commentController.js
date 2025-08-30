@@ -55,7 +55,7 @@ const createComment = async (req, res) => {
     }
 };
 
-// get all comments for a specfic post
+// Get all comments for a specific post
 const getCommentsByPost = async (req, res) => {
     const { postId } = req.params;
     const limit = parseInt(req.query.limit) || 5;
@@ -63,16 +63,22 @@ const getCommentsByPost = async (req, res) => {
 
     try {
         const comments = await commentModel.find({ post: postId })
-            .populate("user", "_id firstName lastName profilePic")
-            .populate("post", "_id")
             .sort({ createdAt: -1 })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .populate("user", "_id firstName lastName profilePic")
+            .populate("post", "_id")
+            .lean();
 
-        // Count total comments for this post
+        // Count total comments
         const totalComments = await commentModel.countDocuments({ post: postId });
 
-        res.status(200).json({ success: true, comments, totalComments, hasMore: skip + comments.length < totalComments });
+        res.status(200).json({
+            success: true,
+            comments,
+            totalComments,
+            hasMore: skip + comments.length < totalComments
+        });
     } catch (error) {
         console.error("Get Comments Error:", error);
         res.status(500).json({ success: false, message: "Something went wrong" });

@@ -5,23 +5,28 @@ let io = null;
 export const initSocket = (server) => {
     io = new Server(server, {
         cors: {
-            origin: "http://localhost:3000"
+            origin: "http://localhost:3000",
+            transports: ["websocket"]
         }
     })
 
     io.on("connection", (socket) => {
-        console.log("Socket connected:", socket.id);
+        console.log(`Socket connected: ${socket.id}`);
 
         socket.on("join", (userId) => {
-            if (!userId) return
-            socket.join(userId)
-            console.log(`Socket ${socket.id} joined room: ${userId}`);
-        })
+            if (!userId) return;
+            Array.from(socket.rooms).forEach(room => {
+                if (room !== socket.id) socket.leave(room);
+            });
+            socket.join(userId);
+            console.log(`Socket ${socket.id} joined room ${userId}`);
+        });
 
         socket.on("disconnect", () => {
-            console.log("Socket disconnected:", socket.id);
-        })
-    })
+            console.log(`Socket disconnected: ${socket.id}`);
+            socket.removeAllListeners();
+        });
+    });
 
     return io
 };
