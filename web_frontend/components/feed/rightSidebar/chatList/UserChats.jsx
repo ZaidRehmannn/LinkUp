@@ -38,6 +38,26 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
     }
   };
 
+  const handleChatClick = (conversation) => {
+    resetOnSelect();
+    toggleChat(conversation.otherUser);
+    markConversationAsRead(conversation.otherUser._id);
+    markConversationAsReadInStore(conversation._id, currentUserId);
+  };
+
+  const handleSearchResult = (searchResult) => {
+    const existingConversation = userConversations.find((convo) => {
+      convo.participants.some((participant) => participant.toString === searchResult._id)
+    })
+
+    if (existingConversation) {
+      handleChatClick(existingConversation)
+    } else {
+      resetOnSelect();
+      toggleChat(searchResult)
+    }
+  };
+
   useEffect(() => {
     if (!token) return;
     fetchUserConversations();
@@ -76,10 +96,7 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
           {searchResults.map((result) => (
             <li
               key={result._id}
-              onClick={() => {
-                resetOnSelect()
-                toggleChat(result)
-              }}
+              onClick={handleSearchResult(result)}
             >
               <UserChatCard user={result} />
             </li>
@@ -90,12 +107,7 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
           {userConversations.map((convo) => (
             <li
               key={convo._id}
-              onClick={() => {
-                resetOnSelect()
-                toggleChat(convo.otherUser)
-                markConversationAsRead(convo.otherUser._id)
-                markConversationAsReadInStore(convo._id, currentUserId)
-              }}
+              onClick={handleChatClick(convo)}
             >
               <UserChatCard
                 user={convo.otherUser}

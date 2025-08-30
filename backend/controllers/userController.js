@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
         });
     } catch (error) {
         console.error("Login error:", error);
-        res.status(500).json({ success: false, message: "Server error" });
+        res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };
 
@@ -89,8 +89,8 @@ const registerUser = async (req, res) => {
         res.status(201).json({ success: true, message: "Account created succesfully!" });
     }
     catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: "Error" });
+        console.error("Signup error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong!" });
     }
 };
 

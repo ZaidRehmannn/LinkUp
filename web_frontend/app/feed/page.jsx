@@ -32,7 +32,7 @@ const page = () => {
       </aside>
 
       {/* Floating Chat Icon for Mobile & Tablet */}
-      <Link href="/chats" className="lg:hidden fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition duration-300">
+      <Link href="/mobileChatList" className="lg:hidden fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition duration-300">
         <MessageCircle size={28} />
       </Link>
     </main>

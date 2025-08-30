@@ -6,7 +6,7 @@ const page = () => {
     return (
         <>
             {/* Desktop View */}
-            <main className='hidden lg:flex xl:px-20 px-14 py-48 justify-between'>
+            <main className='hidden lg:flex xl:px-20 px-14 py-56 justify-between'>
                 {/* left - intro and buttons section */}
                 <div>
                     <Hero />

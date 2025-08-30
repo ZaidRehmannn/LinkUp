@@ -4,11 +4,13 @@ import React, { useState } from 'react'
 import UserChats from './UserChats'
 import ChatSearch from './ChatSearch'
 import useUserStore from '@/stores/userStore'
+import UserChatsMobile from './UserChatsMobile'
 
 const ChatList = () => {
   const token = useUserStore(state => state.token);
   const [searchResults, setsearchResults] = useState([]);
   const [query, setquery] = useState("");
+  const isDesktop = window.innerWidth >= 1024;
 
   const resetOnSelect = () => {
     setquery("");
@@ -30,10 +32,17 @@ const ChatList = () => {
 
       {/* user chats list */}
       <div className='bg-gray-200 dark:bg-gray-300 p-1 rounded-lg transition flex-1 overflow-y-auto'>
-        <UserChats
-          searchResults={searchResults}
-          resetOnSelect={resetOnSelect}
-        />
+        {isDesktop ? (
+          <UserChats
+            searchResults={searchResults}
+            resetOnSelect={resetOnSelect}
+          />
+        ) : (
+          <UserChatsMobile
+            searchResults={searchResults}
+            resetOnSelect={resetOnSelect}
+          />
+        )}
       </div>
     </main>
   )

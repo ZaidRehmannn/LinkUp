@@ -53,7 +53,7 @@ const page = () => {
     };
 
     return (
-        <main className="flex items-center justify-center px-4 py-36">
+        <main className="flex items-center justify-center px-4 py-42">
             <form onSubmit={handleSubmit} className="dark:bg-gray-900 w-full max-w-md space-y-5 shadow-xl rounded-2xl p-8 border">
                 <h2 className="text-2xl font-semibold text-blue-700 dark:text-blue-500">Welcome Back!</h2>
 
