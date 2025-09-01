@@ -74,11 +74,9 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
     const isChatOpen = chatWindowStatus(message.sender);
 
     if (isChatOpen) {
-      // mark chat as read
       markConversationAsRead(message.sender);
       markConversationAsReadInStore(message.conversationId, currentUserId);
     } else {
-      // update unread messages count
       updateUnreadCount(message.conversationId, message.receiver);
     }
 
@@ -99,7 +97,10 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
               key={result._id}
               onClick={() => handleSearchResult(result)}
             >
-              <UserChatCard user={result} />
+              <UserChatCard
+                user={result}
+                unreadCount={result.unreadCount}
+              />
             </li>
           ))}
         </ul>

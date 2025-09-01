@@ -2,17 +2,28 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import HomePageLinks from "./HomePageLinks"
 import useUserStore from "@/stores/userStore"
 import FeedSearchBar from "./FeedSearchBar"
 import { House, Menu, Moon } from "lucide-react"
 import ThemeSwitcher from "../ThemeSwitcher"
 import Notifications from "./notifications/Notifications"
+import NavbarSkeleton from "./NavbarSkeleton"
 
 const Navbar = () => {
   const token = useUserStore(state => state.token);
   const toggleMenu = useUserStore(state => state.toggleMenu);
+  const [isHydrated, setisHydrated] = useState(false);
+
+  useEffect(() => {
+    setisHydrated(true);
+  }, []);
+
+  // Show a consistent loading state until hydration is complete
+  if (!isHydrated) {
+    return <NavbarSkeleton />
+  }
 
   return (
     <div className="fixed w-full top-0 z-50 shadow h-16 flex justify-between items-center gap-4 md:gap-0 px-6 py-3 border-b bg-gray-100 dark:bg-gray-900">

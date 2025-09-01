@@ -77,14 +77,6 @@ const Notifications = () => {
         onNotification: handleIncoming
     });
 
-    if (loading) {
-        return (
-            <div className="absolute right-0 mt-2 w-[95vw] max-w-[400px] sm:w-[350px] bg-white rounded-lg shadow border p-3 text-gray-500 font-semibold z-50 flex items-center justify-center">
-                Loading Notifications...
-            </div>
-        );
-    }
-
     return (
         <div className="relative">
             <button className="relative mt-2">
@@ -99,9 +91,13 @@ const Notifications = () => {
                 )}
             </button>
 
-            {/* dropdown */}
+            {/* dropdown - only show when notificationTab is true */}
             {notificationTab && (
-                notifications.length > 0 ? (
+                loading ? (
+                    <div className="absolute -right-3 md:right-0 mt-2 lg:w-[95vw] lg:max-w-[400px] w-[350px] min-h-80 bg-white rounded-lg shadow border p-3 text-gray-500 font-semibold z-50 flex items-center justify-center">
+                        Loading Notifications...
+                    </div>
+                ) : notifications.length > 0 ? (
                     <div className="absolute -right-3 md:right-0 mt-2 lg:w-[95vw] lg:max-w-[400px] w-[350px] min-h-80 bg-white rounded-lg shadow border max-h-96 overflow-y-auto z-50">
                         {notifications.map((notification, i) => (
                             <Link
