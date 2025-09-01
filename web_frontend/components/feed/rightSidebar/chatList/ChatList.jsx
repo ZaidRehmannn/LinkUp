@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import UserChats from './UserChats'
 import ChatSearch from './ChatSearch'
 import useUserStore from '@/stores/userStore'
-import UserChatsMobile from './UserChatsMobile'
 
 const ChatList = () => {
   const token = useUserStore(state => state.token);
@@ -32,22 +31,11 @@ const ChatList = () => {
       </div>
 
       {/* user chats list */}
-      <div className='bg-gray-200 dark:bg-gray-300 p-1 rounded-lg transition flex-1 overflow-y-auto'>
-        {/* Show desktop chat list on lg and above */}
-        <div className="hidden lg:block">
-          <UserChats
-            searchResults={searchResults}
-            resetOnSelect={resetOnSelect}
-          />
-        </div>
-
-        {/* Show mobile chat list below lg */}
-        <div className="block lg:hidden">
-          <UserChatsMobile
-            searchResults={searchResults}
-            resetOnSelect={resetOnSelect}
-          />
-        </div>
+      <div className='hidden lg:block bg-gray-200 dark:bg-gray-300 p-1 rounded-lg transition flex-1 overflow-y-auto'>
+        <UserChats
+          searchResults={searchResults}
+          resetOnSelect={resetOnSelect}
+        />
       </div>
     </main>
   )

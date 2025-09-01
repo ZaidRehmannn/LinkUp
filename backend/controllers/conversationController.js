@@ -13,7 +13,7 @@ const getConversations = async (req, res) => {
             conversations.map(async (conv) => {
                 const otherUserId = conv.participants.find((id) => id.toString() !== userId.toString());
 
-                const otherUser = await userModel.findById(otherUserId).select("_id firstName lastName profilePic");
+                const otherUser = await userModel.findById(otherUserId).select("_id firstName lastName profilePic username");
 
                 return {
                     _id: conv._id,

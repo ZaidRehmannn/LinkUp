@@ -67,7 +67,7 @@ const searchChats = async (req, res) => {
                     }
                 }
             ]
-        }).select("_id firstName lastName profilePic");
+        }).select("_id firstName lastName profilePic username");
 
         if (!chatUsers.length) {
             return res.status(200).json({ success: true, chatUsers: [] });

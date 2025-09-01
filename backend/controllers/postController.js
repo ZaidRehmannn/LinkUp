@@ -51,7 +51,7 @@ const fetchAllPosts = async (req, res) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
-            .populate("user", "_id firstName lastName profilePic")
+            .populate("user", "_id firstName lastName profilePic username")
             .lean();
 
         // Count total posts

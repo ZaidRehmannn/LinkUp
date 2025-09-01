@@ -52,7 +52,7 @@ const UserChats = ({ searchResults, resetOnSelect }) => {
     );
 
     if (existingConversation) {
-      handleChatClick(existingConversation)
+      handleChatClick(existingConversation);
     } else {
       resetOnSelect();
       toggleChat(searchResult)

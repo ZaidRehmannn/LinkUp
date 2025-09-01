@@ -3,13 +3,14 @@
 import { messageService } from '@/services/messageService';
 import useChatStore from '@/stores/chatStore';
 import useUserStore from '@/stores/userStore';
-import { Send, UserCircle, X } from 'lucide-react';
+import { ArrowLeft, Send, UserCircle, X } from 'lucide-react';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import ChatMessages from './ChatMessages';
 import useSocket from '@/hooks/useSocket';
+import { useRouter } from 'next/navigation';
 
-const OpenChatWindow = ({ user }) => {
+const OpenChatWindow = ({ user, mobile = false }) => {
     const toggleChat = useChatStore(state => state.toggleChat);
     const closeChat = useChatStore(state => state.closeChat);
     const addConversationToStore = useChatStore(state => state.addConversationToStore);
@@ -18,6 +19,7 @@ const OpenChatWindow = ({ user }) => {
     const [messageText, setmessageText] = useState("");
     const [messages, setmessages] = useState([]);
     const textareaRef = useRef(null);
+    const router = useRouter();
 
     // Auto-resize textarea up to max height
     const handleInputChange = (e) => {
@@ -66,10 +68,12 @@ const OpenChatWindow = ({ user }) => {
     useSocket(currentUserId, { onNewMessage: handleIncomingMessage });
 
     return (
-        <div className="w-80 h-96 bg-white dark:bg-gray-300 rounded-lg shadow-lg border dark:border-gray-500 flex flex-col">
+        <div
+            className={`${mobile ? "min-w-full min-h-full" : "w-80 h-96"} bg-white dark:bg-gray-300 rounded-lg shadow-lg border dark:border-gray-500 flex flex-col`}
+        >
             {/* Chat header */}
             <div
-                className="flex justify-between items-center p-2 border-b bg-gray-100 dark:bg-gray-100 rounded-t-lg cursor-pointer"
+                className={`flex ${mobile ? "flex-row-reverse justify-end gap-2 px-2 py-3" : "justify-between p-2"} items-center border-b bg-gray-100 dark:bg-gray-100 rounded-t-lg cursor-pointer`}
                 onClick={() => toggleChat(user)}
             >
                 <div className="flex items-center gap-2">
@@ -79,24 +83,33 @@ const OpenChatWindow = ({ user }) => {
                             alt="User profile"
                             width={36}
                             height={36}
-                            className="w-10 h-10 rounded-full border border-gray-700 object-cover"
+                            className={`${mobile ? "w-12 h-12" : "w-10 h-10"}rounded-full border border-gray-700 object-cover`}
                         />
                     ) : (
-                        <UserCircle className="w-9 h-9 text-gray-500" />
+                        <UserCircle className={`${mobile ? "w-11 h-11" : "w-9 h-9"} text-gray-500`} />
                     )}
-                    <span className="font-semibold dark:text-gray-900">{user.firstName} {user.lastName}</span>
+                    <span className={`font-semibold dark:text-gray-900 ${mobile ? "text-lg" : "text-base"}`}>{user.firstName} {user.lastName}</span>
                 </div>
 
                 {/* Close chat button */}
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        closeChat(user);
-                    }}
-                    className='cursor-pointer dark:text-gray-900'
-                >
-                    <X size={16} />
-                </button>
+                {!mobile ? (
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            closeChat(user);
+                        }}
+                        className='cursor-pointer dark:text-gray-900'
+                    >
+                        <X size={16} />
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => router.back()}
+                        className="p-1 rounded-md"
+                    >
+                        <ArrowLeft size={24} />
+                    </button>
+                )}
             </div>
 
             {/* chat messages list */}
