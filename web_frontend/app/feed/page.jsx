@@ -1,19 +1,26 @@
+'use client'
+
 import React from 'react'
-import CreatePost from '@/components/feed/post/CreatePost';
-import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers';
-import PostList from '@/components/feed/post/PostList';
-import ClientChatWrapper from '@/components/ClientChatWrapper';
-import MobileChatWrapper from '@/components/MobileChatWrapper';
+import CreatePost from '@/components/feed/post/CreatePost'
+import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers'
+import PostList from '@/components/feed/post/PostList'
+import ClientChatWrapper from '@/components/ClientChatWrapper'
+import MobileChatWrapper from '@/components/MobileChatWrapper'
+import useIsMobile from '@/hooks/useIsMobile'
 
 const page = () => {
+  const isMobile = useIsMobile();
+
   return (
     <main className="grid grid-cols-1 lg:grid-cols-12 gap-10 pt-16 lg:pt-20 py-4 max-w-7xl mx-auto h-[calc(100vh-4rem)]">
       {/* Left Sidebar - Suggested Users */}
-      <aside className="hidden lg:block lg:col-span-3">
-        <div className="sticky top-[80px] h-[calc(100vh-100px)] rounded-2xl p-3 bg-gray-100 dark:bg-gray-900 shadow-md overflow-y-auto">
-          <SuggestedUsers />
-        </div>
-      </aside>
+      {!isMobile && (
+        <aside className="hidden lg:block lg:col-span-3">
+          <div className="sticky top-[80px] h-[calc(100vh-100px)] rounded-2xl p-3 bg-gray-100 dark:bg-gray-900 shadow-md overflow-y-auto">
+            <SuggestedUsers />
+          </div>
+        </aside>
+      )}
 
       {/* Feed */}
       <section className="col-span-1 lg:col-span-6">
@@ -24,16 +31,20 @@ const page = () => {
       </section>
 
       {/* Right Sidebar - Chat List */}
-      <aside className="hidden lg:block lg:col-span-3">
-        <div className="sticky top-[80px] h-[calc(100vh-100px)] rounded-2xl p-3 bg-gray-100 dark:bg-gray-900 shadow-md overflow-y-auto">
-          <ClientChatWrapper />
-        </div>
-      </aside>
+      {!isMobile && (
+        <aside className="hidden lg:block lg:col-span-3">
+          <div className="sticky top-[80px] h-[calc(100vh-100px)] rounded-2xl p-3 bg-gray-100 dark:bg-gray-900 shadow-md overflow-y-auto">
+            <ClientChatWrapper />
+          </div>
+        </aside>
+      )}
 
       {/* Floating Chat Icon for Mobile & Tablet */}
-      <div className='lg:hidden fixed bottom-8 right-6'>
-        <MobileChatWrapper />
-      </div>
+      {isMobile && (
+        <div className='fixed bottom-8 right-6'>
+          <MobileChatWrapper />
+        </div>
+      )}
     </main>
   )
 }

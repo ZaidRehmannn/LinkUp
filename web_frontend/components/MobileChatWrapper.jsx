@@ -7,17 +7,22 @@ import useUserStore from '@/stores/userStore'
 import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import useChatStore from '@/stores/chatStore'
 
 const MobileChatWrapper = () => {
     const token = useUserStore(state => state.token);
     const currentUserId = useUserStore(state => state.user?._id);
+    const updateUnreadCount = useChatStore(state => state.updateUnreadCount);
     const [newMessage, setnewMessage] = useState(false);
+    const pathname = usePathname();
 
     const checkUnread = async () => {
         try {
-            const result = conversationService.checkUnreadConversation(token);
+            const result = await conversationService.checkUnreadConversation(token);
             if (result.success) {
                 setnewMessage(result.status);
+                console.log("unread chat status:", result.status);
             }
         } catch (error) {
             console.error("check unread conversation error:", error);
@@ -27,14 +32,24 @@ const MobileChatWrapper = () => {
     useEffect(() => {
         if (!token) return;
         checkUnread();
-    }, [token])
+    }, [token, pathname])
+
+    // handle incoming new conversations
+    const handleIncomingNewConversation = (conversation) => {
+        addConversationToStore(conversation);
+    };
 
     // Handle incoming new messages
-    const handleIncomingMessage = () => {
-        playSound("message");
+    const handleIncomingMessage = (message) => {
+        updateUnreadCount(message.conversationId, message.receiver);
         setnewMessage(true);
+        playSound("message");
     };
-    useSocket(currentUserId, { onNewMessage: handleIncomingMessage });
+
+    useSocket(currentUserId, {
+        onNewConversation: handleIncomingNewConversation,
+        onNewMessage: handleIncomingMessage
+    });
 
     return (
         <div className="relative w-fit h-fit">
