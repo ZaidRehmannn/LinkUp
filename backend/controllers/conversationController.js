@@ -54,4 +54,23 @@ const markConversationAsRead = async (req, res) => {
     }
 };
 
-export { getConversations, markConversationAsRead };
+// check if there is any unread conversation
+const checkUnreadConversation = async (req, res) => {
+    const userId = req.userId;
+
+    try {
+        const conversations = await conversationModel.find({ participants: userId }).select("unreadCounts");
+
+        const hasUnread = conversations.some(conv => {
+            const count = conv.unreadCounts?.get(userId.toString()) || 0;
+            return count > 0;
+        });
+
+        res.status(200).json({ success: true, status: hasUnread });
+    } catch (error) {
+        console.error("Check unread conversation error:", error);
+        res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+};
+
+export { getConversations, markConversationAsRead, checkUnreadConversation };

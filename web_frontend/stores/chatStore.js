@@ -85,7 +85,7 @@ const useChatStore = create((set, get) => ({
     closeChat: (chat_User) => set((state) => ({
         openChat_Users: state.openChat_Users.filter(user => user._id !== chat_User._id),
         minimizedChat_Users: state.minimizedChat_Users.filter(user => user._id !== chat_User._id)
-    }))
+    })),
 }));
 
 export default useChatStore;

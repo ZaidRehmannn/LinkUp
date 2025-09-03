@@ -12,11 +12,13 @@ import UserChatCard from './UserChatCard';
 const UserChatsMobile = ({ searchResults, resetOnSelect }) => {
   const token = useUserStore(state => state.token);
   const currentUserId = useUserStore(state => state.user?._id);
+
   const userConversations = useChatStore(state => state.userConversations);
   const setuserConversations = useChatStore(state => state.setuserConversations);
   const markConversationAsReadInStore = useChatStore(state => state.markConversationAsReadInStore);
   const addConversationToStore = useChatStore(state => state.addConversationToStore);
   const updateUnreadCount = useChatStore(state => state.updateUnreadCount);
+
   const router = useRouter();
 
   const fetchUserConversations = async () => {

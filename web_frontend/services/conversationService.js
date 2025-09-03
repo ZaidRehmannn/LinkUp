@@ -17,5 +17,14 @@ export const conversationService = {
             }
         });
         return response.data;
-    }
+    },
+
+    async checkUnreadConversation(token) {
+        const response = await axios.get('/api/conversation/checkUnread', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data;
+    } 
 };

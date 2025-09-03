@@ -9,13 +9,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import ChatMessages from './ChatMessages';
 import useSocket from '@/hooks/useSocket';
 import { useRouter } from 'next/navigation';
+import playSound from '@/lib/webAudioAPI';
+import { conversationService } from '@/services/conversationService';
 
 const OpenChatWindow = ({ user, mobile = false }) => {
+    const token = useUserStore(state => state.token);
+    const currentUserId = useUserStore(state => state.user?._id);
+
     const toggleChat = useChatStore(state => state.toggleChat);
     const closeChat = useChatStore(state => state.closeChat);
     const addConversationToStore = useChatStore(state => state.addConversationToStore);
-    const token = useUserStore(state => state.token);
-    const currentUserId = useUserStore(state => state.user?._id);
+    const markConversationAsReadInStore = useChatStore(state => state.markConversationAsReadInStore);
+
     const [messageText, setmessageText] = useState("");
     const [messages, setmessages] = useState([]);
     const textareaRef = useRef(null);
@@ -56,6 +61,14 @@ const OpenChatWindow = ({ user, mobile = false }) => {
         }
     };
 
+    const markConversationAsRead = async (senderId) => {
+        try {
+            await conversationService.markAsRead(senderId, token);
+        } catch (error) {
+            console.error("Mark as read conversation error:", error);
+        }
+    };
+
     useEffect(() => {
         if (!token) return;
         fetchChatMessages();
@@ -64,6 +77,11 @@ const OpenChatWindow = ({ user, mobile = false }) => {
     // this socket.io event is listened by the message receiver only
     const handleIncomingMessage = (message) => {
         setmessages(prev => [...prev, message]);
+        if (mobile) {
+            playSound("message");
+            markConversationAsRead(message.sender);
+            markConversationAsReadInStore(message.conversationId, currentUserId);
+        }
     };
     useSocket(currentUserId, { onNewMessage: handleIncomingMessage });
 
@@ -83,7 +101,7 @@ const OpenChatWindow = ({ user, mobile = false }) => {
                             alt="User profile"
                             width={36}
                             height={36}
-                            className={`${mobile ? "w-12 h-12" : "w-10 h-10"}rounded-full border border-gray-700 object-cover`}
+                            className={`${mobile ? "w-12 h-12" : "w-10 h-10"} rounded-full border border-gray-700 object-cover`}
                         />
                     ) : (
                         <UserCircle className={`${mobile ? "w-11 h-11" : "w-9 h-9"} text-gray-500`} />
@@ -104,7 +122,7 @@ const OpenChatWindow = ({ user, mobile = false }) => {
                     </button>
                 ) : (
                     <button
-                        onClick={() => router.back()}
+                        onClick={() => { router.back() }}
                         className="p-1 rounded-md"
                     >
                         <ArrowLeft size={24} />

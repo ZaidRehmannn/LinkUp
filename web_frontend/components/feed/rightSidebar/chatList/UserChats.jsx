@@ -11,6 +11,7 @@ import playSound from '@/lib/webAudioAPI'
 const UserChats = ({ searchResults, resetOnSelect }) => {
   const token = useUserStore(state => state.token);
   const currentUserId = useUserStore(state => state.user?._id);
+  
   const userConversations = useChatStore(state => state.userConversations);
   const setuserConversations = useChatStore(state => state.setuserConversations);
   const addConversationToStore = useChatStore(state => state.addConversationToStore);

@@ -1,10 +1,9 @@
 import React from 'react'
-import Link from "next/link";
-import { MessageCircle } from "lucide-react";
-import CreatePost from '@/components/feed/post/CreatePost'
-import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers'
-import PostList from '@/components/feed/post/PostList'
-import ClientChatWrapper from '@/components/ClientChatWrapper'
+import CreatePost from '@/components/feed/post/CreatePost';
+import SuggestedUsers from '@/components/feed/leftSidebar/SuggestedUsers';
+import PostList from '@/components/feed/post/PostList';
+import ClientChatWrapper from '@/components/ClientChatWrapper';
+import MobileChatWrapper from '@/components/MobileChatWrapper';
 
 const page = () => {
   return (
@@ -32,9 +31,9 @@ const page = () => {
       </aside>
 
       {/* Floating Chat Icon for Mobile & Tablet */}
-      <Link href="/mobileChatList" className="lg:hidden fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition duration-300">
-        <MessageCircle size={28} />
-      </Link>
+      <div className='lg:hidden fixed bottom-8 right-6'>
+        <MobileChatWrapper />
+      </div>
     </main>
   )
 }
