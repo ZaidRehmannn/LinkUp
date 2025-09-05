@@ -89,11 +89,13 @@ const Comments = ({ postId }) => {
 
       {/* Previous comments */}
       <div className="mt-4">
-        {(comments.length === 0 && !loading) ? (
-          <p className="mt-4 text-sm text-gray-500 dark:text-gray-800 text-center">No comments yet</p>
+        {comments.length === 0 && !loading ? (
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-800 text-center">
+            No comments yet
+          </p>
         ) : (
           <ul className="space-y-3">
-            {comments.map(comment => (
+            {comments.map((comment) => (
               <li key={comment._id}>
                 <OldCommentBox
                   comment={comment}
@@ -107,19 +109,21 @@ const Comments = ({ postId }) => {
           </ul>
         )}
 
-        {hasMore ? (
-          <button
-            onClick={handleLoadMore}
-            disabled={loading}
-            className="w-full px-14 py-2 border border-blue-600 text-blue-600 text-sm font-semibold rounded cursor-pointer mt-3 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Loading Comments..." : "Load More Comments"}
-          </button>
-        ) : (
-          <p className="text-gray-500 text-center mt-4">No more comments</p>
+        {comments.length > 0 && (
+          hasMore ? (
+            <button
+              onClick={handleLoadMore}
+              disabled={loading}
+              className="w-full px-14 py-2 border border-blue-600 text-blue-600 text-sm font-semibold rounded cursor-pointer mt-3 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Loading Comments..." : "Load More Comments"}
+            </button>
+          ) : (
+            <p className="text-gray-500 text-center mt-4">No more comments</p>
+          )
         )}
       </div>
-    </div >
+    </div>
   );
 };
 
