@@ -1,0 +1,24 @@
+# Ignore node modules
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Ignore build artifacts
+dist
+build
+
+# Ignore local environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignore OS / editor files
+.DS_Store
+Thumbs.db
+
+# Ignore git & Docker files
+.git
+.gitignore
+Dockerfile
+.dockerignore
