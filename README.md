@@ -77,7 +77,7 @@ With a clean UI, responsive design, **dark mode**, and smooth user experience, L
 ---
 
 ## 🚀 Live Demo  
-Frontend (Next.js): [LinkUp Live](https://link-up-frontend-fawn.vercel.app)  
+[LinkUp Live](https://link-up-frontend-fawn.vercel.app)  
 
 ---
 
