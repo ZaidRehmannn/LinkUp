@@ -44,7 +44,7 @@ const Followers = ({ username, token }) => {
 
     return (
         <div className="w-full">
-            <div className="space-y-3">
+            <div className="flex flex-col gap-2">
                 {followers.map(follower => (
                     <Link key={follower.username} href={`/profile/${follower.username}`}>
                         <div className="flex items-center gap-4 border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 shadow-sm transition-colors duration-200 w-full">
