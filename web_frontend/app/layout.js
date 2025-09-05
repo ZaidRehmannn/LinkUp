@@ -1,10 +1,10 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/navbar/Navbar";
-import AuthWrapper from "@/components/AuthWrapper";
 import Menu from "@/components/navbar/Menu";
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'react-hot-toast';
+import RouteGuard from "@/components/RouteGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +31,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AuthWrapper>
+          <RouteGuard>
             <Toaster position="top-center" />
             <Navbar />
             <Menu />
             <main className="flex-grow">{children}</main>
-          </AuthWrapper>
+          </RouteGuard>
         </ThemeProvider>
       </body>
     </html >

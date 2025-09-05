@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -16,31 +16,30 @@ const Loader = ({ title, path, logoutSuccess = false }) => {
             if (logoutSuccess) {
                 logout();
             }
-
+            
             router.push(path);
             setIsComplete(true);
         }, 1500);
 
         return () => clearTimeout(timeout);
-    }, []);
+    }, [logoutSuccess, logout, path, router]);
 
     const letters = title.split('');
+
+    if (isComplete) return null;
 
     return (
         <motion.div
             initial={{ opacity: 1 }}
             animate={{ opacity: isComplete ? 0 : 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
             className="wrapper"
-            style={{
-                pointerEvents: isComplete ? 'none' : 'all',
-            }}
         >
-            {/* Fading circle animation */}
+            {/* Spinner */}
             <div className="spinner" />
 
-            {/* Animated text */}
+            {/* Animated title */}
             <div className="text">
                 {letters.map((char, i) => (
                     <motion.span

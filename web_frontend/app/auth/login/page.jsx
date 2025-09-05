@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import axios from '@/lib/axios.js'
@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { EyeOff, Eye } from 'lucide-react'
 import Loader from '@/components/loader/Loader'
 import useUserStore from '@/stores/userStore'
+import { useRouter } from 'next/navigation'
 
 const page = () => {
     const [form, setform] = useState({
@@ -21,6 +22,18 @@ const page = () => {
     const [passwordVisibility, setpasswordVisibility] = useState(false);
     const setToken = useUserStore(state => state.setToken);
     const setUser = useUserStore(state => state.setUser);
+    const token = useUserStore(state => state.token);
+    const router = useRouter();
+
+    // Handle redirect when user gets token
+    useEffect(() => {
+        if (token && success) {
+            return;
+        }
+        if (token && !success) {
+            router.replace('/feed');
+        }
+    }, [token, success, router]);
 
     const togglePasswordVisibility = () => {
         setpasswordVisibility(!passwordVisibility);
@@ -51,6 +64,10 @@ const page = () => {
             setloading(false);
         }
     };
+
+    if (token && !success) {
+        return null;
+    }
 
     return (
         <main className="flex items-center justify-center px-4 py-42">
@@ -94,7 +111,7 @@ const page = () => {
                 {error && (
                     <p className="text-red-600 dark:text-red-500 text-sm text-center font-semibold">{error}</p>
                 )}
-                {success && (
+                {success && token && (
                     <Loader title="Logging In..." path="/feed" />
                 )}
 

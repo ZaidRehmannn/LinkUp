@@ -21,7 +21,7 @@ profileRouter.put('/update-profile-details', authMiddleware, updateUser);
 profileRouter.put('/upload-profile-pic', authMiddleware, upload.single("image"), uploadPicture);
 profileRouter.put('/remove-profile-pic', authMiddleware, removeProfilePic);
 profileRouter.put('/change-password', authMiddleware, changePassword);
-profileRouter.get('/userInfo', authMiddleware, userInfo);
+profileRouter.get('/me', authMiddleware, userInfo);
 profileRouter.get('/:username', authMiddleware, fetchUserProfile);
 
 export default profileRouter;

@@ -9,6 +9,7 @@ import { EyeOff, Eye } from 'lucide-react'
 import Loader from '@/components/loader/Loader'
 
 const page = () => {
+    const token = localStorage.getItem('token');
     const [form, setform] = useState({
         firstName: "",
         lastName: "",
@@ -69,6 +70,10 @@ const page = () => {
             setloading(false);
         }
     };
+
+    if (token) {
+        return null;
+    }
 
     return (
         <main className="flex items-center justify-center px-4 py-24">
