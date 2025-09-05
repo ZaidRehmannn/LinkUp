@@ -3,7 +3,7 @@
 ## 📌 Project Description  
 LinkUp is a modern **social media platform** designed to connect people through posts, interactions, and real-time conversations. Users can share their thoughts via **text, images, or videos**, engage with others through **likes, comments, and follows**, and discover new connections seamlessly.  
 
-The app also includes a **real-time chat system** powered by **Socket.IO**, enabling one-to-one conversations with instant updates. Notifications keep users informed about likes, comments, and follows, while the chat list dynamically shows unread messages and activity.  
+The app also includes a **real-time chat system** powered by **Socket.IO**, enabling one-to-one conversations with instant updates. Notifications keep users informed about likes, comments, and follows, while the chat list dynamically shows unread messages.  
 
 With a clean UI, responsive design, **dark mode**, and smooth user experience, LinkUp brings together the best features of a social platform into one integrated app.  
 
@@ -57,6 +57,7 @@ With a clean UI, responsive design, **dark mode**, and smooth user experience, L
 - **Next.js** – React-based framework for SSR and modern frontend development  
 - **Zustand** – Lightweight state management  
 - **Tailwind CSS** – Utility-first CSS framework for responsive design  
+- **ShadCN/UI** – Accessible, customizable component library built on Radix UI  
 - **Axios** – Promise-based HTTP client for API requests  
 
 ### 🖥️ Backend  
