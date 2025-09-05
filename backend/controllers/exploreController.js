@@ -13,7 +13,6 @@ const fetchExploreUsers = async (req, res) => {
         // excluding own and people already following
         const excludedUsers = [userId, ...currentUser.following];
 
-
         // 1) finding people that my following follows
         const followedByFollowing = await userModel.find({
             followers: { $in: currentUser.following },
@@ -26,20 +25,24 @@ const fetchExploreUsers = async (req, res) => {
             _id: { $nin: excludedUsers }
         }).select("_id firstName lastName username profilePic");
 
-        // 3) Random Users (fallback) ---
+        // 3) Random Users (fallback)
         const others = await userModel.find({
             _id: { $nin: excludedUsers }
         }).select("_id firstName lastName username profilePic").limit(7);
 
-
-        // Combining All (priortizing mutuals)
-        const suggestions = [
+        // Combine all with priority (mutuals first)
+        const combined = [
             ...followedByFollowing,
             ...sameFollowing,
             ...others
-        ].slice(0, 7);
+        ];
 
-        res.json({ success: true, users: suggestions });
+        // Deduplicate by _id while keeping order
+        const uniqueSuggestions = Array.from(
+            new Map(combined.map(user => [user._id.toString(), user])).values()
+        ).slice(0, 7);
+
+        res.json({ success: true, users: uniqueSuggestions });
     } catch (error) {
         console.error("Fetching explore users error:", error);
         res.status(500).json({ success: false, message: "Something went wrong!" });
