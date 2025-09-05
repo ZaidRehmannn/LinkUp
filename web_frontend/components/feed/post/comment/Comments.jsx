@@ -3,8 +3,8 @@
 import { commentService } from '@/services/commentService';
 import useUserStore from '@/stores/userStore';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import OldCommentBox from './OldCommentBox.jsx';
-import NewCommentBox from './NewCommentBox.jsx';
+import OldCommentBox from './OldCommentBox';
+import NewCommentBox from './NewCommentBox';
 import formatTimeAgo from '@/lib/formatTime';
 
 const Comments = ({ postId }) => {
