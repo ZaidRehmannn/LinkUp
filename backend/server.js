@@ -1,7 +1,7 @@
-import express from 'express'
-import dotenv from "dotenv"
+import express from 'express';
+import dotenv from "dotenv";
 import { createServer } from 'http';
-import cors from 'cors'
+import cors from 'cors';
 import connectDB from './config/db.js';
 import userRouter from './routes/userRoute.js';
 import profileRouter from './routes/profileRoute.js';
@@ -16,14 +16,21 @@ import conversationRouter from './routes/conversationRoute.js';
 import messageRouter from './routes/messageRoute.js';
 import { initSocket } from './socket.js';
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
 const server = createServer(app);
 
-// Middleware
-app.use(cors({ origin: 'http://localhost:3000' }));
+const allowedOrigins = [
+  'https://link-up-frontend-fawn.vercel.app',
+  'http://localhost:3000'
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 app.use(express.json());
 
 // DB connection
@@ -42,12 +49,13 @@ app.use('/api/notifications', notificationRouter);
 app.use('/api/conversation', conversationRouter);
 app.use('/api/message', messageRouter);
 
-// Test Route
+// Test route
 app.get("/", (req, res) => {
     res.send("API is running...");
 });
 
-initSocket(server)
+// Initialize socket
+initSocket(server);
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {

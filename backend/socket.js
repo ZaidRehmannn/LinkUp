@@ -1,23 +1,31 @@
-import { Server } from 'socket.io'
+import { Server } from 'socket.io';
 
 let io = null;
 
 export const initSocket = (server) => {
     io = new Server(server, {
         cors: {
-            origin: "http://localhost:3000",
-            transports: ["websocket"]
-        }
-    })
+            origin: [
+                "https://link-up-frontend-fawn.vercel.app",
+                "http://localhost:3000"
+            ],
+            methods: ["GET", "POST"],
+            credentials: true
+        },
+        transports: ["websocket", "polling"]
+    });
 
     io.on("connection", (socket) => {
         console.log(`Socket connected: ${socket.id}`);
 
         socket.on("join", (userId) => {
             if (!userId) return;
+
+            // Leave previous rooms
             Array.from(socket.rooms).forEach(room => {
                 if (room !== socket.id) socket.leave(room);
             });
+
             socket.join(userId);
             console.log(`Socket ${socket.id} joined room ${userId}`);
         });
@@ -28,10 +36,10 @@ export const initSocket = (server) => {
         });
     });
 
-    return io
+    return io;
 };
 
 export const getIO = () => {
-    if (!io) throw new Error("Socket.io not initialized")
-    return io
+    if (!io) throw new Error("Socket.io not initialized");
+    return io;
 };
