@@ -132,7 +132,7 @@ CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
 Run the backend server:  
 ```bash
-npm run server
+npm run dev
 ```
 Backend will run at: **http://localhost:8000**  
 
