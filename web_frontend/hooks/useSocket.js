@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL;
+const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function useSocket(userId, { onNotification, onNewMessage, onNewConversation } = {}) {
     const socketRef = useRef(null);
