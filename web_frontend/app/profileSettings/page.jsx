@@ -107,8 +107,8 @@ const Page = () => {
                     setErrorMessagePicture(result.message);
                 }
             } catch (error) {
-                console.error("Profile Picture Error: ", error.response?.data || error.message);
-                setErrorMessagePicture(error.response?.data?.message || "Something went wrong!");
+                console.error("Profile Picture Error: ", error);
+                setErrorMessagePicture("Something went wrong!");
             }
         }
     };
