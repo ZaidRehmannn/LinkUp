@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 
 const ProfilePictureSection = ({
     form,
+    setForm,
     picturePreview,
     setPicturePreview,
     handleFileChange,
