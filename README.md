@@ -86,18 +86,19 @@ Live Link: [LinkUp Live](https://link-up-frontend-fawn.vercel.app)
 To test the app without needing to create your own account, you can use the following demo accounts:
 
 1. **Account 1:**
-   - **Email:** liam.carter@demo.com
-   - **Password:** password12345
+   - **Email:** liam.carter@linkup.com
+   - **Password:** password123
 
 2. **Account 2:**
-   - **Email:** ethan.walker@demo.com
-   - **Password:** password12345
+   - **Email:** ethan.walker@linkup.com
+   - **Password:** password123
 
 3. **Account 3:**
-   - **Email:** noah.bennett@demo.com
-   - **Password:** password12345
+   - **Email:** noah.bennett@linkup.com
+   - **Password:** password123
 
 Feel free to log in with any of these accounts to explore the features of the app!
+
 ---
 
 ## 🛠️ Installation  
