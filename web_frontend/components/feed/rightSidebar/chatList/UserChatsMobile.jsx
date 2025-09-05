@@ -82,7 +82,7 @@ const UserChatsMobile = ({ searchResults, resetOnSelect }) => {
   return (
     <>
       {searchResults.length > 0 ? (
-        <ul>
+        <ul className='flex flex-col gap-2'>
           {searchResults.map((result) => (
             <li
               key={result._id}
@@ -99,7 +99,7 @@ const UserChatsMobile = ({ searchResults, resetOnSelect }) => {
           ))}
         </ul>
       ) : userConversations.length > 0 ? (
-        <ul>
+        <ul className='flex flex-col gap-2'>
           {userConversations.map((convo) => (
             <li
               key={convo._id}

@@ -76,12 +76,6 @@ const Comments = ({ postId }) => {
     )
   }
 
-  if (comments.length === 0 && !loading) {
-    return (
-      <p className="mt-4 text-sm text-gray-500 dark:text-gray-800 text-center">No comments yet</p>
-    )
-  }
-
   return (
     <div className="border dark:border-gray-500 rounded-lg bg-white dark:bg-gray-300 p-3 mt-3 shadow-sm dark:shadow-xl">
       {/* New comment box */}
@@ -95,19 +89,23 @@ const Comments = ({ postId }) => {
 
       {/* Previous comments */}
       <div className="mt-4">
-        <ul className="space-y-3">
-          {comments.map(comment => (
-            <li key={comment._id}>
-              <OldCommentBox
-                comment={comment}
-                setcomments={setcomments}
-                loggedInUserId={loggedInUserId}
-                token={token}
-                formatComment={formatComment}
-              />
-            </li>
-          ))}
-        </ul>
+        {(comments.length === 0 && !loading) ? (
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-800 text-center">No comments yet</p>
+        ) : (
+          <ul className="space-y-3">
+            {comments.map(comment => (
+              <li key={comment._id}>
+                <OldCommentBox
+                  comment={comment}
+                  setcomments={setcomments}
+                  loggedInUserId={loggedInUserId}
+                  token={token}
+                  formatComment={formatComment}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
 
         {hasMore ? (
           <button
@@ -121,7 +119,7 @@ const Comments = ({ postId }) => {
           <p className="text-gray-500 text-center mt-4">No more comments</p>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
