@@ -93,10 +93,6 @@ To test the app without needing to create your own account, you can use the foll
    - **Email:** ethan.walker@linkup.com
    - **Password:** password123
 
-3. **Account 3:**
-   - **Email:** noah.bennett@linkup.com
-   - **Password:** password123
-
 Feel free to log in with any of these accounts to explore the features of the app!
 
 ---
